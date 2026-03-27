@@ -1,36 +1,25 @@
 plugins {
-  alias(libs.plugins.android.application)
+  alias(libs.plugins.android.library)
   alias(libs.plugins.jetbrains.kotlin.compose)
   alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
-  namespace = "com.splanes.uoc.wishlify"
+  namespace = "com.splanes.uoc.wishlify.presentation"
   compileSdk {
     version = release(36)
   }
 
   defaultConfig {
-    applicationId = "com.splanes.uoc.wishlify"
     minSdk = 30
-    targetSdk = 36
-    versionCode = 1
-    versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  }
-
-  buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-    }
+    consumerProguardFiles("consumer-rules.pro")
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
-
   buildFeatures {
     compose = true
   }
@@ -38,9 +27,7 @@ android {
 
 dependencies {
   // Projects
-  implementation(projects.data)
   implementation(projects.domain)
-  implementation(projects.presentation)
 
   // Libs
   // Android
@@ -50,13 +37,7 @@ dependencies {
   implementation(libs.bundles.compose)
   // Koin
   implementation(libs.koin.android)
+  implementation(libs.koin.android.compose)
   // Logger
   implementation(libs.timber)
-
-  // TODO: Remove
-  implementation(libs.material)
-
-  testImplementation(libs.junit)
-  androidTestImplementation(libs.androidx.junit)
-  androidTestImplementation(libs.androidx.espresso.core)
 }
