@@ -33,6 +33,7 @@ android {
 
   buildFeatures {
     compose = true
+    buildConfig = true
   }
 }
 
@@ -45,6 +46,7 @@ dependencies {
   // Libs
   // Android
   implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.core.splashscreen)
   implementation(platform(libs.androidx.compose.bom))
   implementation(libs.bundles.lifecycle)
   implementation(libs.bundles.compose)
@@ -52,9 +54,6 @@ dependencies {
   implementation(libs.koin.android)
   // Logger
   implementation(libs.timber)
-
-  // TODO: Remove
-  implementation(libs.material)
 
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
