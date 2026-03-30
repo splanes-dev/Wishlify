@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common -->
+    <string name="auth_username">Nom d\'usuari</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Contrasenya</string>
+    <string name="auth_sign_in">Iniciar Sessió</string>
+    <string name="auth_sign_up">Registre</string>
+    <string name="auth_google_account">Continuar amb Google</string>
+    <string name="auth_access">Accedir</string>
+    <string name="auth_create_account">Crear compte</string>
+    <string name="auth_not_account_yet">No tens compte?</string>
+    <string name="auth_already_account">Ja tens compte?</string>
+    <string name="auth_register">Registra\'t</string>
+    <string name="auth_log_in">Inicia sessió</string>
+    <string name="input_error_weak_password">
+        La contrasenya ha de tenir mínim 8 caràcters, incloent majúscules, minúscules, dígits i símbols.
+    </string>
+    <string name="input_error_email_already_used">El correu ja està en ús</string>
+</resources>

@@ -14,7 +14,7 @@
         <activity
             android:name=".WishlifyActivity"
             android:exported="true"
-            android:theme="@style/Theme.Wishlify.SplashScreen">
+            android:theme="@style/Theme.Wishlify">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />

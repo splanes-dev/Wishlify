@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.jetbrains.kotlin.compose)
   alias(libs.plugins.jetbrains.kotlin.serialization)
+  alias(libs.plugins.google.services)
 }
 
 android {
@@ -50,8 +51,12 @@ dependencies {
   implementation(platform(libs.androidx.compose.bom))
   implementation(libs.bundles.lifecycle)
   implementation(libs.bundles.compose)
+  // Firebase analytics
+  implementation(platform(libs.google.firebase.bom))
+  implementation(libs.google.firebase.analytics)
   // Koin
   implementation(libs.koin.android)
+  implementation(libs.koin.android.compose)
   // Logger
   implementation(libs.timber)
 

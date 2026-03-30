@@ -23,4 +23,16 @@ android {
 dependencies {
   // Projects
   implementation(projects.domain)
+  // Libs
+  // Serialization
+  implementation(libs.kotlinx.serialization.core)
+  implementation(libs.kotlinx.serialization.json)
+  // Koin
+  implementation(libs.koin.android)
+  // Firebase
+  implementation(platform(libs.google.firebase.bom))
+  implementation(libs.google.firebase.auth)
+  implementation(libs.google.firebase.firestore)
+  // Timber
+  implementation(libs.timber)
 }

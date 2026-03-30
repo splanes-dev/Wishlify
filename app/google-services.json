@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "820607858547",
+    "project_id": "wishlify-87782",
+    "storage_bucket": "wishlify-87782.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820607858547:android:60fefed88986cb49373706",
+        "android_client_info": {
+          "package_name": "com.splanes.uoc.wishlify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820607858547-6nt9u6hq5r30c0cvtrmuee791dv8gq0a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.splanes.uoc.wishlify",
+            "certificate_hash": "f0ba25fbecb60ab4ea9d93ff3c5c7700cfe9e678"
+          }
+        },
+        {
+          "client_id": "820607858547-qb784e4tdl4tvi5i8kq4ecf62q0b8oo5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnQ6nXhSP6XxKreOrSl3ym_UJ2nRinyTI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820607858547-qb784e4tdl4tvi5i8kq4ecf62q0b8oo5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

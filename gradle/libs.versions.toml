@@ -4,6 +4,8 @@
 agp = "9.1.0"
 # Kotlin Plugin
 kotlin = "2.3.20"
+# Google Services Plugin
+google-services = "4.4.4"
 
 # Kotlin
 kotlin-serialization = "1.10.0"
@@ -22,8 +24,10 @@ androidx-navigation = "2.9.7"
 ## Jetpack Compose
 androidx-compose-bom = "2026.03.01"
 androidx-compose-activity = "1.13.0"
-## Material
-material = "1.13.0"
+androdix-material3 = "1.5.0-alpha16"
+
+# Firebase
+google-firebase-bom = "34.11.0"
 
 # Logger
 timber = "5.0.1"
@@ -38,6 +42,10 @@ turbine = "1.2.1"
 coroutines-test = "1.10.2"
 
 [libraries]
+# Kotlin
+kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlin-serialization" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+
 # Android
 ## Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
@@ -57,13 +65,19 @@ androidx-compose-activity = { group = "androidx.activity", name = "activity-comp
 androidx-compose-material = { group = "androidx.compose.material", name = "material" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-uiToolingPreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androdix-material3" }
 androidx-compose-materialIconsExtended = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.7.8" }
 androidx-compose-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 
 # DI
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-android-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+
+# Firebase
+google-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "google-firebase-bom" }
+google-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+google-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+google-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 
 # Logger
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
@@ -101,4 +115,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 

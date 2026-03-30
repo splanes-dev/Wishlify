@@ -22,5 +22,7 @@ android {
 }
 
 dependencies {
-
+  // Libs
+  implementation(libs.koin.android)
+  implementation(libs.timber)
 }

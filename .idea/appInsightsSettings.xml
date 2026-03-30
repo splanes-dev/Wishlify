@@ -36,10 +36,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.splanes.uoc.wishlify" />
+                  <option name="mobileSdkAppId" value="1:820607858547:android:60fefed88986cb49373706" />
+                  <option name="projectId" value="wishlify-87782" />
+                  <option name="projectNumber" value="820607858547" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
