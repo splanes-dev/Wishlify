@@ -9,4 +9,5 @@ sealed class SignUpError(
   class Unknown(cause: Throwable? = null) : SignUpError(cause = cause)
   class UserCollision : SignUpError()
   class WeakPassword : SignUpError()
+  class GoogleSignUpFailed : SignUpError()
 }

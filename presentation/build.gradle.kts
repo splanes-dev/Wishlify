@@ -35,6 +35,10 @@ dependencies {
   implementation(platform(libs.androidx.compose.bom))
   implementation(libs.bundles.lifecycle)
   implementation(libs.bundles.compose)
+  // Social Login
+  implementation(libs.androidx.credentials)
+  implementation(libs.androidx.credentials.playServicesAuth)
+  implementation(libs.google.identity)
   // Koin
   implementation(libs.koin.android)
   implementation(libs.koin.android.compose)

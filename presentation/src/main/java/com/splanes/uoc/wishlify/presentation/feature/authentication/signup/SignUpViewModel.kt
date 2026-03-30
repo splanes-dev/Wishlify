@@ -4,8 +4,9 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.authentication.model.SignUpRequest
+import com.splanes.uoc.wishlify.domain.feature.authentication.usecase.GoogleSignUpUseCase
 import com.splanes.uoc.wishlify.domain.feature.authentication.usecase.SignUpUseCase
-import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.mapper.SignUpErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.mapper.SignUpFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.model.EmailSignUpFormError
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.model.PasswordSignUpFormError
@@ -23,8 +24,9 @@ import kotlinx.coroutines.launch
 
 class SignUpViewModel(
   private val signUpUseCase: SignUpUseCase,
+  private val googleSignUpUseCase: GoogleSignUpUseCase,
   private val signUpFormErrorMapper: SignUpFormErrorMapper,
-  private val errorUiMapper: ErrorUiMapper,
+  private val errorUiMapper: SignUpErrorMapper,
 ) : ViewModel() {
 
   private val viewModelState = MutableStateFlow(ViewModelState())
@@ -65,8 +67,22 @@ class SignUpViewModel(
     }
   }
 
-  fun onSocialSignUp() {
-
+  fun onGoogleSignUp() {
+    viewModelState.update { state -> state.copy(isLoading = true) }
+    viewModelScope.launch {
+      googleSignUpUseCase()
+        .onSuccess {
+          uiSideEffectChannel.send(SignUpUiSideEffect.NavToHome)
+        }
+        .onFailure { error ->
+          viewModelState.update { state ->
+            state.copy(
+              isLoading = false,
+              error = error
+            )
+          }
+        }
+    }
   }
 
   fun onDismissError() {
@@ -118,7 +134,7 @@ class SignUpViewModel(
     val usernameInputError: String? = null,
     val passwordInputError: String? = null,
   ) {
-    fun toUiState(errorUiMapper: ErrorUiMapper) = SignUpUiState.SignUpForm(
+    fun toUiState(errorUiMapper: SignUpErrorMapper) = SignUpUiState.SignUpForm(
       isLoading = isLoading,
       error = error?.let(errorUiMapper::map),
       emailInputError = emailInputError,

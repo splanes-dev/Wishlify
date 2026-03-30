@@ -61,6 +61,7 @@ fun SignUpFormScreen(
   onDismissError: () -> Unit,
   onClearInputError: (input: SignUpForm.Input) -> Unit,
   onSignUp: (form: SignUpForm) -> Unit,
+  onGoogleSignUp: () -> Unit,
   onSignIn: () -> Unit,
 ) {
 
@@ -220,9 +221,7 @@ fun SignUpFormScreen(
       OutlinedButton(
         modifier = Modifier.fillMaxWidth(),
         shapes = ButtonShape,
-        onClick = {
-
-        }
+        onClick = onGoogleSignUp
       ) {
         Image(
           modifier = Modifier.size(24.dp),

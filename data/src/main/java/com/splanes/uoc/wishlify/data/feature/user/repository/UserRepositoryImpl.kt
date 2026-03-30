@@ -9,9 +9,13 @@ class UserRepositoryImpl(
   private val mapper: UserDataMapper
 ) : UserRepository {
 
-  override suspend fun addUser(uid: String, username: String) =
+  override suspend fun addUser(
+    uid: String,
+    username: String,
+    photoUrl: String?
+  ) =
     runCatching {
-      val dto = mapper.map(uid, username)
+      val dto = mapper.map(uid, username, photoUrl)
       remoteDataSource.add(dto)
     }
 }

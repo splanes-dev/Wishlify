@@ -15,7 +15,7 @@ open class ErrorUiMapper(context: Context) {
 
   protected val res: Resources by lazy { context.resources }
 
-  fun map(error: Throwable): ErrorUiModel =
+  open fun map(error: Throwable): ErrorUiModel =
     when (error) {
       is GenericError.NoInternet -> {
         errorOf(

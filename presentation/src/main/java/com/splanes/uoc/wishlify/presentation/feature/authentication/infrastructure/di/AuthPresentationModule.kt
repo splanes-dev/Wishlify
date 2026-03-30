@@ -5,6 +5,7 @@ import com.splanes.uoc.wishlify.presentation.feature.authentication.infrastructu
 import com.splanes.uoc.wishlify.presentation.feature.authentication.infrastructure.navigation.AuthNavGraph
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signin.SignInViewModel
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.SignUpViewModel
+import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.mapper.SignUpErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.mapper.SignUpFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureMainNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.launcher.AuthLauncher
@@ -25,6 +26,7 @@ val AuthPresentationModule = module {
   viewModelOf(::SignInViewModel)
 
   // SignUp
+  factoryOf(::SignUpErrorMapper)
   factoryOf(::SignUpFormErrorMapper)
   viewModelOf(::SignUpViewModel)
 }

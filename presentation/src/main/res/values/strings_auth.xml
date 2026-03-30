@@ -16,5 +16,7 @@
     <string name="input_error_weak_password">
         La contrasenya ha de tenir mínim 8 caràcters, incloent majúscules, minúscules, dígits i símbols.
     </string>
-    <string name="input_error_email_already_used">El correu ja està en ús</string>
+    <string name="error_dialog_signup_weak_password_description">La contrasenya és massa feble. Per la teva seguretat, revisa la contrasenya entrada i configura una de més complexa.</string>
+    <string name="error_dialog_signup_user_collision_description">No s\'ha pogut crear un compte amb aquest correu. Comprova si ja existeix un compte creat anteriorment.</string>
+    <string name="error_dialog_signup_social_description">No ha estat possible crear el compte amb Google. Torna-ho a intentar més endavant, sentim les molèsties.</string>
 </resources>

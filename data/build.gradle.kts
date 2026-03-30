@@ -29,6 +29,10 @@ dependencies {
   implementation(libs.kotlinx.serialization.json)
   // Koin
   implementation(libs.koin.android)
+  // Social Login
+  implementation(libs.androidx.credentials)
+  implementation(libs.androidx.credentials.playServicesAuth)
+  implementation(libs.google.identity)
   // Firebase
   implementation(platform(libs.google.firebase.bom))
   implementation(libs.google.firebase.auth)

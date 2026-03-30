@@ -21,10 +21,14 @@ androidx-core-splashscreen = "1.2.0"
 androidx-appcompat = "1.7.1"
 androidx-lifecycle = "2.10.0"
 androidx-navigation = "2.9.7"
+androidx-credentials = "1.5.0"
 ## Jetpack Compose
 androidx-compose-bom = "2026.03.01"
 androidx-compose-activity = "1.13.0"
 androdix-material3 = "1.5.0-alpha16"
+
+# Google Identity
+google-identity = "1.2.0"
 
 # Firebase
 google-firebase-bom = "34.11.0"
@@ -45,7 +49,6 @@ coroutines-test = "1.10.2"
 # Kotlin
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlin-serialization" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
-
 # Android
 ## Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
@@ -58,6 +61,8 @@ androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "li
 androidx-lifecycle-viewModelSavedState = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidx-lifecycle" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "androidx-navigation" }
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidx-credentials" }
+androidx-credentials-playServicesAuth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidx-credentials" }
 
 ## Jetpack Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
@@ -72,6 +77,9 @@ androidx-compose-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling
 # DI
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-android-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+
+# Google ID
+google-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-identity" }
 
 # Firebase
 google-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "google-firebase-bom" }

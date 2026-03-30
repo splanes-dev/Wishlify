@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import timber.log.Timber
 
 @Composable
 fun SignUpRoute(
@@ -17,7 +18,10 @@ fun SignUpRoute(
   LaunchedEffect(Unit) {
     viewModel.uiSideEffect.collect { effect ->
       when (effect) {
-        SignUpUiSideEffect.NavToHome -> onNavToHome()
+        SignUpUiSideEffect.NavToHome -> {
+          onNavToHome()
+          Timber.tag("DEV_DEBUG").d("User logged in")
+        }
       }
     }
   }
@@ -27,6 +31,7 @@ fun SignUpRoute(
     onDismissError = viewModel::onDismissError,
     onClearInputError = viewModel::onClearInputError,
     onSignUp = viewModel::onSignUp,
+    onGoogleSignUp = viewModel::onGoogleSignUp,
     onSignIn = onNavToSignIn
   )
 }

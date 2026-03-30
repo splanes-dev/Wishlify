@@ -24,4 +24,8 @@ abstract class UseCase {
         throw GenericError.RequestTimeout()
       }
     }
+
+  companion object {
+    protected const val NoTimeout = Long.MAX_VALUE
+  }
 }

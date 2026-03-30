@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.data.feature.authentication.infrastructure.di
 
 import com.splanes.uoc.wishlify.data.feature.authentication.datasource.AuthLocalDataSource
 import com.splanes.uoc.wishlify.data.feature.authentication.datasource.AuthRemoteDataSource
+import com.splanes.uoc.wishlify.data.feature.authentication.datasource.GoogleAuthDataSource
 import com.splanes.uoc.wishlify.data.feature.authentication.mapper.AuthDataMapper
 import com.splanes.uoc.wishlify.data.feature.authentication.repository.AuthenticationRepositoryImpl
 import com.splanes.uoc.wishlify.domain.feature.authentication.repository.AuthenticationRepository
@@ -13,6 +14,7 @@ internal val AuthenticationDataModule = module {
   // DataSource
   singleOf(::AuthRemoteDataSource)
   singleOf(::AuthLocalDataSource)
+  singleOf(::GoogleAuthDataSource)
   // Repository
   singleOf(::AuthenticationRepositoryImpl) bind AuthenticationRepository::class
   // Mappers

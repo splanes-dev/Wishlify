@@ -4,11 +4,11 @@ import com.splanes.uoc.wishlify.data.feature.user.model.UserDto
 
 class UserDataMapper {
 
-  fun map(uid: String, username: String): UserDto =
+  fun map(uid: String, username: String, photoUrl: String?): UserDto =
     UserDto(
       uid = uid,
       username = username,
-      photoUrl = null,
+      photoUrl = photoUrl,
       hobbies = UserDto.HobbiesDto(
         enabled = false,
         values = emptyList()
