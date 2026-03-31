@@ -29,6 +29,9 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
       onClick = {
         navController.navigate(SecretSanta) {
           launchSingleTop = true
+          popUpTo(navController.graph.id) {
+            inclusive = true
+          }
         }
       },
       icon = {

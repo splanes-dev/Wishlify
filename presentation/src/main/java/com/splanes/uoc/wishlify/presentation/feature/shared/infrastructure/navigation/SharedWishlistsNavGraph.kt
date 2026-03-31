@@ -29,6 +29,9 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
       onClick = {
         navController.navigate(SharedWishlists) {
           launchSingleTop = true
+          popUpTo(navController.graph.id) {
+            inclusive = true
+          }
         }
       },
       icon = {

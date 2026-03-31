@@ -30,6 +30,9 @@ class ProfileNavGraph : FeatureHomeNavGraph {
       onClick = {
         navController.navigate(Profile) {
           launchSingleTop = true
+          popUpTo(navController.graph.id) {
+            inclusive = true
+          }
         }
       },
       icon = {

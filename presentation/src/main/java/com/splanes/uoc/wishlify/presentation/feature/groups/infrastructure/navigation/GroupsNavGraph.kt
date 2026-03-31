@@ -30,6 +30,9 @@ class GroupsNavGraph : FeatureHomeNavGraph {
       onClick = {
         navController.navigate(Groups) {
           launchSingleTop = true
+          popUpTo(navController.graph.id) {
+            inclusive = true
+          }
         }
       },
       icon = {
