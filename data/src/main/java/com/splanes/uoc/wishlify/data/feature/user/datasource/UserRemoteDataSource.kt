@@ -14,6 +14,21 @@ class UserRemoteDataSource(
 
   private val users by lazy { db.users }
 
+  suspend fun existsById(uid: String): Boolean {
+    try {
+      val snapshot = users
+        .document(uid)
+        .get()
+        .await()
+      return snapshot.exists()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
   suspend fun add(user: UserDto) {
     try {
       users
@@ -24,6 +39,7 @@ class UserRemoteDataSource(
       throw GenericError.NoInternet()
     } catch (e: Throwable) {
       Timber.e(e)
+      throw GenericError.Unknown(cause = e)
     }
   }
 }

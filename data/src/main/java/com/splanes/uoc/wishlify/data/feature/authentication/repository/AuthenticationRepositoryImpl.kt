@@ -20,9 +20,9 @@ class AuthenticationRepositoryImpl(
       remoteDataSource.signUp(email, password)
     }
 
-  override suspend fun signUp(token: String): Result<String> =
+  override suspend fun signIn(token: String): Result<String> =
     runCatching {
-      remoteDataSource.signUp(token)
+      remoteDataSource.signIn(token)
     }
 
   override suspend fun googleSignUp(): Result<SocialCredentials> =

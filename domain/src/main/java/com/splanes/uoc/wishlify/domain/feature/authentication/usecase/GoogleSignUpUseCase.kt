@@ -13,7 +13,7 @@ class GoogleSignUpUseCase(
     val socialCredentials = authRepository.googleSignUp()
     socialCredentials
       .mapCatching { credentials ->
-        val uid = authRepository.signUp(credentials.token).getOrThrow()
+        val uid = authRepository.signIn(credentials.token).getOrThrow()
         userRepository.addUser(uid, credentials.username, credentials.photoUrl)
       }
   }

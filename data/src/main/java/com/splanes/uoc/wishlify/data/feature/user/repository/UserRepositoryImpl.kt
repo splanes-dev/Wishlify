@@ -9,6 +9,11 @@ class UserRepositoryImpl(
   private val mapper: UserDataMapper
 ) : UserRepository {
 
+  override suspend fun existsUser(uid: String): Result<Boolean> =
+    runCatching {
+      remoteDataSource.existsById(uid)
+    }
+
   override suspend fun addUser(
     uid: String,
     username: String,

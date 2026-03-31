@@ -38,7 +38,7 @@ class AuthRemoteDataSource(
     }
   }
 
-  suspend fun signUp(token: String): String {
+  suspend fun signIn(token: String): String {
     try {
       val credential = GoogleAuthProvider.getCredential(token, null)
       val uid = firebaseAuth
@@ -49,8 +49,6 @@ class AuthRemoteDataSource(
       return uid ?: throw SignUpError.Unknown()
     } catch (_: FirebaseAuthUserCollisionException) {
       throw SignUpError.UserCollision()
-    } catch (_: FirebaseAuthWeakPasswordException) {
-      throw SignUpError.WeakPassword()
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
     } catch (e: Throwable) {
