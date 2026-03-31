@@ -12,8 +12,6 @@ class SignUpFormErrorMapper(private val context: Context) {
   fun map(error: SignUpFormError): String {
     val resources = context.resources
     return when (error) {
-      EmailSignUpFormError.AlreadyExists ->
-        TODO()
       EmailSignUpFormError.Invalid ->
         resources.getString(R.string.input_error_invalid_format)
       PasswordSignUpFormError.Blank ->

@@ -1,0 +1,56 @@
+package com.splanes.uoc.wishlify.presentation.feature.profile.infrastructure.navigation
+
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
+
+class ProfileNavGraph : FeatureHomeNavGraph {
+
+  override val position: Int = 4
+
+  override fun isNavigationBarVisible(selected: String): Boolean =
+    selected == Profile.Main::class.qualifiedName
+
+  @Composable
+  override fun RowScope.NavigationBarItem(selected: String, navController: NavHostController) {
+    NavigationBarItem(
+      selected = selected == Profile.Main::class.qualifiedName,
+      onClick = {
+        navController.navigate(Profile) {
+          launchSingleTop = true
+        }
+      },
+      icon = {
+        Icon(
+          imageVector = Icons.Outlined.Person,
+          contentDescription = stringResource(R.string.tab_profile),
+        )
+      },
+      label = { Text(text = stringResource(R.string.tab_profile)) },
+      alwaysShowLabel = false,
+    )
+  }
+
+  override fun NavGraphBuilder.buildNavGraph(
+    navController: NavHostController,
+    onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
+  ) {
+    navigation<Profile>(startDestination = Profile.Main) {
+      composable<Profile.Main> {
+
+      }
+    }
+  }
+}

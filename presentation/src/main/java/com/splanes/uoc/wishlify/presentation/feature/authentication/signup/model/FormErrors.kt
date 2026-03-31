@@ -4,7 +4,6 @@ sealed interface SignUpFormError
 
 sealed interface EmailSignUpFormError : SignUpFormError {
   data object Invalid : EmailSignUpFormError
-  data object AlreadyExists : EmailSignUpFormError
 }
 
 sealed interface UsernameSignUpFormError : SignUpFormError {

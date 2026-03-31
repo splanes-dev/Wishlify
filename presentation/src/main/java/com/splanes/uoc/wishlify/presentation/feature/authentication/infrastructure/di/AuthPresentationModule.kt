@@ -4,6 +4,8 @@ import androidx.navigation.NavHostController
 import com.splanes.uoc.wishlify.presentation.feature.authentication.infrastructure.navigation.AuthLauncherImpl
 import com.splanes.uoc.wishlify.presentation.feature.authentication.infrastructure.navigation.AuthNavGraph
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signin.SignInViewModel
+import com.splanes.uoc.wishlify.presentation.feature.authentication.signin.mapper.SignInErrorMapper
+import com.splanes.uoc.wishlify.presentation.feature.authentication.signin.mapper.SignInFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.SignUpViewModel
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.mapper.SignUpErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.mapper.SignUpFormErrorMapper
@@ -23,6 +25,8 @@ val AuthPresentationModule = module {
   single { AuthNavGraph() } bind FeatureMainNavGraph::class
 
   // SignIn
+  factoryOf(::SignInErrorMapper)
+  factoryOf(::SignInFormErrorMapper)
   viewModelOf(::SignInViewModel)
 
   // SignUp

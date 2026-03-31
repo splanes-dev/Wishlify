@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import timber.log.Timber
 
 @Composable
 fun SignUpRoute(
@@ -20,7 +19,6 @@ fun SignUpRoute(
       when (effect) {
         SignUpUiSideEffect.NavToHome -> {
           onNavToHome()
-          Timber.tag("DEV_DEBUG").d("User logged in")
         }
       }
     }

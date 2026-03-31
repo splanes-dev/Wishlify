@@ -8,20 +8,21 @@ import com.splanes.uoc.wishlify.presentation.feature.authentication.signin.SignI
 import com.splanes.uoc.wishlify.presentation.feature.authentication.signup.SignUpRoute
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureMainNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.launcher.HomeLauncher
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 class AuthNavGraph : FeatureMainNavGraph {
 
   override fun NavGraphBuilder.buildNavGraph(navController: NavHostController) {
-    navigation<Auth>(
-      startDestination = SignIn
-    ) {
+    navigation<Auth>(startDestination = SignIn) {
       composable<SignIn> {
+        val homeLauncher = koinInject<HomeLauncher> { parametersOf(navController) }
         SignInRoute(
           viewModel = koinViewModel(),
-          onNavToSignUp = {
-            navController.navigate(route = SignUp)
-          }
+          onNavToSignUp = { navController.navigate(route = SignUp) },
+          onNavToHome = { homeLauncher.launch(popUpTo = SignIn) }
         )
       }
 
@@ -29,10 +30,11 @@ class AuthNavGraph : FeatureMainNavGraph {
         enterTransition = Transitions.SlideInHorizontal.enter,
         exitTransition = Transitions.SlideInHorizontal.exit
       ) {
+        val homeLauncher = koinInject<HomeLauncher> { parametersOf(navController) }
         SignUpRoute(
           viewModel = koinViewModel(),
           onNavToSignIn = { navController.popBackStack() },
-          onNavToHome = { /* TODO */ }
+          onNavToHome = { homeLauncher.launch(popUpTo = SignIn) }
         )
       }
     }

@@ -4,12 +4,17 @@
     <string name="input_error_mandatory">Camp obligatori</string>
     <string name="input_error_length">Longitud mínima de %d i màxima de %d</string>
     <string name="input_error_invalid_format">El format no és vàlid</string>
-    <string name = "error_dialog_title_oops">Oops!</string>
-    <string name = "error_dialog_title_warning">Atenció!</string>
-    <string name = "error_dialog_title_tick_tack">Tick Tack</string>
-    <string name = "error_dialog_description_no_internet">Sembla que no tens connexió a internet o que aquesta no és estable. Si us plau, comprova la xarxa WiFi o la connectivitat mòbil i torna-ho a intentar</string>
-    <string name = "error_dialog_description_timeout">L\'operació està tardant més del que hauria… Si us plau, intenta-ho més tard i si el problema persisteix posat en contacte amb l\'administrador.</string>
-    <string name = "error_dialog_description_internal_server_error">Sembla que hi ha problemes amb els nostres servidors… Els tècnics estan treballant en la incidència i esperem que de seguida estigui resolta.</string>
-    <string name = "error_dialog_description_generic">Alguna cosa no ha sortit bé… Sentim les molèsties, torna-ho a intentar i si el problema persisteix posat en contacte amb l\'administrador.</string>
-    <string name = "error_dialog_dismiss_button_default">D\'acord</string>
+    <string name="error_dialog_title_oops">Oops!</string>
+    <string name="error_dialog_title_warning">Atenció!</string>
+    <string name="error_dialog_title_tick_tack">Tick Tack</string>
+    <string name="error_dialog_description_no_internet">Sembla que no tens connexió a internet o que aquesta no és estable. Si us plau, comprova la xarxa WiFi o la connectivitat mòbil i torna-ho a intentar</string>
+    <string name="error_dialog_description_timeout">L\'operació està tardant més del que hauria… Si us plau, intenta-ho més tard i si el problema persisteix posat en contacte amb l\'administrador.</string>
+    <string name="error_dialog_description_internal_server_error">Sembla que hi ha problemes amb els nostres servidors… Els tècnics estan treballant en la incidència i esperem que de seguida estigui resolta.</string>
+    <string name="error_dialog_description_generic">Alguna cosa no ha sortit bé… Sentim les molèsties, torna-ho a intentar i si el problema persisteix posat en contacte amb l\'administrador.</string>
+    <string name="error_dialog_dismiss_button_default">D\'acord</string>
+    <string name="tab_wishlists">Wishlists</string>
+    <string name="tab_wishlists_shared">Compartides</string>
+    <string name="tab_secret_santa">Amic Inv.</string>
+    <string name="tab_groups">Grups</string>
+    <string name="tab_profile">Perfil</string>
 </resources>

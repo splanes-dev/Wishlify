@@ -4,9 +4,9 @@ import com.splanes.uoc.wishlify.data.feature.authentication.datasource.AuthLocal
 import com.splanes.uoc.wishlify.data.feature.authentication.datasource.AuthRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.authentication.datasource.GoogleAuthDataSource
 import com.splanes.uoc.wishlify.data.feature.authentication.mapper.AuthDataMapper
+import com.splanes.uoc.wishlify.domain.feature.authentication.model.LocalCredentials
 import com.splanes.uoc.wishlify.domain.feature.authentication.model.SocialCredentials
 import com.splanes.uoc.wishlify.domain.feature.authentication.repository.AuthenticationRepository
-import timber.log.Timber
 
 class AuthenticationRepositoryImpl(
   private val remoteDataSource: AuthRemoteDataSource,
@@ -29,11 +29,30 @@ class AuthenticationRepositoryImpl(
     runCatching {
       googleDataSource.getSignUpCredentials()
     }.map(mapper::mapSocialCredentials)
-      .onFailure { e -> Timber.e(e) }
 
+  override suspend fun googleSignIn(): Result<SocialCredentials> =
+    runCatching {
+      googleDataSource.getSignInCredentials()
+    }.map(mapper::mapSocialCredentials)
+
+  override suspend fun signIn(email: String, password: String): Result<Unit> =
+    runCatching {
+      remoteDataSource.signIn(email, password)
+    }
+
+  override suspend fun isSignedIn(): Boolean =
+    remoteDataSource.isLogged()
 
   override suspend fun storeCredentials(email: String, password: String) {
     val credentials = mapper.storedCredentialsOf(email, password)
     localDataSource.storeCredentials(credentials)
+  }
+
+  override suspend fun fetchStoredCredentials(): LocalCredentials? =
+    localDataSource.fetchStoredCredentials()
+      ?.let(mapper::mapLocalCredentials)
+
+  override suspend fun cleanStoredCredentials() {
+    localDataSource.cleanStoredCredentials()
   }
 }

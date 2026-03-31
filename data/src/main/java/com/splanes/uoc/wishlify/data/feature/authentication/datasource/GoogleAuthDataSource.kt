@@ -5,11 +5,13 @@ import android.util.Base64
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.NoCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.splanes.uoc.wishlify.data.R
 import com.splanes.uoc.wishlify.data.feature.authentication.model.GoogleCredentials
 import com.splanes.uoc.wishlify.domain.feature.authentication.error.SignUpError
+import timber.log.Timber
 import java.security.SecureRandom
 
 class GoogleAuthDataSource(private val context: Context) {
@@ -18,6 +20,15 @@ class GoogleAuthDataSource(private val context: Context) {
 
   suspend fun getSignUpCredentials(): GoogleCredentials {
     return getCredentials(filterByAuthorizedAccounts = false)
+  }
+
+  suspend fun getSignInCredentials(): GoogleCredentials {
+    return try {
+      getCredentials(filterByAuthorizedAccounts = true)
+    } catch (e: NoCredentialException) {
+      Timber.e(e)
+      getCredentials(filterByAuthorizedAccounts = false)
+    }
   }
 
   private suspend fun getCredentials(filterByAuthorizedAccounts: Boolean): GoogleCredentials {

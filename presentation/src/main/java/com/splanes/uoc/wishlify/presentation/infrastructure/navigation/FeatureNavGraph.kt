@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 
 sealed interface FeatureNavGraph
 
@@ -17,7 +18,10 @@ interface FeatureHomeNavGraph : FeatureNavGraph {
 
   fun isNavigationBarVisible(selected: String): Boolean
 
-  fun NavGraphBuilder.buildNavGraph(navController: NavHostController)
+  fun NavGraphBuilder.buildNavGraph(
+    navController: NavHostController,
+    onLogout: (NavOptionsBuilder.() -> Unit) -> Unit
+  )
 
   @Composable
   fun RowScope.NavigationBarItem(selected: String, navController: NavHostController)
