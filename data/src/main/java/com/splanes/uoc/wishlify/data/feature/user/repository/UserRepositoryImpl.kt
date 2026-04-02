@@ -20,7 +20,7 @@ class UserRepositoryImpl(
     photoUrl: String?
   ) =
     runCatching {
-      val dto = mapper.map(uid, username, photoUrl)
-      remoteDataSource.add(dto)
+      val entity = mapper.map(uid, username, photoUrl)
+      remoteDataSource.add(entity)
     }
 }

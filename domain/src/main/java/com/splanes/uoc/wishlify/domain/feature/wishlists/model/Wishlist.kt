@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.domain.feature.wishlists.model
 
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
+import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import java.util.Date
 
 sealed class Wishlist(
@@ -9,10 +10,10 @@ sealed class Wishlist(
   open val title: String,
   open val description: String,
   open val photo: ImageMedia,
-  open val category: Category,
+  open val category: WishlistCategory?,
   open val editorInviteLink: InviteLink,
-  open val editors: List<Any>, // TODO: Basic info: uid & username?
-  open val createdBy: Any, // TODO: Same than above
+  open val editors: List<User.Basic>,
+  open val createdBy: User.Basic,
   open val createdAt: Date,
   open val lastUpdate: UpdateMetadata
 ) {
@@ -22,10 +23,10 @@ sealed class Wishlist(
     override val title: String,
     override val description: String,
     override val photo: ImageMedia,
-    override val category: Category,
+    override val category: WishlistCategory?,
     override val editorInviteLink: InviteLink,
-    override val editors: List<Any>,
-    override val createdBy: Any,
+    override val editors: List<User.Basic>,
+    override val createdBy: User.Basic,
     override val createdAt: Date,
     override val lastUpdate: UpdateMetadata,
   ) : Wishlist(
@@ -46,10 +47,10 @@ sealed class Wishlist(
     override val title: String,
     override val description: String,
     override val photo: ImageMedia,
-    override val category: Category,
+    override val category: WishlistCategory?,
     override val editorInviteLink: InviteLink,
-    override val editors: List<Any>,
-    override val createdBy: Any,
+    override val editors: List<User.Basic>,
+    override val createdBy: User.Basic,
     override val createdAt: Date,
     override val lastUpdate: UpdateMetadata,
     val target: String,
@@ -66,8 +67,14 @@ sealed class Wishlist(
     lastUpdate = lastUpdate,
   )
 
+  data class WishlistCategory(
+    val category: Category,
+    val owner: String,
+    val isOwn: Boolean,
+  )
+
   data class UpdateMetadata(
-    val updatedBy: Any, // TODO: Same
+    val updatedBy: User.Basic,
     val updatedAt: Date
   )
 }

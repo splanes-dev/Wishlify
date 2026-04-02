@@ -1,8 +1,9 @@
 package com.splanes.uoc.wishlify.data.feature.user.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.users
-import com.splanes.uoc.wishlify.data.feature.user.model.UserDto
+import com.splanes.uoc.wishlify.data.feature.user.model.UserEntity
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -29,7 +30,22 @@ class UserRemoteDataSource(
     }
   }
 
-  suspend fun add(user: UserDto) {
+  suspend fun fetchUserById(uid: String): UserEntity? {
+    try {
+      val snapshot = users
+        .document(uid)
+        .get()
+        .await()
+      return snapshot.toObject<UserEntity>()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
+  suspend fun add(user: UserEntity) {
     try {
       users
         .document(user.uid)

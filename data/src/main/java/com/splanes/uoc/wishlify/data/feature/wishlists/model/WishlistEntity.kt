@@ -30,8 +30,8 @@ data class WishlistEntity(
 
   @Serializable
   data class Category(
-    @SerialName("owner") val uid: String = "",
-    @SerialName("id") val categoryId: String = "",
+    @SerialName("owner") val owner: String = "",
+    @SerialName("id") val id: String = "",
   )
 
   @Serializable

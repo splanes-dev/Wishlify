@@ -21,6 +21,12 @@ class ImageMediaDataMapper {
         )
     }
 
+  fun map(entity: ImageMediaEntity): ImageMedia =
+    when (entity.type) {
+      ImageMediaEntity.Type.Url -> ImageMedia.Url(url = entity.value)
+      ImageMediaEntity.Type.Preset -> ImageMedia.Preset(id = entity.value)
+    }
+
   fun pathOf(path: ImageMediaPath): String =
     when (path) {
       is ImageMediaPath.WishlistCover -> {

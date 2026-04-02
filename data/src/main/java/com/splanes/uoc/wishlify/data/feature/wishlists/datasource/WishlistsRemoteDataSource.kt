@@ -1,6 +1,7 @@
 package com.splanes.uoc.wishlify.data.feature.wishlists.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.users
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlistCategories
@@ -18,6 +19,21 @@ class WishlistsRemoteDataSource(
 ) {
 
   private val wishlists by lazy { db.wishlists }
+
+  suspend fun fetchWishlists(uid: String): List<WishlistEntity> =
+    try {
+      wishlists
+        .whereArrayContains("editors", uid)
+        .whereEqualTo("shareStatus", WishlistEntity.ShareStatus.Private.name)
+        .get()
+        .await()
+        .readAll()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
 
   suspend fun upsertWishlist(entity: WishlistEntity) {
     try {
@@ -39,6 +55,20 @@ class WishlistsRemoteDataSource(
         .get()
         .await()
         .readAll<CategoryEntity>()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+
+  suspend fun fetchCategoryById(uid: String, id: String) =
+    try {
+      categoriesOf(uid)
+        .document(id)
+        .get()
+        .await()
+        .toObject<CategoryEntity>()
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
     } catch (e: Throwable) {

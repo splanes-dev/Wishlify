@@ -2,6 +2,9 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistType
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsTab
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,13 +18,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WishlistsListViewModel(
+  private val fetchWishlistsUseCase: FetchWishlistsUseCase,
   private val errorUiMapper: ErrorUiMapper
 ) : ViewModel() {
 
   private val viewModelState = MutableStateFlow(ViewModelState())
 
   val uiState = viewModelState.asStateFlow()
-    .onStart {  }
+    .onStart { fetchWishlists(tab = WishlistsTab.Own) }
     .map { state -> state.toUiState(errorUiMapper) }
     .stateIn(
       initialValue = viewModelState.value.toUiState(errorUiMapper),
@@ -41,23 +45,49 @@ class WishlistsListViewModel(
       }
     }
     if (currentState.tabSelected != tab) {
-      viewModelScope.launch {
-        // TODO: fetch wishlists & update
-      }
+      fetchWishlists(tab)
     }
   }
 
   fun onNewWishlistResult(created: Boolean) {
-
+    if (created) {
+      fetchWishlists(tab = viewModelState.value.tabSelected)
+    }
   }
 
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  private fun fetchWishlists(tab: WishlistsTab) {
+    viewModelScope.launch {
+      val type = when (tab) {
+        WishlistsTab.Own -> WishlistType.Own
+        WishlistsTab.ThirdParty -> WishlistType.ThirdParty
+      }
+      fetchWishlistsUseCase(type = type)
+        .onSuccess { wishlists ->
+          viewModelState.update { state ->
+            state.copy(
+              isLoading = false,
+              wishlists = wishlists,
+            )
+          }
+        }
+        .onFailure { error ->
+          viewModelState.update { state ->
+            state.copy(
+              isLoading = false,
+              error = error,
+            )
+          }
+        }
+    }
+  }
+
   private data class ViewModelState(
     val tabSelected: WishlistsTab = WishlistsTab.Own,
-    val wishlists: List<Any> = emptyList(),
+    val wishlists: List<Wishlist> = emptyList(),
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
@@ -79,5 +109,5 @@ class WishlistsListViewModel(
             error = error?.let(errorUiMapper::map)
           )
       }
-    }
+  }
 }
