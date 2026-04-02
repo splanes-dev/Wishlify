@@ -4,7 +4,9 @@ import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButtonShapes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
 
@@ -24,9 +26,22 @@ val IconButtonShape: IconButtonShapes
     pressedShape = WishlifyTheme.shapes.small
   )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+val ToggleButtonShape: ToggleButtonShapes
+  @Composable
+  get() = ToggleButtonShapes(
+    shape = WishlifyTheme.shapes.medium,
+    pressedShape = WishlifyTheme.shapes.largeIncreased,
+    checkedShape = WishlifyTheme.shapes.large
+  )
+
 @Composable
-fun ButtonText(text: String) {
+fun ButtonText(
+  text: String,
+  modifier: Modifier = Modifier
+) {
   Text(
+    modifier = modifier,
     text = text,
     style = WishlifyTheme.typography.titleMedium,
   )

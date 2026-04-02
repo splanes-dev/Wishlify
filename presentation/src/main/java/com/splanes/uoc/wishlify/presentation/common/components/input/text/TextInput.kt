@@ -25,7 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
@@ -37,6 +39,42 @@ fun TextInput(
   modifier: Modifier = Modifier,
   label: String = "",
   cleanable: Boolean = true,
+  readOnly: Boolean = false,
+  trailingIcon: (@Composable () -> Unit)? = null,
+  enabled: Boolean = true,
+  visualTransformation: VisualTransformation = VisualTransformation.None,
+  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+  keyboardActions: KeyboardActions = KeyboardActions.Default,
+  singleLine: Boolean = false,
+  maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+  minLines: Int = 1,
+) {
+  TextInput(
+    state = state,
+    leadingIcon = rememberVectorPainter(leadingIcon),
+    modifier = modifier,
+    label = label,
+    cleanable = cleanable,
+    readOnly = readOnly,
+    trailingIcon = trailingIcon,
+    enabled = enabled,
+    visualTransformation = visualTransformation,
+    keyboardOptions = keyboardOptions,
+    keyboardActions = keyboardActions,
+    singleLine = singleLine,
+    maxLines = maxLines,
+    minLines = minLines,
+  )
+}
+
+@Composable
+fun TextInput(
+  state: TextInputState,
+  leadingIcon: Painter,
+  modifier: Modifier = Modifier,
+  label: String = "",
+  cleanable: Boolean = true,
+  readOnly: Boolean = false,
   trailingIcon: (@Composable () -> Unit)? = null,
   enabled: Boolean = true,
   visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -57,7 +95,7 @@ fun TextInput(
     label = { Text(text = label) },
     leadingIcon = {
       Icon(
-        imageVector = leadingIcon,
+        painter = leadingIcon,
         contentDescription = label,
         tint = when {
           state.isError -> WishlifyTheme.colorScheme.error
@@ -68,25 +106,28 @@ fun TextInput(
     },
     trailingIcon = when {
       trailingIcon != null -> trailingIcon
-      cleanable -> { {
-        AnimatedVisibility(
-          visible = state.text.isNotBlank(),
-          enter = fadeIn(),
-          exit = fadeOut()
-        ) {
-          IconButton(onClick = state::onClear) {
-            Icon(
-              imageVector = Icons.Rounded.Close,
-              contentDescription = "Clear",
-              tint = when {
-                state.isError -> WishlifyTheme.colorScheme.error
-                isFocused -> WishlifyTheme.colorScheme.primary
-                else -> WishlifyTheme.colorScheme.onSurface
-              }.copy(alpha = .5f),
-            )
+      cleanable -> {
+        {
+          AnimatedVisibility(
+            visible = state.text.isNotBlank(),
+            enter = fadeIn(),
+            exit = fadeOut()
+          ) {
+            IconButton(onClick = state::onClear) {
+              Icon(
+                imageVector = Icons.Rounded.Close,
+                contentDescription = "Clear",
+                tint = when {
+                  state.isError -> WishlifyTheme.colorScheme.error
+                  isFocused -> WishlifyTheme.colorScheme.primary
+                  else -> WishlifyTheme.colorScheme.onSurface
+                }.copy(alpha = .5f),
+              )
+            }
           }
         }
-      } }
+      }
+
       else -> null
     },
     supportingText = state.support
@@ -103,6 +144,7 @@ fun TextInput(
           )
         }
       },
+    readOnly = readOnly,
     enabled = enabled,
     isError = state.isError,
     visualTransformation = visualTransformation,

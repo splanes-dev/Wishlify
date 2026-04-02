@@ -1,6 +1,7 @@
 package com.splanes.uoc.wishlify.presentation.common.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,13 @@ fun Loader(
   text: String? = null
 ) {
   Box(
-    modifier = modifier.background(containerColor),
+    modifier = modifier
+      .background(containerColor)
+      .clickable(
+        interactionSource = null,
+        indication = null,
+        onClick = { /* Nothing, just to block screen clicks */ }
+      ),
     contentAlignment = Alignment.Center
   ) {
     Column(

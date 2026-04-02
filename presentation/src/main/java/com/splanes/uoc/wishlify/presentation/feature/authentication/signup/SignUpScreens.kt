@@ -215,7 +215,7 @@ fun SignUpFormScreen(
         modifier = Modifier
           .fillMaxWidth()
           .padding(vertical = 16.dp),
-        text = "o"
+        text = stringResource(R.string.or)
       )
 
       OutlinedButton(

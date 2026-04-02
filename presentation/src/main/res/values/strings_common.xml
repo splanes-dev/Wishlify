@@ -5,6 +5,8 @@
     <string name="input_error_length">Longitud mínima de %d i màxima de %d</string>
     <string name="input_error_invalid_format">El format no és vàlid</string>
     <string name="error_dialog_title_oops">Oops!</string>
+    <string name="error_dialog_title_no_session">Sessió tancada</string>
+    <string name="error_dialog_description_no_session">La teva sessió s\'ha tancat. Cal tornar a iniciar sessió per poder continuar.</string>
     <string name="error_dialog_title_warning">Atenció!</string>
     <string name="error_dialog_title_tick_tack">Tick Tack</string>
     <string name="error_dialog_description_no_internet">Sembla que no tens connexió a internet o que aquesta no és estable. Si us plau, comprova la xarxa WiFi o la connectivitat mòbil i torna-ho a intentar</string>
@@ -17,4 +19,18 @@
     <string name="tab_secret_santa">Amic Inv.</string>
     <string name="tab_groups">Grups</string>
     <string name="tab_profile">Perfil</string>
+    <string name="settings">Configuració</string>
+    <string name="cancel">Cancel·lar</string>
+    <string name="or">o</string>
+    <string name="pick_image">Selecciona una imatge</string>
+    <string name="pick_image_source">Des d\'on vols seleccionar la imatge:</string>
+    <string name="pick_image_source_device">Imatges del dispositiu</string>
+    <string name="pick_image_source_preset">Imatges predefinides</string>
+    <string name="pick_image_source_link">Enllaç</string>
+    <string name="pick_image_source_load_link">Carregar</string>
+    <string name="pick_image_preset_title">Imatges predefinides:</string>
+    <string name="pick_image_delete">Esborrar imatge</string>
+    <string name="create">Crear</string>
+    <string name="optional">Opcional</string>
+    <string name="feedback_clipboard_copied">Copiat al porta-retalls</string>
 </resources>

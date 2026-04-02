@@ -30,6 +30,8 @@ dependencies {
   implementation(projects.domain)
 
   // Libs
+  // Kotlin
+  implementation(libs.kotlinx.serialization.json)
   // Android
   implementation(libs.androidx.core.ktx)
   implementation(platform(libs.androidx.compose.bom))
@@ -42,6 +44,8 @@ dependencies {
   // Koin
   implementation(libs.koin.android)
   implementation(libs.koin.android.compose)
+  // Coil
+  implementation(libs.androidx.compose.coil)
   // Logger
   implementation(libs.timber)
 }

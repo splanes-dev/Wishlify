@@ -12,8 +12,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListRoute
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListRoute
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.navigateWithResult
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackStackWithResult
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class WishlistsNavGraph : FeatureHomeNavGraph {
 
@@ -51,7 +60,27 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
   ) {
     navigation<Wishlists>(startDestination = Wishlists.List) {
       composable<Wishlists.List> {
+        val viewModel = koinViewModel<WishlistsListViewModel>()
+        WishlistsListRoute(
+          viewModel = viewModel,
+          onNavToCreateWishlist = { isOwn ->
+            navController.navigateWithResult(
+              route = Wishlists.NewList(isOwn),
+              navResultCallback = viewModel::onNewWishlistResult
+            )
+          }
+        )
+      }
 
+      composable<Wishlists.NewList>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) { backStackEntry ->
+        val route = backStackEntry.toRoute<Wishlists.NewList>()
+        WishlistsNewListRoute(
+          viewModel = koinViewModel { parametersOf(route.isOwn) },
+          onFinish = navController::popBackStackWithResult
+        )
       }
     }
   }

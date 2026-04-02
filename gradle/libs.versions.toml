@@ -33,6 +33,9 @@ google-identity = "1.2.0"
 # Firebase
 google-firebase-bom = "34.11.0"
 
+# Coil
+coil = "2.7.0"
+
 # Logger
 timber = "5.0.1"
 
@@ -73,6 +76,7 @@ androidx-compose-uiToolingPreview = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androdix-material3" }
 androidx-compose-materialIconsExtended = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.7.8" }
 androidx-compose-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 # DI
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
@@ -86,6 +90,7 @@ google-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", ve
 google-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 google-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 google-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+google-firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 
 # Logger
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }

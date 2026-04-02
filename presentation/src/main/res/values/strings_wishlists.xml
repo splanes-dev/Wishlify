@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wishlists">Wishlists</string>
+    <string name="wishlists_wishlist">Wishlist</string>
+    <string name="wishlists_category">Categoria</string>
+    <string name="wishlists_list_empty_state_title">Oooh…</string>
+    <string name="wishlists_list_own_empty_state_description">Encara no tens cap llista disponible.\nNo dubtis més i comença a gestionar els teus desitjos.</string>
+    <string name="wishlists_list_others_empty_state_description">No tens llistes creades pels demés.\nNo esperis a l\'últim moment i comença a guardar desitjos pels teus amics i familiars.</string>
+    <string name="wishlists_list_tab_own">Meves</string>
+    <string name="wishlists_list_tab_others">Pels demés</string>
+    <string name="wishlists_new_list_title">Crear nova wishlist</string>
+    <string name="wishlists_new_list_name_input">Nom wishlist</string>
+    <string name="wishlists_new_list_third_party_input">Destinatari</string>
+    <string name="wishlists_new_list_description_input">Descripció</string>
+    <string name="wishlists_new_list_description_input_support">Opcional. Màx. 200 caràcters</string>
+    <string name="wishlists_new_category">Nova categoria</string>
+    <string name="wishlists_create_category">Crear categoria</string>
+    <string name="wishlists_create_category_color_description">Escull un color per la categoria</string>
+    <string name="wishlists_create_category_already_exists_error">Ja existeix una categoria amb aquest nom.</string>
+    <string name="wishlists_new_list_is_own_list_input">La wishlist és per a tu?</string>
+    <string name="wishlists_new_list_editors_description">Hi ha més editors?\nComparteix el següent enllaç per afegir-los:</string>
+    <string name="wishlists_new_list_editors_link_input">Enllaç editors</string>
+</resources>
