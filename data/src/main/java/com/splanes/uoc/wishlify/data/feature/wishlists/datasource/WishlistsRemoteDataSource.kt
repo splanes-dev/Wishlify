@@ -1,15 +1,19 @@
 package com.splanes.uoc.wishlify.data.feature.wishlists.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.users
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlistCategories
+import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlistItems
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlists
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.withBatch
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.CategoryEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
+import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistItemEntity
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistType
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.net.UnknownHostException
@@ -20,14 +24,69 @@ class WishlistsRemoteDataSource(
 
   private val wishlists by lazy { db.wishlists }
 
-  suspend fun fetchWishlists(uid: String): List<WishlistEntity> =
+  suspend fun fetchWishlists(uid: String, type: WishlistType): List<WishlistEntity> =
     try {
       wishlists
         .whereArrayContains("editors", uid)
         .whereEqualTo("shareStatus", WishlistEntity.ShareStatus.Private.name)
+        .applySearchFilter(type)
         .get()
         .await()
         .readAll()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+
+  suspend fun fetchWishlist(id: String): WishlistEntity =
+    try {
+      wishlists
+        .document(id)
+        .get()
+        .await()
+        .toObject<WishlistEntity>() ?: throw GenericError.Unknown()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+
+  suspend fun fetchWishlistItemsCount(id: String): Int =
+    try {
+      wishlistItemsOf(id)
+        .get()
+        .await()
+        .count()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+
+  suspend fun fetchWishlistItems(id: String): List<WishlistItemEntity> =
+    try {
+      wishlistItemsOf(id)
+        .get()
+        .await()
+        .readAll()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+
+  suspend fun fetchWishlistItem(wishlistId: String, itemId: String): WishlistItemEntity =
+    try {
+      wishlistItemsOf(wishlistId)
+        .document(itemId)
+        .get()
+        .await()
+        .toObject() ?: throw GenericError.Unknown()
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
     } catch (e: Throwable) {
@@ -40,6 +99,34 @@ class WishlistsRemoteDataSource(
       wishlists
         .document(entity.id)
         .set(entity)
+        .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
+  suspend fun upsertWishlistItem(wishlistId: String, entity: WishlistItemEntity) {
+    try {
+      wishlistItemsOf(wishlistId)
+        .document(entity.id)
+        .set(entity)
+        .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
+  suspend fun removeWishlistItem(wishlistId: String, itemId: String) {
+    try {
+      wishlistItemsOf(wishlistId)
+        .document(itemId)
+        .delete()
         .await()
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
@@ -119,4 +206,16 @@ class WishlistsRemoteDataSource(
 
   private fun categoriesOf(uid: String) =
     db.users.document(uid).wishlistCategories
+
+  private fun wishlistItemsOf(id: String) =
+    db.wishlists.document(id).wishlistItems
+
+  private fun Query.applySearchFilter(type: WishlistType): Query {
+    val typeValue = when (type) {
+      WishlistType.Own -> WishlistEntity.Type.Own.name
+      WishlistType.ThirdParty -> WishlistEntity.Type.ThirdParty.name
+      else -> null
+    }
+    return typeValue?.let { whereEqualTo("type", typeValue) } ?: this
+  }
 }

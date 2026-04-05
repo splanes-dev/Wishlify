@@ -16,4 +16,9 @@ enum class ImagePreset(
   Romantic(7, R.drawable.preset_romantic),
   Tech(8, R.drawable.preset_tech),
   Travel(9, R.drawable.preset_travel),
+  ;
+
+  companion object {
+    fun findById(id: Int) = entries.first { preset -> preset.id == id }
+  }
 }

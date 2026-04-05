@@ -13,7 +13,7 @@ class FetchWishlistsUseCase(
   suspend operator fun invoke(type: WishlistType = WishlistType.All) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->
-        repository.fetchWishlists(uid).getOrThrow()
+        repository.fetchWishlists(type, uid).getOrThrow()
       }
   }
 }

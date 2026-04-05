@@ -19,6 +19,8 @@
     <string name="tab_secret_santa">Amic Inv.</string>
     <string name="tab_groups">Grups</string>
     <string name="tab_profile">Perfil</string>
+    <string name="back">Enrere</string>
+    <string name="btn_continue">Continuar</string>
     <string name="settings">Configuració</string>
     <string name="cancel">Cancel·lar</string>
     <string name="or">o</string>
@@ -31,6 +33,15 @@
     <string name="pick_image_preset_title">Imatges predefinides:</string>
     <string name="pick_image_delete">Esborrar imatge</string>
     <string name="create">Crear</string>
+    <string name="add">Afegir</string>
     <string name="optional">Opcional</string>
+    <string name="purchased">Comprat</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
     <string name="feedback_clipboard_copied">Copiat al porta-retalls</string>
+    <string name="error_open_link">Oops… No s\'ha pogut obrir l\'enllaç</string>
+    <string name="confirmation_dialog_title_warning">Atenció!</string>
+    <string name="confirmation_dialog_title_confirm">Confirmació</string>
+    <string name="confirmation_dialog_description">Segur que vols continuar?\nAquesta acció no es pot desfer.</string>
+    <string name="confirm">Confirmar</string>
 </resources>

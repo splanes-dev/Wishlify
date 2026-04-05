@@ -1,43 +1,28 @@
 package com.splanes.uoc.wishlify.presentation.infrastructure.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.Navigator
+import kotlinx.coroutines.flow.filterNotNull
 
-typealias NavResultCallback<T> = (T) -> Unit
 
 // A SavedStateHandle key is used to set/get NavResultCallback<T>
-private const val NavResultCallbackKey = "NavResultCallbackKey"
-
-fun <T> NavController.setNavResultCallback(callback: NavResultCallback<T>) {
-  currentBackStackEntry?.savedStateHandle?.set(NavResultCallbackKey, callback)
-}
-
-fun <T> NavController.getNavResultCallback(): NavResultCallback<T>? {
-  return previousBackStackEntry?.savedStateHandle?.remove(NavResultCallbackKey)
-}
-
-fun <T> NavController.popBackStackWithResult(result: T) {
-  getNavResultCallback<T>()?.invoke(result)
+private const val NavResultDefaultKey = "NavResultDefaultKey"
+fun <T> NavController.popBackStackWithResult(key: String = NavResultDefaultKey, result: T) {
+  previousBackStackEntry?.savedStateHandle?.set(key, result)
   popBackStack()
 }
 
-fun <R : Any, T> NavController.navigateWithResult(
-  route: R,
-  navResultCallback: NavResultCallback<T>,
-  navOptions: NavOptions? = null,
-  navigatorExtras: Navigator.Extras? = null
-) {
-  setNavResultCallback(navResultCallback)
-  navigate(route, navOptions, navigatorExtras)
-}
-
-fun <R : Any, T> NavController.navigateWithResult(
-  route: R,
-  navResultCallback: NavResultCallback<T>,
-  builder: NavOptionsBuilder.() -> Unit
-) {
-  setNavResultCallback(navResultCallback)
-  navigate(route, builder)
+@Composable
+fun <T> NavController.NavResultHandler(key: String = NavResultDefaultKey, action: (T) -> Unit) {
+  LaunchedEffect(this) {
+    val state = currentBackStackEntry?.savedStateHandle
+    state
+      ?.getStateFlow<T?>(key, null)
+      ?.filterNotNull()
+      ?.collect { result ->
+        action(result)
+        state[key] = null
+      }
+  }
 }

@@ -37,4 +37,19 @@ class MediaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
   }
+
+  suspend fun delete(path: String) {
+    try {
+      storage
+        .reference
+        .child(path)
+        .delete()
+        .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
 }

@@ -1,12 +1,16 @@
 package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -27,6 +31,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
@@ -35,18 +40,115 @@ import com.splanes.uoc.wishlify.presentation.common.components.TabSelector
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenu
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenuItem
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCard
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsTab
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WishlistsListScreen(
-  uiState: WishlistsListUiState.Listing
+  uiState: WishlistsListUiState.Listing,
+  onTabClick: (tab: WishlistsTab) -> Unit,
+  onCreateWishlist: () -> Unit,
+  onWishlistClick: (Wishlist) -> Unit,
+  onDismissError: () -> Unit,
 ) {
+
+  val wishlists = when (uiState.tabSelected) {
+    WishlistsTab.Own -> uiState.wishlistsOwn
+    WishlistsTab.ThirdParty -> uiState.wishlistsThirdParty
+  }
+
   Box(
     modifier = Modifier
       .fillMaxSize()
       .padding(bottom = 72.dp) // Bottom bar
   ) {
+    Scaffold(
+      modifier = Modifier.fillMaxSize(),
+      topBar = {
+        TopAppBar(
+          title = { Text(text = stringResource(R.string.wishlists)) },
+          actions = {
+            IconButton(
+              shapes = IconButtonShape,
+              onClick = {}
+            ) {
+              Icon(
+                imageVector = Icons.Rounded.Tune,
+                contentDescription = stringResource(R.string.settings)
+              )
+            }
+          }
+        )
+      },
+      floatingActionButton = {
+        FABMenu { collapse ->
+          FABMenuItem(
+            icon = rememberVectorPainter(Icons.Outlined.Sell),
+            text = stringResource(R.string.wishlists_category),
+            onClick = {
+              collapse()
+            }
+          )
+          FABMenuItem(
+            icon = painterResource(R.drawable.ic_wishlists),
+            text = stringResource(R.string.wishlists_wishlist),
+            onClick = {
+              onCreateWishlist()
+              collapse()
+            }
+          )
+        }
+      },
+      floatingActionButtonPosition = FabPosition.End
+    ) { paddings ->
+      LazyColumn(
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(paddings),
+        contentPadding = PaddingValues(
+          horizontal = 16.dp,
+          vertical = 24.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+      ) {
+        stickyHeader {
+          Box(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(bottom = 4.dp),
+            contentAlignment = Alignment.Center
+          ) {
+            TabSelector(
+              selected = uiState.tabSelected,
+              tabs = WishlistsTab.entries.toList(),
+              tabText = { tab -> tab.text() },
+              onClick = onTabClick
+            )
+          }
+        }
 
+        items(wishlists) { wishlist ->
+          WishlistCard(
+            modifier = Modifier.fillMaxWidth(),
+            wishlist = wishlist,
+            onSettingsClick = {},
+            onClick = { onWishlistClick(wishlist) }
+          )
+        }
+      }
+    }
+
+    uiState.error?.let { error ->
+      ErrorDialog(
+        uiModel = error,
+        onDismiss = onDismissError,
+      )
+    }
+
+    if (uiState.isLoading) {
+      Loader(modifier = Modifier.fillMaxSize())
+    }
   }
 }
 

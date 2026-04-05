@@ -10,4 +10,13 @@ data object Wishlists {
 
   @Serializable
   data class NewList(val isOwn: Boolean)
+
+  @Serializable
+  data class Detail(val id: String, val name: String)
+
+  @Serializable
+  data class NewItem(val wishlistId: String, val link: String?)
+
+  @Serializable
+  data class EditItem(val wishlistId: String, val itemId: String)
 }

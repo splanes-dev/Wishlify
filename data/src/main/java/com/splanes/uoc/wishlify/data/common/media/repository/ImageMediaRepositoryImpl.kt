@@ -16,4 +16,10 @@ class ImageMediaRepositoryImpl(
       val path = mapper.pathOf(path)
       remoteDataSource.upload(path, uri)
     }
+
+  override suspend fun delete(path: ImageMediaPath): Result<Unit> =
+    runCatching {
+      val path = mapper.pathOf(path)
+      remoteDataSource.delete(path)
+    }
 }

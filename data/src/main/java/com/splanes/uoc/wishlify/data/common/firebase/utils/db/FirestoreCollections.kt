@@ -14,6 +14,9 @@ val FirebaseFirestore.wishlists
 val DocumentReference.wishlistCategories
   get() = collection(Subcollections.CATEGORIES)
 
+val DocumentReference.wishlistItems
+  get() = collection(Subcollections.WISHLIST_ITEMS)
+
 private object Collections {
   const val USERS = "users"
   const val WISHLISTS = "wishlists"
@@ -21,4 +24,5 @@ private object Collections {
 
 private object Subcollections {
   const val CATEGORIES = "wishlist-categories"
+  const val WISHLIST_ITEMS = "items"
 }

@@ -225,7 +225,7 @@ fun WishlistsNewListScreen(
                 )
               },
               label = stringResource(R.string.wishlists_category),
-              showButtonDivider = uiState.categories.isNotEmpty(),
+              showButtonSpacer = uiState.categories.isNotEmpty(),
               leadingIcon = Icons.Outlined.Sell,
               supportingText = stringResource(R.string.optional),
               onSelectionChanged = { index -> categoryIndexSelected = index },

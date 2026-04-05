@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButtonShapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
 
@@ -38,11 +39,12 @@ val ToggleButtonShape: ToggleButtonShapes
 @Composable
 fun ButtonText(
   text: String,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  style: TextStyle = WishlifyTheme.typography.titleMedium
 ) {
   Text(
     modifier = modifier,
     text = text,
-    style = WishlifyTheme.typography.titleMedium,
+    style = style,
   )
 }

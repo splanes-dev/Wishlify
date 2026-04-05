@@ -5,11 +5,15 @@ import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.user.model.UserBasic
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.CategoryEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
+import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistItemEntity
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
-import com.splanes.uoc.wishlify.domain.feature.wishlists.model.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistItemRequest
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistItemRequest
 import java.util.Date
 
 class WishlistsDataMapper(
@@ -35,6 +39,7 @@ class WishlistsDataMapper(
     uid: String,
     entity: WishlistEntity,
     category: CategoryEntity?,
+    numOfItemsMap: Map<String, Int>,
     users: List<UserBasic>,
   ): Wishlist =
     when (entity.type) {
@@ -58,6 +63,7 @@ class WishlistsDataMapper(
           editors = users
             .filter { u -> u.uid in entity.editors }
             .map(userDataMapper::map),
+          numOfItems = numOfItemsMap[entity.id] ?: 0,
           createdBy = users
             .first { u -> u.uid == entity.createdBy }
             .let(userDataMapper::map),
@@ -90,6 +96,7 @@ class WishlistsDataMapper(
           editors = users
             .filter { u -> u.uid in entity.editors }
             .map(userDataMapper::map),
+          numOfItems = numOfItemsMap[entity.id] ?: 0,
           createdBy = users
             .first { u -> u.uid == entity.createdBy }
             .let(userDataMapper::map),
@@ -133,5 +140,127 @@ class WishlistsDataMapper(
         updatedBy = uid,
         updatedAt = System.currentTimeMillis()
       ),
+    )
+
+  fun mapItem(
+    entity: WishlistItemEntity,
+    users: List<UserBasic>,
+  ): WishlistItem =
+    WishlistItem(
+      id = entity.id,
+      photoUrl = entity.photoUrl,
+      name = entity.name,
+      description = entity.description.orEmpty(),
+      store = entity.store.orEmpty(),
+      unitPrice = entity.unitPrice,
+      amount = entity.amount,
+      priority = when (entity.priority) {
+        WishlistItemEntity.Priority.Standard -> WishlistItem.Priority.Standard
+        WishlistItemEntity.Priority.Top -> WishlistItem.Priority.Top
+        WishlistItemEntity.Priority.Supertop -> WishlistItem.Priority.Supertop
+      },
+      link = entity.link.orEmpty(),
+      tags = entity.tags,
+      createdBy = users
+        .first { u -> u.uid == entity.createdBy }
+        .let(userDataMapper::map),
+      createdAt = Date(entity.createdAt),
+      lastUpdate = WishlistItem.UpdateMetadata(
+        updatedBy = users
+          .first { u -> u.uid == entity.lastUpdate.updatedBy }
+          .let(userDataMapper::map),
+        updatedAt = Date(entity.lastUpdate.updatedAt)
+      ),
+      purchased = entity.purchased?.let { purchased ->
+        WishlistItem.PurchaseMetadata(
+          purchasedBy = users
+            .first { u -> u.uid == purchased.purchasedBy }
+            .let(userDataMapper::map),
+          purchasedAt = Date(purchased.purchasedAt)
+        )
+      }
+    )
+
+  fun wishlistItemFromRequest(
+    uid: String,
+    imageMedia: ImageMedia?,
+    request: CreateWishlistItemRequest
+  ): WishlistItemEntity =
+    WishlistItemEntity(
+      id = request.id,
+      photoUrl = imageMedia?.let { media ->
+        when (media) {
+          is ImageMedia.Preset -> null
+          is ImageMedia.Url -> media.url
+        }
+      },
+      name = request.name,
+      description = request.description,
+      store = request.store,
+      unitPrice = request.price,
+      amount = request.amount,
+      priority = when (request.priority) {
+        WishlistItem.Priority.Standard -> WishlistItemEntity.Priority.Standard
+        WishlistItem.Priority.Top -> WishlistItemEntity.Priority.Top
+        WishlistItem.Priority.Supertop -> WishlistItemEntity.Priority.Supertop
+      },
+      link = request.link,
+      tags = request.tags,
+      createdBy = uid,
+      createdAt = System.currentTimeMillis(),
+      lastUpdate = WishlistItemEntity.UpdateMetadata(
+        updatedBy = uid,
+        updatedAt = System.currentTimeMillis()
+      ),
+      purchased = null,
+    )
+
+  fun wishlistItemFromRequest(
+    uid: String,
+    imageMedia: ImageMedia?,
+    request: UpdateWishlistItemRequest
+  ): WishlistItemEntity =
+    WishlistItemEntity(
+      id = request.currentItem.id,
+      photoUrl = imageMedia?.let { media ->
+        when (media) {
+          is ImageMedia.Preset -> null
+          is ImageMedia.Url -> media.url
+        }
+      },
+      name = request.name,
+      description = request.description,
+      store = request.store,
+      unitPrice = request.price,
+      amount = request.amount,
+      priority = when (request.priority) {
+        WishlistItem.Priority.Standard -> WishlistItemEntity.Priority.Standard
+        WishlistItem.Priority.Top -> WishlistItemEntity.Priority.Top
+        WishlistItem.Priority.Supertop -> WishlistItemEntity.Priority.Supertop
+      },
+      link = request.link,
+      tags = request.tags,
+      createdBy = uid,
+      createdAt = System.currentTimeMillis(),
+      lastUpdate = WishlistItemEntity.UpdateMetadata(
+        updatedBy = uid,
+        updatedAt = System.currentTimeMillis()
+      ),
+      purchased = when (request.purchased) {
+        UpdateWishlistItemRequest.Purchased ->
+          WishlistItemEntity.PurchaseMetadata(
+            purchasedBy = uid,
+            purchasedAt = System.currentTimeMillis()
+          )
+
+        UpdateWishlistItemRequest.Available -> null
+
+        else -> request.currentItem.purchased?.let { purchase ->
+          WishlistItemEntity.PurchaseMetadata(
+            purchasedBy = purchase.purchasedBy.uid,
+            purchasedAt = purchase.purchasedAt.time
+          )
+        }
+      },
     )
 }

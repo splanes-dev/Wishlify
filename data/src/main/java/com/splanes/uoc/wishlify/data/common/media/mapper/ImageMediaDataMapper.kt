@@ -32,7 +32,11 @@ class ImageMediaDataMapper {
       is ImageMediaPath.WishlistCover -> {
         WISHLIST_COVER.format(path.wishlistId)
       }
+
+      is ImageMediaPath.WishlistItem ->
+        WISHLIST_ITEM_PHOTO.format(path.wishlistId, path.itemId)
     }
 }
 
 private const val WISHLIST_COVER = "wishlists/%s/cover"
+private const val WISHLIST_ITEM_PHOTO = "wishlists/%s/items/%s"

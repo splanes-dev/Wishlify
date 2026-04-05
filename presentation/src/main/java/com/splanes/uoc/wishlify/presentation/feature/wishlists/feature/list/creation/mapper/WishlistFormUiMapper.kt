@@ -4,7 +4,7 @@ import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaRequest
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.common.utils.newUuid
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
-import com.splanes.uoc.wishlify.domain.feature.wishlists.model.CreateWishlistRequest
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 import com.splanes.uoc.wishlify.presentation.common.components.image.ImagePreset
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.model.WishlistsNewListForm

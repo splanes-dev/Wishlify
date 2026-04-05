@@ -1,7 +1,9 @@
 package com.splanes.uoc.wishlify.presentation.common.components.input.dropdown
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -10,12 +12,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,6 +36,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -42,12 +49,16 @@ fun DropdownInput(
   modifier: Modifier = Modifier,
   initial: DropdownInput.Option? = null,
   leadingIcon: ImageVector? = null,
-  showButtonDivider: Boolean = true,
+  showButtonSpacer: Boolean = true,
   supportingText: String = "",
+  allowUnselect: Boolean = true,
   onSelectionChanged: (Int?) -> Unit,
   onAdd: ((id: Int) -> Unit)? = null,
 ) {
+  val density = LocalDensity.current
   var expanded by remember { mutableStateOf(false) }
+  var widthPx by remember { mutableIntStateOf(0) }
+  val widthDp by remember { derivedStateOf { with(density) { widthPx.toDp() } } }
   val textFieldState = rememberTextFieldState(initial?.text.orEmpty())
   var selected by remember { mutableStateOf(initial) }
 
@@ -57,7 +68,9 @@ fun DropdownInput(
     onExpandedChange = { expanded = it },
   ) {
     TextField(
-      modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+      modifier = modifier
+        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+        .onGloballyPositioned { coordinates -> widthPx = coordinates.size.width },
       state = textFieldState,
       readOnly = true,
       lineLimits = TextFieldLineLimits.SingleLine,
@@ -90,11 +103,10 @@ fun DropdownInput(
       shape = MaterialTheme.shapes.small
     )
 
-    ExposedDropdownMenu(
+    DropdownMenuPopup(
+      modifier = Modifier.width(widthDp),
       expanded = expanded,
       onDismissRequest = { expanded = false },
-      containerColor = MenuDefaults.groupStandardContainerColor,
-      shape = MenuDefaults.standaloneGroupShape,
     ) {
       val options = remember(items) { items.filterIsInstance<DropdownInput.Option>() }
       val buttons = remember(items) { items.filterIsInstance<DropdownInput.Button>() }
@@ -106,13 +118,15 @@ fun DropdownInput(
             text = { Text(option.text, style = MaterialTheme.typography.bodyLarge) },
             selected = option == selected,
             onClick = {
-              selected = option.takeIf { selected != it }
-              if (selected != null) {
-                textFieldState.setTextAndPlaceCursorAtEnd(selected?.text.orEmpty())
-              } else {
-                textFieldState.clearText()
+              if (allowUnselect || option != selected) {
+                selected = option.takeIf { selected != it }
+                if (selected != null) {
+                  textFieldState.setTextAndPlaceCursorAtEnd(selected?.text.orEmpty())
+                } else {
+                  textFieldState.clearText()
+                }
+                onSelectionChanged(selected?.id)
               }
-              onSelectionChanged(selected?.id)
             },
             leadingIcon = option.leadingIcon?.let { icon ->
               @Composable {
@@ -145,8 +159,8 @@ fun DropdownInput(
         }
       }
 
-      if (buttons.isNotEmpty() && showButtonDivider) {
-        HorizontalDivider(modifier = Modifier.fillMaxWidth())
+      if (buttons.isNotEmpty() && showButtonSpacer) {
+        Spacer(Modifier.height(8.dp))
       }
 
       DropdownMenuGroup(shapes = MenuDefaults.groupShapes()) {

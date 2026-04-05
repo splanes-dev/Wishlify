@@ -7,7 +7,7 @@ import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaRequest
 import com.splanes.uoc.wishlify.domain.common.media.repository.ImageMediaRepository
 import com.splanes.uoc.wishlify.domain.common.usecase.UseCase
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
-import com.splanes.uoc.wishlify.domain.feature.wishlists.model.CreateWishlistRequest
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.repository.WishlistsRepository
 
 class CreateWishlistUseCase(

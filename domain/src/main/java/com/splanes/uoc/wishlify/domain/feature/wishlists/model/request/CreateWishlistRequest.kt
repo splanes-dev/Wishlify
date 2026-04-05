@@ -1,7 +1,8 @@
-package com.splanes.uoc.wishlify.domain.feature.wishlists.model
+package com.splanes.uoc.wishlify.domain.feature.wishlists.model.request
 
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaRequest
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 
 sealed class CreateWishlistRequest(
   open val id: String,

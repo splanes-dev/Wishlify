@@ -60,11 +60,13 @@ class WishlistsListViewModel(
   }
 
   private fun fetchWishlists(tab: WishlistsTab) {
+    viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
       val type = when (tab) {
         WishlistsTab.Own -> WishlistType.Own
         WishlistsTab.ThirdParty -> WishlistType.ThirdParty
       }
+
       fetchWishlistsUseCase(type = type)
         .onSuccess { wishlists ->
           viewModelState.update { state ->
@@ -94,7 +96,7 @@ class WishlistsListViewModel(
 
     fun toUiState(errorUiMapper: ErrorUiMapper) =
       when {
-        wishlists.isEmpty() ->
+        wishlists.isEmptyState(tabSelected) ->
           WishlistsListUiState.Empty(
             tabSelected = tabSelected,
             isLoading = isLoading,
@@ -104,10 +106,19 @@ class WishlistsListViewModel(
         else ->
           WishlistsListUiState.Listing(
             tabSelected = tabSelected,
-            wishlists = wishlists,
+            wishlistsOwn = wishlists.own(),
+            wishlistsThirdParty = wishlists.thirdParty(),
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )
       }
+
+    private fun List<Wishlist>.isEmptyState(tab: WishlistsTab) =
+      isEmpty() ||
+          (tab == WishlistsTab.Own && own().isEmpty()) ||
+          (tab == WishlistsTab.ThirdParty && thirdParty().isEmpty())
   }
 }
+
+private fun List<Wishlist>.own() = filterIsInstance<Wishlist.Own>()
+private fun List<Wishlist>.thirdParty() = filterIsInstance<Wishlist.ThirdParty>()

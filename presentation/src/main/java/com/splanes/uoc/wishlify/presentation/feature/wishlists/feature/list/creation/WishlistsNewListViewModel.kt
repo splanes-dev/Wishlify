@@ -127,7 +127,12 @@ class WishlistsNewListViewModel(
   }
 
   fun onChangeNewCategoryModalVisibility(visible: Boolean) {
-    viewModelState.update { state -> state.copy(isNewCategoryModalOpen = visible) }
+    viewModelState.update { state ->
+      state.copy(
+        isNewCategoryModalOpen = visible,
+        newCategoryNameError = null
+      )
+    }
   }
 
   fun onDismissError() {

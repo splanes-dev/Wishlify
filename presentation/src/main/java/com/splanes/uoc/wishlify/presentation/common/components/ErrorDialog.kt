@@ -1,6 +1,7 @@
 package com.splanes.uoc.wishlify.presentation.common.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -10,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonShape
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonText
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
@@ -27,6 +29,7 @@ fun ErrorDialog(
     modifier = modifier,
     icon = {
       Icon(
+        modifier = Modifier.size(36.dp),
         imageVector = uiModel.icon,
         contentDescription = uiModel.title,
         tint = WishlifyTheme.colorScheme.error

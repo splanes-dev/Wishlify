@@ -3,11 +3,13 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 
 @Composable
 fun WishlistsListRoute(
   viewModel: WishlistsListViewModel,
-  onNavToCreateWishlist: (isOwn: Boolean) -> Unit,
+  onNavToNewWishlist: (isOwn: Boolean) -> Unit,
+  onNavToWishlistDetail: (wishlist: Wishlist) -> Unit,
 ) {
 
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -17,13 +19,17 @@ fun WishlistsListRoute(
       WishlistsListEmptyScreen(
         uiState = state,
         onTabClick = viewModel::onTabClick,
-        onCreateWishlist = { onNavToCreateWishlist(true) },
+        onCreateWishlist = { onNavToNewWishlist(true) },
         onDismissError = viewModel::onDismissError
       )
 
     is WishlistsListUiState.Listing ->
       WishlistsListScreen(
         uiState = state,
+        onTabClick = viewModel::onTabClick,
+        onCreateWishlist = { onNavToNewWishlist(true) },
+        onWishlistClick = onNavToWishlistDetail,
+        onDismissError = viewModel::onDismissError
       )
   }
 }

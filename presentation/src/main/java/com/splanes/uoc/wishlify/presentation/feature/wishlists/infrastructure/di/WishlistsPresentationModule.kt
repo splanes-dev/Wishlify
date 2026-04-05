@@ -1,5 +1,10 @@
 package com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.di
 
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.WishlistDetailViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.creation.WishlistNewItemViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.edition.WishlistEditItemViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormErrorMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.mapper.WishlistFormErrorMapper
@@ -36,9 +41,44 @@ internal val WishlistsPresentationModule = module {
       errorUiMapper = get(),
     )
   }
+  viewModel { (wishlistId: String, wishlistName: String) ->
+    WishlistDetailViewModel(
+      wishlistId = wishlistId,
+      wishlistName = wishlistName,
+      fetchWishlistUseCase = get(),
+      fetchWishlistItemsUseCase = get(),
+      fetchWishlistItemUseCase = get(),
+      deleteWishlistItemUseCase = get(),
+      updateWishlistItemPurchaseUseCase = get(),
+      errorUiMapper = get(),
+    )
+  }
+  viewModel { (wishlistId: String, link: String?) ->
+    WishlistNewItemViewModel(
+      wishlistId = wishlistId,
+      link = link,
+      createWishlistItemUseCase = get(),
+      formErrorMapper = get(),
+      formUiMapper = get(),
+      errorUiMapper = get(),
+    )
+  }
+  viewModel { (wishlistId: String, itemId: String) ->
+    WishlistEditItemViewModel(
+      wishlistId = wishlistId,
+      itemId = itemId,
+      fetchWishlistItemUseCase = get(),
+      updateWishlistItemUseCase = get(),
+      formErrorMapper = get(),
+      formUiMapper = get(),
+      errorUiMapper = get(),
+    )
+  }
   // Mappers
   singleOf(::CategoryUiMapper)
   singleOf(::CategoryFormErrorMapper)
   singleOf(::WishlistFormErrorMapper)
+  singleOf(::WishlistItemFormErrorMapper)
   singleOf(::WishlistFormUiMapper)
+  singleOf(::WishlistItemFormUiMapper)
 }
