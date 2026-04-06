@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -66,6 +67,7 @@ fun WishlistDetailScreen(
   onChangeItemByLinkModalVisibility: (visible: Boolean) -> Unit,
   onClearInputError: (WishlistItemForm.Input) -> Unit,
   onCloseItemDetailModal: () -> Unit,
+  onShare: () -> Unit,
   onBack: () -> Unit,
   onDismissError: () -> Unit
 ) {
@@ -110,6 +112,16 @@ fun WishlistDetailScreen(
             }
           },
           actions = {
+            IconButton(
+              shapes = IconButtonShape,
+              onClick = onShare
+            ) {
+              Icon(
+                imageVector = Icons.Rounded.Share,
+                contentDescription = stringResource(R.string.share)
+              )
+            }
+
             IconButton(
               shapes = IconButtonShape,
               onClick = {}
@@ -238,6 +250,7 @@ fun WishlistDetailEmptyScreen(
   uiState: WishlistDetailUiState.Empty,
   onCreateItem: (link: String?) -> Unit,
   onBack: () -> Unit,
+  onShare: () -> Unit,
   onChangeItemByLinkModalVisibility: (visible: Boolean) -> Unit,
   onClearInputError: (WishlistItemForm.Input) -> Unit,
   onDismissError: () -> Unit
@@ -275,6 +288,16 @@ fun WishlistDetailEmptyScreen(
             }
           },
           actions = {
+            IconButton(
+              shapes = IconButtonShape,
+              onClick = onShare
+            ) {
+              Icon(
+                imageVector = Icons.Rounded.Share,
+                contentDescription = stringResource(R.string.share)
+              )
+            }
+
             IconButton(
               shapes = IconButtonShape,
               onClick = {}

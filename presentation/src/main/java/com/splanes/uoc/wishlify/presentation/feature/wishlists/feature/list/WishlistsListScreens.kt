@@ -22,10 +22,15 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -50,6 +56,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.comp
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsSettings
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsTab
+import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -59,6 +66,7 @@ fun WishlistsListScreen(
   onCreateWishlist: () -> Unit,
   onWishlistClick: (Wishlist) -> Unit,
   onAdminCategories: () -> Unit,
+  onClearSharedWishlistFeedback: () -> Unit,
   onDismissError: () -> Unit,
 ) {
 
@@ -69,6 +77,23 @@ fun WishlistsListScreen(
 
   var isSettingsModalOpen by remember { mutableStateOf(false) }
   val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  val resources = LocalResources.current
+  val snackbarState = remember { SnackbarHostState() }
+
+  LaunchedEffect(uiState.sharedWishlistFeedback) {
+    if (uiState.sharedWishlistFeedback != null) {
+      snackbarState.showSnackbar(
+        message = resources.getString(
+          R.string.wishlists_shared_wishlist_feedback,
+          uiState.sharedWishlistFeedback
+        ),
+        duration = SnackbarDuration.Long,
+        withDismissAction = true
+      )
+      onClearSharedWishlistFeedback()
+    }
+  }
 
   Box(
     modifier = Modifier
@@ -92,6 +117,17 @@ fun WishlistsListScreen(
             }
           }
         )
+      },
+      snackbarHost = {
+        SnackbarHost(snackbarState) { data ->
+          Snackbar(
+            snackbarData = data,
+            shape = WishlifyTheme.shapes.small,
+            containerColor = WishlifyTheme.colorScheme.successContainer,
+            contentColor = WishlifyTheme.colorScheme.onSuccessContainer,
+            dismissActionContentColor = WishlifyTheme.colorScheme.onSuccessContainer,
+          )
+        }
       },
       floatingActionButton = {
         FABMenu { collapse ->
@@ -161,9 +197,11 @@ fun WishlistsListScreen(
           WishlistsSettings.Search -> {
             // TODO
           }
+
           WishlistsSettings.Filter -> {
             // TODO
           }
+
           WishlistsSettings.AdminCategories -> onAdminCategories()
         }
       }
@@ -188,12 +226,31 @@ fun WishlistsListEmptyScreen(
   uiState: WishlistsListUiState.Empty,
   onTabClick: (tab: WishlistsTab) -> Unit,
   onCreateWishlist: () -> Unit,
+  onClearSharedWishlistFeedback: () -> Unit,
   onAdminCategories: () -> Unit,
   onDismissError: () -> Unit,
 ) {
 
   var isSettingsModalOpen by remember { mutableStateOf(false) }
   val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  val resources = LocalResources.current
+  val snackbarState = remember { SnackbarHostState() }
+
+  LaunchedEffect(uiState.sharedWishlistFeedback) {
+    if (uiState.sharedWishlistFeedback != null) {
+      snackbarState.showSnackbar(
+        message = resources.getString(
+          R.string.wishlists_shared_wishlist_feedback,
+          uiState.sharedWishlistFeedback
+        ),
+        duration = SnackbarDuration.Long,
+        withDismissAction = true
+      )
+      onClearSharedWishlistFeedback()
+    }
+  }
+
 
   Box(
     modifier = Modifier
@@ -217,6 +274,17 @@ fun WishlistsListEmptyScreen(
             }
           }
         )
+      },
+      snackbarHost = {
+        SnackbarHost(snackbarState) { data ->
+          Snackbar(
+            snackbarData = data,
+            shape = WishlifyTheme.shapes.small,
+            containerColor = WishlifyTheme.colorScheme.successContainer,
+            contentColor = WishlifyTheme.colorScheme.onSuccessContainer,
+            dismissActionContentColor = WishlifyTheme.colorScheme.onSuccessContainer,
+          )
+        }
       },
       floatingActionButton = {
         FABMenu { collapse ->
@@ -282,9 +350,11 @@ fun WishlistsListEmptyScreen(
           WishlistsSettings.Search -> {
             // TODO
           }
+
           WishlistsSettings.Filter -> {
             // TODO
           }
+
           WishlistsSettings.AdminCategories -> onAdminCategories()
         }
       }

@@ -10,6 +10,12 @@ val FirebaseFirestore.users
 val FirebaseFirestore.wishlists
   get() = collection(Collections.WISHLISTS)
 
+val FirebaseFirestore.sharedWishlists
+  get() = collection(Collections.SHARED_WISHLISTS)
+
+val FirebaseFirestore.groups
+  get() = collection(Collections.GROUPS)
+
 // Subcollections
 val DocumentReference.wishlistCategories
   get() = collection(Subcollections.CATEGORIES)
@@ -17,12 +23,18 @@ val DocumentReference.wishlistCategories
 val DocumentReference.wishlistItems
   get() = collection(Subcollections.WISHLIST_ITEMS)
 
+val DocumentReference.sharedWishlistItems
+  get() = collection(Subcollections.SHARED_WISHLIST_ITEMS)
+
 private object Collections {
   const val USERS = "users"
   const val WISHLISTS = "wishlists"
+  const val SHARED_WISHLISTS = "shared-wishlists"
+  const val GROUPS = "groups"
 }
 
 private object Subcollections {
   const val CATEGORIES = "wishlist-categories"
   const val WISHLIST_ITEMS = "items"
+  const val SHARED_WISHLIST_ITEMS = "items"
 }

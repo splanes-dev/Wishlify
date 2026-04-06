@@ -12,6 +12,7 @@ sealed interface WishlistsListUiState {
 
   data class Empty(
     val tabSelected:  WishlistsTab,
+    val sharedWishlistFeedback: String?,
     val isLoading: Boolean,
     val error: ErrorUiModel?,
   ): WishlistsListUiState
@@ -20,6 +21,7 @@ sealed interface WishlistsListUiState {
     val tabSelected:  WishlistsTab,
     val wishlistsOwn: List<Wishlist.Own>,
     val wishlistsThirdParty: List<Wishlist.ThirdParty>,
+    val sharedWishlistFeedback: String?,
     val isLoading: Boolean,
     val error: ErrorUiModel?,
   ): WishlistsListUiState

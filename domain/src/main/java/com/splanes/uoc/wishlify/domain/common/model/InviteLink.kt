@@ -20,7 +20,8 @@ data class InviteLink(
       .toString()
 
   enum class Origin(val path: String) {
-    WishlistEditor("wishlists-editor");
+    WishlistEditor("wishlists-editor"),
+    WishlistShare("wishlist-share");
 
     companion object
   }
@@ -28,6 +29,7 @@ data class InviteLink(
   companion object {
 
     val WishlistsEditor = Origin.WishlistEditor
+    val WishlistShare = Origin.WishlistShare
 
     fun fromUrl(url: String): InviteLink? =
       runCatching {

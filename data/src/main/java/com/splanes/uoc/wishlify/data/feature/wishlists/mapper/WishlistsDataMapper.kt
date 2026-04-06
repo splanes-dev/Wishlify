@@ -142,6 +142,20 @@ class WishlistsDataMapper(
       ),
     )
 
+  fun shareWishlist(
+    uid: String,
+    sharedWishlistId: String,
+    entity: WishlistEntity,
+  ): WishlistEntity =
+    entity.copy(
+      shareStatus = WishlistEntity.ShareStatus.Shared,
+      sharedWishlistId = sharedWishlistId,
+      lastUpdate = WishlistEntity.UpdateMetadata(
+        updatedAt = System.currentTimeMillis(),
+        updatedBy = uid
+      )
+    )
+
   fun mapItem(
     entity: WishlistItemEntity,
     users: List<UserBasic>,

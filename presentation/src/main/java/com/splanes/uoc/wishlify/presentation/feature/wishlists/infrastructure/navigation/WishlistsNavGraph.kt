@@ -18,6 +18,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.Wi
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.WishlistDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.creation.WishlistNewItemRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.edition.WishlistEditItemRoute
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.WishlistShareRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesRoute
@@ -68,8 +69,13 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         val viewModel = koinViewModel<WishlistsListViewModel>()
 
         // Result handler from create wishlist
-        navController.NavResultHandler<Boolean> { created ->
+        navController.NavResultHandler<Boolean>(key = NavResult.NEW_WISHLIST) { created ->
           viewModel.onNewWishlistResult(created = created)
+        }
+
+        // Result handler from share wishlist
+        navController.NavResultHandler<String>(key = NavResult.SHARE_WISHLIST) { sharedWishlistName ->
+          viewModel.onWishlistShared(sharedWishlistName)
         }
 
         WishlistsListRoute(
@@ -118,13 +124,23 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         }
 
         // Result handler from create item
-        navController.NavResultHandler<Boolean>(key = "new-item") { created ->
+        navController.NavResultHandler<Boolean>(key = NavResult.NEW_ITEM) { created ->
           viewModel.onNewItemResult(created = created)
         }
 
         // Result handler from update item
-        navController.NavResultHandler<Boolean>(key = "update-item") { updated ->
+        navController.NavResultHandler<Boolean>(key = NavResult.UPDATE_ITEM) { updated ->
           viewModel.onEditItemResult(updated = updated)
+        }
+
+        // Result handler from share-wishlist
+        navController.NavResultHandler<Boolean>(key = NavResult.SHARE_WISHLIST) { shared ->
+          if (shared) {
+            navController.popBackStackWithResult(
+              key = NavResult.SHARE_WISHLIST,
+              result = route.name
+            )
+          }
         }
 
         WishlistDetailRoute(
@@ -135,6 +151,10 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
           },
           onNavToEditItem = { itemId ->
             val route = Wishlists.EditItem(wishlistId = route.id, itemId = itemId)
+            navController.navigate(route)
+          },
+          onNavToShare = {
+            val route = Wishlists.ShareList(wishlistId = route.id)
             navController.navigate(route)
           },
           onBack = { navController.popBackStack() },
@@ -148,7 +168,7 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         val route = backStackEntry.toRoute<Wishlists.NewItem>()
         WishlistNewItemRoute(
           viewModel = koinViewModel { parametersOf(route.wishlistId, route.link) },
-          onFinish = { navController.popBackStackWithResult(key = "new-item", result = it) }
+          onFinish = { navController.popBackStackWithResult(key = NavResult.NEW_ITEM, result = it) }
         )
       }
 
@@ -159,9 +179,38 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         val route = backStackEntry.toRoute<Wishlists.EditItem>()
         WishlistEditItemRoute(
           viewModel = koinViewModel { parametersOf(route.wishlistId, route.itemId) },
-          onFinish = { navController.popBackStackWithResult(key = "update-item", result = it) }
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.UPDATE_ITEM,
+              result = it
+            )
+          }
+        )
+      }
+
+      composable<Wishlists.ShareList>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) { backStackEntry ->
+        val route = backStackEntry.toRoute<Wishlists.ShareList>()
+        WishlistShareRoute(
+          viewModel = koinViewModel { parametersOf(route.wishlistId) },
+          onNavToNewGroup = { /* TODO */ },
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.SHARE_WISHLIST,
+              result = it
+            )
+          }
         )
       }
     }
   }
+}
+
+private object NavResult {
+  const val NEW_WISHLIST = "new-wishlist"
+  const val NEW_ITEM = "new-item"
+  const val UPDATE_ITEM = "update-item"
+  const val SHARE_WISHLIST = "share-wishlist"
 }

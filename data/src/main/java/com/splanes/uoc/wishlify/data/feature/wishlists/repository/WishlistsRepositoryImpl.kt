@@ -1,5 +1,7 @@
 package com.splanes.uoc.wishlify.data.feature.wishlists.repository
 
+import com.splanes.uoc.wishlify.data.feature.shared.datasource.SharedWishlistsRemoteDataSource
+import com.splanes.uoc.wishlify.data.feature.shared.mapper.SharedWishlistsDataMapper
 import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemoteDataSource
@@ -11,6 +13,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistType
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistItemRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.ShareWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistItemRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.repository.WishlistsRepository
 import kotlinx.coroutines.async
@@ -20,8 +23,10 @@ import kotlinx.coroutines.coroutineScope
 class WishlistsRepositoryImpl(
   private val wishlistsRemoteDataSource: WishlistsRemoteDataSource,
   private val userRemoteDataSource: UserRemoteDataSource,
+  private val sharedWishlistsRemoteDataSource: SharedWishlistsRemoteDataSource,
   private val userMapper: UserDataMapper,
-  private val wishlistsMapper: WishlistsDataMapper
+  private val wishlistsMapper: WishlistsDataMapper,
+  private val sharedWishlistsMapper: SharedWishlistsDataMapper,
 ) : WishlistsRepository {
 
   override suspend fun fetchCategories(uid: String): Result<List<Category>> =
@@ -202,10 +207,10 @@ class WishlistsRepositoryImpl(
         val item = wishlistsRemoteDataSource.fetchWishlistItem(wishlistId, itemId = item)
 
         val usersToFetch = buildList {
-              add(item.createdBy)
-              add(item.lastUpdate.updatedBy)
-              item.purchased?.purchasedBy?.let(::add)
-          }.distinct()
+          add(item.createdBy)
+          add(item.lastUpdate.updatedBy)
+          item.purchased?.purchasedBy?.let(::add)
+        }.distinct()
 
         // Users fetch
         val usersByUidDeferred = async {
@@ -232,6 +237,24 @@ class WishlistsRepositoryImpl(
     runCatching {
       val entity = wishlistsMapper.wishlistFromRequest(uid, imageMedia, request)
       wishlistsRemoteDataSource.upsertWishlist(entity)
+    }
+
+  override suspend fun shareWishlist(
+    uid: String,
+    request: ShareWishlistRequest
+  ): Result<Unit> =
+    runCatching {
+      val sharedWishlistEntity = sharedWishlistsMapper.sharedWishlistFromRequest(request)
+      val wishlistEntity = wishlistsRemoteDataSource.fetchWishlist(request.wishlistId)
+
+      val updatedWishlist = wishlistsMapper.shareWishlist(
+        uid = uid,
+        sharedWishlistId = sharedWishlistEntity.id,
+        entity = wishlistEntity
+      )
+
+      sharedWishlistsRemoteDataSource.upsertSharedWishlist(sharedWishlistEntity)
+      wishlistsRemoteDataSource.upsertWishlist(entity = updatedWishlist)
     }
 
   override suspend fun addWishlistItem(

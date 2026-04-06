@@ -52,6 +52,14 @@ class WishlistsListViewModel(
     }
   }
 
+  fun onWishlistShared(name: String) {
+    viewModelState.update { state -> state.copy(sharedWishlistFeedback = name) }
+  }
+
+  fun onClearSharedWishlistFeedback() {
+    viewModelState.update { state -> state.copy(sharedWishlistFeedback = null) }
+  }
+
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
@@ -89,6 +97,7 @@ class WishlistsListViewModel(
   private data class ViewModelState(
     val tabSelected: WishlistsTab = WishlistsTab.Own,
     val wishlists: List<Wishlist> = emptyList(),
+    val sharedWishlistFeedback: String? = null,
     val isLoadingFullscreen: Boolean = false,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
@@ -102,6 +111,7 @@ class WishlistsListViewModel(
         wishlists.isEmptyState(tabSelected) ->
           WishlistsListUiState.Empty(
             tabSelected = tabSelected,
+            sharedWishlistFeedback = sharedWishlistFeedback,
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )
@@ -111,6 +121,7 @@ class WishlistsListViewModel(
             tabSelected = tabSelected,
             wishlistsOwn = wishlists.own(),
             wishlistsThirdParty = wishlists.thirdParty(),
+            sharedWishlistFeedback = sharedWishlistFeedback,
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )

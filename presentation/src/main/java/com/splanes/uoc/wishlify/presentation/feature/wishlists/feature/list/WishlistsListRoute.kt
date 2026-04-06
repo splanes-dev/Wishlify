@@ -29,6 +29,7 @@ fun WishlistsListRoute(
         onTabClick = viewModel::onTabClick,
         onCreateWishlist = { onNavToNewWishlist(true) },
         onAdminCategories = onNavToAdminCategories,
+        onClearSharedWishlistFeedback = viewModel::onClearSharedWishlistFeedback,
         onDismissError = viewModel::onDismissError
       )
 
@@ -38,6 +39,7 @@ fun WishlistsListRoute(
         onTabClick = viewModel::onTabClick,
         onCreateWishlist = { onNavToNewWishlist(true) },
         onWishlistClick = onNavToWishlistDetail,
+        onClearSharedWishlistFeedback = viewModel::onClearSharedWishlistFeedback,
         onAdminCategories = onNavToAdminCategories,
         onDismissError = viewModel::onDismissError
       )

@@ -10,6 +10,7 @@ fun WishlistDetailRoute(
   viewModel: WishlistDetailViewModel,
   onNavToNewItem: (link: String?) -> Unit,
   onNavToEditItem: (itemId: String) -> Unit,
+  onNavToShare: () -> Unit,
   onBack: () -> Unit,
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -30,6 +31,7 @@ fun WishlistDetailRoute(
         uiState = state,
         onCreateItem = onNavToNewItem,
         onBack = onBack,
+        onShare = onNavToShare,
         onChangeItemByLinkModalVisibility = viewModel::onChangeItemByLinkModalVisibility,
         onClearInputError = viewModel::onClearInputError,
         onDismissError = viewModel::onDismissError,
@@ -45,6 +47,7 @@ fun WishlistDetailRoute(
       WishlistDetailScreen(
         uiState = state,
         onCreateItem = onNavToNewItem,
+        onShare = onNavToShare,
         onBack = onBack,
         onChangeItemByLinkModalVisibility = viewModel::onChangeItemByLinkModalVisibility,
         onCloseItemDetailModal = viewModel::onCloseItemDetailModal,

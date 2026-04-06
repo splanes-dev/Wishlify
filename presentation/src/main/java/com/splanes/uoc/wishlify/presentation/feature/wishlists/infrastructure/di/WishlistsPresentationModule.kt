@@ -5,6 +5,9 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.cr
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.edition.WishlistEditItemViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.WishlistShareViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.mapper.WishlistShareFormUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.mapper.WishlistShareUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListViewModel
@@ -76,6 +79,17 @@ internal val WishlistsPresentationModule = module {
       errorUiMapper = get(),
     )
   }
+  viewModel { (wishlistId: String) ->
+    WishlistShareViewModel(
+      wishlistId = wishlistId,
+      fetchWishlistUseCase = get(),
+      fetchGroupsUseCase = get(),
+      shareWishlistUseCase = get(),
+      formUiMapper = get(),
+      wishlistShareUiMapper = get(),
+      errorUiMapper = get(),
+    )
+  }
   // Mappers
   singleOf(::CategoryUiMapper)
   singleOf(::CategoryFormErrorMapper)
@@ -83,4 +97,6 @@ internal val WishlistsPresentationModule = module {
   singleOf(::WishlistItemFormErrorMapper)
   singleOf(::WishlistFormUiMapper)
   singleOf(::WishlistItemFormUiMapper)
+  singleOf(::WishlistShareFormUiMapper)
+  singleOf(::WishlistShareUiMapper)
 }

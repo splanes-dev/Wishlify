@@ -192,7 +192,7 @@ class WishlistsNewListViewModel(
     }
 
     val descriptionError = when {
-      form.description?.count() !in 3..200 -> DescriptionWishlistFormError.Length
+      form.description?.isNotBlank() == true && form.description.count() !in 3..200 -> DescriptionWishlistFormError.Length
       else -> null
     }
 

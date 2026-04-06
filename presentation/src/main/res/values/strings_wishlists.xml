@@ -72,4 +72,20 @@
     <string name="wishlists_admin_categories">Administrar categories</string>
     <string name="wishlists_admin_categories_title">Admin. Categories</string>
     <string name="wishlists_admin_categories_empty">No tens categories creades.\nAquestes són útils per a poder classificar i filtrar les teves wishlists. Prova de crear-ne una i assignar-la a un llistat!</string>
+    <string name="wishlist_share_title">Compartir wishlist</string>
+    <string name="wishlists_share_select_group_input">Selecciona un grup</string>
+    <string name="wishlists_share_or_share_by_link">o comparteix l\'enllaç</string>
+    <string name="wishlists_share_list_link">Enllaç</string>
+    <string name="wishlists_share_visibility_switch_input">És visible per als editors?</string>
+    <string name="wishlists_share_date_limit">Data límit</string>
+    <string name="wishlists_share_date_limit_invalid_error">La data no és vàlida. No pot ser passada ni superior a 6 mesos.</string>
+    <string name="wishlists_share_visibility_modal_title">Què vol dir "visible per a mi"?</string>
+    <string name="wishlists_share_visibility_modal_description">Pots decidir si vols participar en la wishlist compartida.\nSi actives l’opció, tots els editors podran veure les actualitzacions dels altres participants i interactuar amb el llistat (comprar, reservar, etc.). Si no, el llistat romandrà bloquejat fins a la data límit i no podràs veure les actualitzacions ni fer-hi cap acció.</string>
+    <string name="wishlists_share_banner_info_title">Important</string>
+    <string name="wishlists_share_banner_info_description">
+        <![CDATA[Recorda que en compartir un llistat aquest deixarà d\'estar disponible a la secció de <b>Wishlists</b> i el podràs trobar a la secció <b>Wishlists Compartides</b>.]]>
+    </string>
+    <string name="wishlists_create_group">Crear nou grup</string>
+    <string name="wishlists_shared_wishlist_feedback">Wishlist "%s" compartida correctament</string>
+
 </resources>
