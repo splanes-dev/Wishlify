@@ -24,9 +24,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,6 +47,8 @@ import com.splanes.uoc.wishlify.presentation.common.components.button.IconButton
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenu
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenuItem
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCard
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsSettingsBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsSettings
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsTab
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -50,6 +58,7 @@ fun WishlistsListScreen(
   onTabClick: (tab: WishlistsTab) -> Unit,
   onCreateWishlist: () -> Unit,
   onWishlistClick: (Wishlist) -> Unit,
+  onAdminCategories: () -> Unit,
   onDismissError: () -> Unit,
 ) {
 
@@ -57,6 +66,9 @@ fun WishlistsListScreen(
     WishlistsTab.Own -> uiState.wishlistsOwn
     WishlistsTab.ThirdParty -> uiState.wishlistsThirdParty
   }
+
+  var isSettingsModalOpen by remember { mutableStateOf(false) }
+  val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
   Box(
     modifier = Modifier
@@ -71,7 +83,7 @@ fun WishlistsListScreen(
           actions = {
             IconButton(
               shapes = IconButtonShape,
-              onClick = {}
+              onClick = { isSettingsModalOpen = true }
             ) {
               Icon(
                 imageVector = Icons.Rounded.Tune,
@@ -120,6 +132,7 @@ fun WishlistsListScreen(
             contentAlignment = Alignment.Center
           ) {
             TabSelector(
+              modifier = Modifier.fillMaxWidth(),
               selected = uiState.tabSelected,
               tabs = WishlistsTab.entries.toList(),
               tabText = { tab -> tab.text() },
@@ -138,6 +151,23 @@ fun WishlistsListScreen(
         }
       }
     }
+
+    WishlistsSettingsBottomSheet(
+      visible = isSettingsModalOpen,
+      sheetState = settingsSheetState,
+      onDismiss = { isSettingsModalOpen = false },
+      onSettingClick = { setting ->
+        when (setting) {
+          WishlistsSettings.Search -> {
+            // TODO
+          }
+          WishlistsSettings.Filter -> {
+            // TODO
+          }
+          WishlistsSettings.AdminCategories -> onAdminCategories()
+        }
+      }
+    )
 
     uiState.error?.let { error ->
       ErrorDialog(
@@ -158,8 +188,13 @@ fun WishlistsListEmptyScreen(
   uiState: WishlistsListUiState.Empty,
   onTabClick: (tab: WishlistsTab) -> Unit,
   onCreateWishlist: () -> Unit,
+  onAdminCategories: () -> Unit,
   onDismissError: () -> Unit,
 ) {
+
+  var isSettingsModalOpen by remember { mutableStateOf(false) }
+  val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
   Box(
     modifier = Modifier
       .fillMaxSize()
@@ -216,7 +251,7 @@ fun WishlistsListEmptyScreen(
       ) {
 
         TabSelector(
-          modifier = Modifier.align(Alignment.CenterHorizontally),
+          modifier = Modifier.fillMaxWidth(),
           selected = uiState.tabSelected,
           tabs = WishlistsTab.entries.toList(),
           tabText = { tab -> tab.text() },
@@ -238,6 +273,23 @@ fun WishlistsListEmptyScreen(
       }
     }
 
+    WishlistsSettingsBottomSheet(
+      visible = isSettingsModalOpen,
+      sheetState = settingsSheetState,
+      onDismiss = { isSettingsModalOpen = false },
+      onSettingClick = { setting ->
+        when (setting) {
+          WishlistsSettings.Search -> {
+            // TODO
+          }
+          WishlistsSettings.Filter -> {
+            // TODO
+          }
+          WishlistsSettings.AdminCategories -> onAdminCategories()
+        }
+      }
+    )
+
     uiState.error?.let { error ->
       ErrorDialog(
         uiModel = error,
@@ -247,6 +299,54 @@ fun WishlistsListEmptyScreen(
 
     if (uiState.isLoading) {
       Loader(modifier = Modifier.fillMaxSize())
+    }
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun WishlistsListLoadingScreen(
+  uiState: WishlistsListUiState.Loading,
+  onTabClick: (tab: WishlistsTab) -> Unit,
+) {
+  Box(
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(bottom = 72.dp) // Bottom bar
+  ) {
+    Scaffold(
+      modifier = Modifier.fillMaxSize(),
+      topBar = {
+        TopAppBar(
+          title = { Text(text = stringResource(R.string.wishlists)) },
+        )
+      }
+    ) { paddings ->
+      Column(
+        modifier = Modifier
+          .fillMaxSize()
+          .verticalScroll(rememberScrollState())
+          .padding(paddings)
+          .padding(
+            horizontal = 16.dp,
+            vertical = 24.dp
+          ),
+        verticalArrangement = Arrangement.Center
+      ) {
+
+        TabSelector(
+          modifier = Modifier.fillMaxWidth(),
+          selected = uiState.tabSelected,
+          tabs = WishlistsTab.entries.toList(),
+          tabText = { tab -> tab.text() },
+          onClick = onTabClick
+        )
+
+        Loader(
+          modifier = Modifier.weight(1f),
+          containerColor = Color.Transparent
+        )
+      }
     }
   }
 }

@@ -10,16 +10,25 @@ fun WishlistsListRoute(
   viewModel: WishlistsListViewModel,
   onNavToNewWishlist: (isOwn: Boolean) -> Unit,
   onNavToWishlistDetail: (wishlist: Wishlist) -> Unit,
+  onNavToAdminCategories: () -> Unit,
 ) {
 
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
   when (val state = uiState) {
+
+    is WishlistsListUiState.Loading ->
+      WishlistsListLoadingScreen(
+        uiState = state,
+        onTabClick = viewModel::onTabClick,
+      )
+
     is WishlistsListUiState.Empty ->
       WishlistsListEmptyScreen(
         uiState = state,
         onTabClick = viewModel::onTabClick,
         onCreateWishlist = { onNavToNewWishlist(true) },
+        onAdminCategories = onNavToAdminCategories,
         onDismissError = viewModel::onDismissError
       )
 
@@ -29,6 +38,7 @@ fun WishlistsListRoute(
         onTabClick = viewModel::onTabClick,
         onCreateWishlist = { onNavToNewWishlist(true) },
         onWishlistClick = onNavToWishlistDetail,
+        onAdminCategories = onNavToAdminCategories,
         onDismissError = viewModel::onDismissError
       )
   }

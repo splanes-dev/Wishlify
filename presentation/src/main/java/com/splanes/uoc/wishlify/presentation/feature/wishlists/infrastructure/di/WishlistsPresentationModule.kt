@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.ed
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.mapper.WishlistFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.mapper.WishlistFormUiMapper
@@ -28,6 +29,7 @@ internal val WishlistsPresentationModule = module {
   singleOf(::WishlistsNavGraph) bind FeatureHomeNavGraph::class
   // ViewModels
   viewModelOf(::WishlistsListViewModel)
+  viewModelOf(::WishlistsCategoriesViewModel)
   viewModel { (isOwnWishlist: Boolean) ->
     WishlistsNewListViewModel(
       isOwnWishlist = isOwnWishlist,

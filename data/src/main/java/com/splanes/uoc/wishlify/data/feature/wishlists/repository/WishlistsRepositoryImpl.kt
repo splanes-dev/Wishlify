@@ -254,11 +254,28 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertWishlistItem(wishlistId = request.wishlist, entity = entity)
     }
 
+  override suspend fun updateCategory(
+    uid: String,
+    category: Category
+  ): Result<Unit> =
+    runCatching {
+      val entity = wishlistsMapper.mapCategory(category)
+      wishlistsRemoteDataSource.upsertCategory(uid, entity)
+    }
+
   override suspend fun deleteWishlistItem(
     wishlist: String,
     item: String
   ): Result<Unit> =
     runCatching {
       wishlistsRemoteDataSource.removeWishlistItem(wishlistId = wishlist, itemId = item)
+    }
+
+  override suspend fun deleteCategory(
+    uid: String,
+    category: String
+  ): Result<Unit> =
+    runCatching {
+      wishlistsRemoteDataSource.removeCategory(uid, category)
     }
 }

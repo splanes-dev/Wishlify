@@ -44,4 +44,5 @@
     <string name="confirmation_dialog_title_confirm">Confirmació</string>
     <string name="confirmation_dialog_description">Segur que vols continuar?\nAquesta acció no es pot desfer.</string>
     <string name="confirm">Confirmar</string>
+    <string name="options">Opcions</string>
 </resources>

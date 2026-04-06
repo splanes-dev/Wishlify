@@ -38,10 +38,7 @@ class WishlistsListViewModel(
       if (state.tabSelected == tab) {
         state
       } else {
-        state.copy(
-          tabSelected = tab,
-          isLoading = true
-        )
+        state.copy(tabSelected = tab)
       }
     }
     if (currentState.tabSelected != tab) {
@@ -60,7 +57,9 @@ class WishlistsListViewModel(
   }
 
   private fun fetchWishlists(tab: WishlistsTab) {
-    viewModelState.update { state -> state.copy(isLoading = true) }
+    viewModelState.update { state ->
+      state.copy(isLoadingFullscreen = true)
+    }
     viewModelScope.launch {
       val type = when (tab) {
         WishlistsTab.Own -> WishlistType.Own
@@ -71,7 +70,7 @@ class WishlistsListViewModel(
         .onSuccess { wishlists ->
           viewModelState.update { state ->
             state.copy(
-              isLoading = false,
+              isLoadingFullscreen = false,
               wishlists = wishlists,
             )
           }
@@ -79,7 +78,7 @@ class WishlistsListViewModel(
         .onFailure { error ->
           viewModelState.update { state ->
             state.copy(
-              isLoading = false,
+              isLoadingFullscreen = false,
               error = error,
             )
           }
@@ -90,12 +89,16 @@ class WishlistsListViewModel(
   private data class ViewModelState(
     val tabSelected: WishlistsTab = WishlistsTab.Own,
     val wishlists: List<Wishlist> = emptyList(),
+    val isLoadingFullscreen: Boolean = false,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
 
     fun toUiState(errorUiMapper: ErrorUiMapper) =
       when {
+        isLoadingFullscreen ->
+          WishlistsListUiState.Loading(tabSelected)
+
         wishlists.isEmptyState(tabSelected) ->
           WishlistsListUiState.Empty(
             tabSelected = tabSelected,

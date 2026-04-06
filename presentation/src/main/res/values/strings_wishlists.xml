@@ -15,6 +15,7 @@
     <string name="wishlists_new_list_description_input_support">Opcional. Màx. 200 caràcters</string>
     <string name="wishlists_new_category">Nova categoria</string>
     <string name="wishlists_create_category">Crear categoria</string>
+    <string name="wishlists_update_category">Modificar categoria</string>
     <string name="wishlists_create_category_color_description">Escull un color per la categoria</string>
     <string name="wishlists_create_category_already_exists_error">Ja existeix una categoria amb aquest nom.</string>
     <string name="wishlists_new_list_is_own_list_input">La wishlist és per a tu?</string>
@@ -66,4 +67,9 @@
     <string name="wishlists_item_purchased_info_description1">Comprat el dia</string>
     <string name="wishlists_item_purchased_info_description2"> per l\'usuari:</string>
     <string name="wishlists_edit_item_title">Editar producte</string>
+    <string name="wishlists_search">Cercar wishlist</string>
+    <string name="wishlists_filter">Filtrar wishlists</string>
+    <string name="wishlists_admin_categories">Administrar categories</string>
+    <string name="wishlists_admin_categories_title">Admin. Categories</string>
+    <string name="wishlists_admin_categories_empty">No tens categories creades.\nAquestes són útils per a poder classificar i filtrar les teves wishlists. Prova de crear-ne una i assignar-la a un llistat!</string>
 </resources>

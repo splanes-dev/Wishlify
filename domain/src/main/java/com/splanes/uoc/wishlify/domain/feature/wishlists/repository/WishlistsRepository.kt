@@ -39,4 +39,8 @@ interface WishlistsRepository {
   ): Result<Unit>
 
   suspend fun addCategory(uid: String, category: Category): Result<Unit>
+
+  suspend fun updateCategory(uid: String, category: Category): Result<Unit>
+
+  suspend fun deleteCategory(uid: String, category: String): Result<Unit>
 }

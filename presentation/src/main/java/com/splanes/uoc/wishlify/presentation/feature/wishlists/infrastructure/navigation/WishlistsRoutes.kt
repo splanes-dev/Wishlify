@@ -9,6 +9,9 @@ data object Wishlists {
   data object List
 
   @Serializable
+  data object Categories
+
+  @Serializable
   data class NewList(val isOwn: Boolean)
 
   @Serializable

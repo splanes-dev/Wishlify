@@ -3,12 +3,14 @@ package com.splanes.uoc.wishlify.domain.feature.wishlists.infrastructure.di
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateCategoryUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateWishlistUseCase
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteCategoryUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchCategoriesUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistsUseCase
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.UpdateCategoryUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.UpdateWishlistItemPurchaseUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.UpdateWishlistItemUseCase
 import org.koin.core.module.dsl.singleOf
@@ -25,6 +27,8 @@ internal val WishlistsDomainModule = module {
   singleOf(::CreateWishlistUseCase)
   singleOf(::CreateWishlistItemUseCase)
   singleOf(::DeleteWishlistItemUseCase)
+  singleOf(::DeleteCategoryUseCase)
   singleOf(::UpdateWishlistItemUseCase)
   singleOf(::UpdateWishlistItemPurchaseUseCase)
+  singleOf(::UpdateCategoryUseCase)
 }

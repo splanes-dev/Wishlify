@@ -177,17 +177,18 @@ class WishlistsRemoteDataSource(
     }
   }
 
-  suspend fun removeCategory(uid: String, category: CategoryEntity) {
+  suspend fun removeCategory(uid: String, category: String) {
     try {
       db.withBatch { batch ->
         // Delete category
-        val ref = categoriesOf(uid).document(category.id)
+        val ref = categoriesOf(uid).document(category)
         batch.delete(ref)
 
         // Delete the uses of the category
         val affected = wishlists
-          .whereEqualTo("category.id", category.id)
+          .whereEqualTo("category.id", category)
           .whereEqualTo("category.owner", uid)
+          .whereArrayContains("editors", uid)
           .get()
           .await()
           .documents

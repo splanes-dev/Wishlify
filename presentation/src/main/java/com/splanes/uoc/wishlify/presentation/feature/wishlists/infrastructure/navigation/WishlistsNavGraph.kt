@@ -20,6 +20,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.cr
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.edition.WishlistEditItemRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListRoute
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
@@ -79,7 +80,20 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
           onNavToWishlistDetail = { wishlist ->
             val route = Wishlists.Detail(wishlist.id, name = wishlist.title)
             navController.navigate(route)
+          },
+          onNavToAdminCategories = {
+            navController.navigate(Wishlists.Categories)
           }
+        )
+      }
+
+      composable<Wishlists.Categories>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit,
+      ) {
+        WishlistsCategoriesRoute(
+          viewModel = koinViewModel(),
+          onBack = { navController.popBackStack() }
         )
       }
 

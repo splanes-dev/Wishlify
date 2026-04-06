@@ -5,6 +5,11 @@ import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsTab
 
 sealed interface WishlistsListUiState {
+
+  data class Loading(
+    val tabSelected:  WishlistsTab,
+  ) : WishlistsListUiState
+
   data class Empty(
     val tabSelected:  WishlistsTab,
     val isLoading: Boolean,

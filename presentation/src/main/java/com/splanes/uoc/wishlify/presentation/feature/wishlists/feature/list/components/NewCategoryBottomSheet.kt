@@ -47,16 +47,20 @@ fun NewCategoryBottomSheet(
   isVisible: Boolean,
   sheetState: SheetState,
   error: String?,
+  initial: Category? = null,
   onClearInputError: () -> Unit,
   onDismiss: () -> Unit,
   onCreate: (name: String, color: Category.CategoryColor) -> Unit,
 ) {
   if (isVisible) {
     val nameInputState = rememberTextInputState(
+      initialValue = initial?.name.orEmpty(),
       onClearError = onClearInputError
     )
 
-    var colorSelected by remember { mutableStateOf(Category.CategoryColor.Purple) }
+    var colorSelected by remember {
+      mutableStateOf(initial?.color ?: Category.CategoryColor.Purple)
+    }
 
     val isButtonEnabled by remember {
       derivedStateOf {
@@ -79,7 +83,13 @@ fun NewCategoryBottomSheet(
       ) {
         Text(
           modifier = Modifier.fillMaxWidth(),
-          text = stringResource(R.string.wishlists_create_category),
+          text = stringResource(
+            if (initial != null) {
+              R.string.wishlists_update_category
+            } else {
+              R.string.wishlists_create_category
+            }
+          ),
           style = WishlifyTheme.typography.titleLarge,
           color = WishlifyTheme.colorScheme.onSurface
         )
@@ -124,7 +134,15 @@ fun NewCategoryBottomSheet(
             )
           },
         ) {
-          ButtonText(text = stringResource(R.string.create))
+          ButtonText(
+            text = stringResource(
+              if (initial != null) {
+                R.string.edit
+              } else {
+                R.string.create
+              }
+            )
+          )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
