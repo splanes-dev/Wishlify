@@ -56,7 +56,7 @@ class GroupsListViewModel(
 
   private data class ViewModelState(
     val groups: List<Group.Basic> = emptyList(),
-    val isLoadingFullscreen: Boolean = false,
+    val isLoadingFullscreen: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {

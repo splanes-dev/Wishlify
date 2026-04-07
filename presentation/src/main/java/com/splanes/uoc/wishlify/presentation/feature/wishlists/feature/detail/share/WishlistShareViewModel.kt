@@ -96,6 +96,22 @@ class WishlistShareViewModel(
     }
   }
 
+  fun onGroupCreationResult(created: Boolean) {
+    if (created) {
+      viewModelState.update { state -> state.copy(isLoading = true) }
+      viewModelScope.launch {
+        val result = fetchGroupsUseCase()
+        viewModelState.update { state ->
+          state.copy(
+            groups = result.getOrDefault(state.groups),
+            isLoading = false,
+            error = result.exceptionOrNull()
+          )
+        }
+      }
+    }
+  }
+
   fun onClearDateError() {
     viewModelState.update { state -> state.copy(inputDateError = null) }
   }

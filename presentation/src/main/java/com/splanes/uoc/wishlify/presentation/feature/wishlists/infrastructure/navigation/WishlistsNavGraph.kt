@@ -14,11 +14,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.feature.groups.infrastructure.navigation.Groups
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.WishlistDetailRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.WishlistDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.creation.WishlistNewItemRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.edition.WishlistEditItemRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.WishlistShareRoute
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.WishlistShareViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesRoute
@@ -193,9 +195,15 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         exitTransition = Transitions.SlideInFromBottom.exit,
       ) { backStackEntry ->
         val route = backStackEntry.toRoute<Wishlists.ShareList>()
+        val viewModel = koinViewModel<WishlistShareViewModel> { parametersOf(route.wishlistId) }
+
+        navController.NavResultHandler<Boolean>(key = NavResult.NEW_GROUP) { created ->
+          viewModel.onGroupCreationResult(created)
+        }
+
         WishlistShareRoute(
-          viewModel = koinViewModel { parametersOf(route.wishlistId) },
-          onNavToNewGroup = { /* TODO */ },
+          viewModel = viewModel,
+          onNavToNewGroup = { navController.navigate(Groups.NewGroup) },
           onFinish = {
             navController.popBackStackWithResult(
               key = NavResult.SHARE_WISHLIST,
@@ -213,4 +221,5 @@ private object NavResult {
   const val NEW_ITEM = "new-item"
   const val UPDATE_ITEM = "update-item"
   const val SHARE_WISHLIST = "share-wishlist"
+  const val NEW_GROUP = "new-group"
 }
