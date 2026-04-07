@@ -27,4 +27,18 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
   }
+
+  suspend fun countSharedWishlistsByGroup(groupId: String) =
+    try {
+      sharedWishlists
+        .whereEqualTo("group", groupId)
+        .get()
+        .await()
+        .count()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
 }

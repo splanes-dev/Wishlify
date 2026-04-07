@@ -13,3 +13,14 @@
 .externalNativeBuild
 .cxx
 local.properties
+node_modules/
+functions/node_modules/
+functions/lib/
+functions/.env
+functions/.runtimeconfig.json
+*.log
+*.jks
+*.keystore
+*.pem
+*.p12
+serviceAccountKey.json

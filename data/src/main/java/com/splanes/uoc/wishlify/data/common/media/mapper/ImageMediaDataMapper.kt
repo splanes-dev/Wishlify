@@ -29,14 +29,17 @@ class ImageMediaDataMapper {
 
   fun pathOf(path: ImageMediaPath): String =
     when (path) {
-      is ImageMediaPath.WishlistCover -> {
+      is ImageMediaPath.WishlistCover ->
         WISHLIST_COVER.format(path.wishlistId)
-      }
 
       is ImageMediaPath.WishlistItem ->
         WISHLIST_ITEM_PHOTO.format(path.wishlistId, path.itemId)
+
+      is ImageMediaPath.Group ->
+        GROUP_PHOTO.format(path.groupId)
     }
 }
 
 private const val WISHLIST_COVER = "wishlists/%s/cover"
 private const val WISHLIST_ITEM_PHOTO = "wishlists/%s/items/%s"
+private const val GROUP_PHOTO = "groups/%s"

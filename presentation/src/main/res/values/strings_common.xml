@@ -22,6 +22,8 @@
     <string name="back">Enrere</string>
     <string name="btn_continue">Continuar</string>
     <string name="settings">Configuració</string>
+    <string name="close">Tancar</string>
+    <string name="save">Desar</string>
     <string name="share">Compartir</string>
     <string name="cancel">Cancel·lar</string>
     <string name="or">o</string>
@@ -46,4 +48,5 @@
     <string name="confirmation_dialog_description">Segur que vols continuar?\nAquesta acció no es pot desfer.</string>
     <string name="confirm">Confirmar</string>
     <string name="options">Opcions</string>
+    <string name="searcher">Cercador</string>
 </resources>

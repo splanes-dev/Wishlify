@@ -28,4 +28,18 @@ class GroupsRemoteDataSource(
       Timber.e(e)
       throw GenericError.Unknown(cause = e)
     }
+
+  suspend fun addGroup(entity: GroupEntity) {
+    try {
+      groups
+        .document(entity.id)
+        .set(entity)
+        .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
 }

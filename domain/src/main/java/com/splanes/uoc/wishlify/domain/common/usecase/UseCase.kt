@@ -12,16 +12,18 @@ abstract class UseCase {
 
   suspend fun <T> execute(
     timeout: Long = this.timeout,
-    block: suspend () -> T
-  ): T =
+    block: suspend () -> Result<T>
+  ): Result<T> =
     withContext(Dispatchers.Default) {
-      try {
-        withTimeout(timeout) {
-          block()
+      runCatching {
+        try {
+          withTimeout(timeout) {
+            block().getOrThrow()
+          }
+        } catch (err: TimeoutCancellationException) {
+          Timber.e(err)
+          throw GenericError.RequestTimeout()
         }
-      } catch (err: TimeoutCancellationException) {
-        Timber.e(err)
-        throw GenericError.RequestTimeout()
       }
     }
 

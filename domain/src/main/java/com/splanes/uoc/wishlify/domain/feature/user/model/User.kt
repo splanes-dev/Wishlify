@@ -4,6 +4,7 @@ sealed class User {
 
   data class Basic(
     val uid: String,
-    val username: String
+    val username: String,
+    val code: String,
   )
 }

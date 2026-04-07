@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="groups">Grups</string>
+    <string name="groups_list_empty_state_description">No tens cap grup creat.\nForma un grup per a compartir les teves llistes, esdeveniments d\'amic invisible i molt més de forma senzilla.</string>
+    <string name="groups_list_member_count">%d membres</string>
+    <string name="groups_state_active">Actiu</string>
+    <string name="groups_state_inactive">Inactiu</string>
+    <string name="groups_new_group">Crear grup</string>
+    <string name="groups_new_group_name_input_label">Nom del grup</string>
+    <string name="groups_new_group_members_input_label">Participants</string>
+    <string name="groups_new_group_members_input_error">El grup no pot tenir menys d\'1 participant o més de 15</string>
+    <string name="groups_search_users">Cercar usuaris</string>
+    <string name="groups_search_users_description">Cerca usuaris per correu electrònic o per identificador d’usuari.</string>
+    <string name="groups_search_users_remove">Esborrar usuari</string>
+    <string name="groups_search_users_results_title">Resultats de la cerca</string>
+    <string name="groups_search_users_results_added_title">Usuaris seleccionats</string>
+    <string name="groups_search_users_results_empty">No hi ha resultats per la cerca entrada</string>
+    <string name="groups_new_group_members_input_empty_description">No has afegit cap participant.\nCerca usuaris per correu o per identificador.</string>
+    <string name="groups_search_users_info_banner_title">No trobes l\'identificador d\'usuari?</string>
+    <string name="groups_search_users_info_banner_description">L’identificador de cada usuari es pot veure a la secció del perfil. Sol·licita a les persones que desitges afegir que te’l facilitin.</string>
+</resources>

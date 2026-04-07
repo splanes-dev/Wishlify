@@ -16,6 +16,9 @@ val FirebaseFirestore.sharedWishlists
 val FirebaseFirestore.groups
   get() = collection(Collections.GROUPS)
 
+val FirebaseFirestore.systemUidByEmail
+  get() = collection(Collections.SYSTEM_UID_BY_MAIL)
+
 // Subcollections
 val DocumentReference.wishlistCategories
   get() = collection(Subcollections.CATEGORIES)
@@ -31,6 +34,7 @@ private object Collections {
   const val WISHLISTS = "wishlists"
   const val SHARED_WISHLISTS = "shared-wishlists"
   const val GROUPS = "groups"
+  const val SYSTEM_UID_BY_MAIL = "system--uid-by-mail"
 }
 
 private object Subcollections {

@@ -16,7 +16,6 @@ fun WishlistsListRoute(
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
   when (val state = uiState) {
-
     is WishlistsListUiState.Loading ->
       WishlistsListLoadingScreen(
         uiState = state,

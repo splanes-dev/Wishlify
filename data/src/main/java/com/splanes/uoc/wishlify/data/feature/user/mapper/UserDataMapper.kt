@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.user.mapper
 import com.splanes.uoc.wishlify.data.feature.user.model.UserBasic
 import com.splanes.uoc.wishlify.data.feature.user.model.UserEntity
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
+import com.splanes.uoc.wishlify.domain.feature.user.utils.newUserCode
 
 class UserDataMapper {
 
@@ -11,6 +12,7 @@ class UserDataMapper {
       uid = uid,
       username = username,
       photoUrl = photoUrl,
+      code = newUserCode(),
       hobbies = UserEntity.Hobbies(
         enabled = false,
         values = emptyList()
@@ -35,12 +37,14 @@ class UserDataMapper {
   fun mapToBasic(entity: UserEntity): UserBasic =
     UserBasic(
       uid = entity.uid,
-      username = entity.username
+      username = entity.username,
+      code = entity.code
     )
 
   fun map(basic: UserBasic): User.Basic =
     User.Basic(
       uid = basic.uid,
-      username = basic.username
+      username = basic.username,
+      code = basic.code
     )
 }
