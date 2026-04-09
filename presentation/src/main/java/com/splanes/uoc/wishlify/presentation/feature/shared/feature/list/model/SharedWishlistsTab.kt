@@ -1,0 +1,6 @@
+package com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.model
+
+enum class SharedWishlistsTab {
+  Own,
+  ThirdParty,
+}

@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Sell
@@ -154,16 +156,17 @@ fun WishlistsListScreen(
         modifier = Modifier
           .fillMaxSize()
           .padding(paddings),
-        contentPadding = PaddingValues(
-          horizontal = 16.dp,
-          vertical = 24.dp
-        ),
+        contentPadding = PaddingValues(vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
       ) {
         stickyHeader {
           Box(
             modifier = Modifier
               .fillMaxWidth()
+              .background(
+                color = WishlifyTheme.colorScheme.surface,
+                shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+              )
               .padding(bottom = 4.dp),
             contentAlignment = Alignment.Center
           ) {
@@ -177,9 +180,15 @@ fun WishlistsListScreen(
           }
         }
 
-        items(wishlists) { wishlist ->
+        items(
+          items = wishlists,
+          key = { item -> item.id }
+        ) { wishlist ->
           WishlistCard(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 16.dp)
+              .animateItem(),
             wishlist = wishlist,
             onSettingsClick = {},
             onClick = { onWishlistClick(wishlist) }

@@ -173,7 +173,7 @@ fun WishlistDetailScreen(
           WishlistItemCard(
             modifier = Modifier.animateItem(),
             item = item,
-            onSettingsClick = {},
+            onSettingsClick = { /* TODO */ },
             onClick = { onItemAction(item, WishlistItemAction.Open) }
           )
         }

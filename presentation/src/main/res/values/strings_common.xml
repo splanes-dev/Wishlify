@@ -23,8 +23,13 @@
     <string name="btn_continue">Continuar</string>
     <string name="settings">Configuració</string>
     <string name="close">Tancar</string>
+    <string name="finished">Finalitzada</string>
     <string name="save">Desar</string>
     <string name="share">Compartir</string>
+    <string name="filter">Filtrar</string>
+    <string name="deadline">Data límit</string>
+    <string name="update">Actualitzar</string>
+    <string name="and">i</string>
     <string name="cancel">Cancel·lar</string>
     <string name="or">o</string>
     <string name="pick_image">Selecciona una imatge</string>
@@ -49,4 +54,5 @@
     <string name="confirm">Confirmar</string>
     <string name="options">Opcions</string>
     <string name="searcher">Cercador</string>
+    <string name="chat">Xat</string>
 </resources>

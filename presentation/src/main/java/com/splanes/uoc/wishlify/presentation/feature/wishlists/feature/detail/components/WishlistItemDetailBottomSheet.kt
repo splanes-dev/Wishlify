@@ -287,17 +287,19 @@ private fun ItemPrice(item: WishlistItem) {
       )
     }
 
-    Spacer(Modifier.width(6.dp))
+    if (item.amount > 1) {
+      Spacer(Modifier.width(6.dp))
 
-    Text(
-      modifier = Modifier.padding(bottom = 4.dp),
-      text = stringResource(
-        R.string.wishlists_item_price_per_unit,
-        item.unitPrice.formatPrice(includeCurrency = false)
-      ),
-      style = WishlifyTheme.typography.labelSmall,
-      color = WishlifyTheme.colorScheme.onSurfaceVariant
-    )
+      Text(
+        modifier = Modifier.padding(bottom = 4.dp),
+        text = stringResource(
+          R.string.wishlists_item_price_per_unit,
+          item.unitPrice.formatPrice(includeCurrency = false)
+        ),
+        style = WishlifyTheme.typography.labelSmall,
+        color = WishlifyTheme.colorScheme.onSurfaceVariant
+      )
+    }
   }
 }
 

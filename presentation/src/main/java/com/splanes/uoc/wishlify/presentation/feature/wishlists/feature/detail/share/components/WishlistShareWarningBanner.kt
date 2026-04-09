@@ -17,12 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
 @Composable
@@ -61,7 +60,7 @@ fun WishlistShareWarningBanner(
 
       Text(
         modifier = Modifier.padding(start = 28.dp),
-        text = AnnotatedString.fromHtml(stringResource(R.string.wishlists_share_banner_info_description)),
+        text = htmlString(R.string.wishlists_share_banner_info_description),
         textAlign = TextAlign.Justify,
         style = WishlifyTheme.typography.bodySmall,
         color = WishlifyTheme.colorScheme.onWarningContainer,

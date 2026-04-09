@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shared_wishlists">Wishlists compartides</string>
+    <string name="shared_wishlists_list_tab_own">Meves</string>
+    <string name="shared_wishlists_list_tab_third_party">Dels altres</string>
+    <string name="shared_wishlists_list_own_empty_state_description">Encara no has compartit cap llista.\nComparteix-ne una per començar a organitzar-te amb els altres.</string>
+    <string name="shared_wishlists_list_others_empty_state_description">Encara no t’han compartit cap llista.\nDemana als teus amics o familiars que en comparteixin una per poder coordinar-vos millor.</string>
+    <plurals name="shared_wishlists_list_participants_card">
+        <item quantity="zero">Sense participants</item>
+        <item quantity="one">%d participant</item>
+        <item quantity="other">%d participants</item>
+    </plurals>
+    <plurals name="shared_wishlists_available_items_count">
+        <item quantity="zero">No hi ha ítems disponibles</item>
+        <item quantity="one">%d ítem disponible</item>
+        <item quantity="other">%d ítems disponibles</item>
+    </plurals>
+    <string name="shared_wishlists_detail_participants_header">%d participants</string>
+    <string name="shared_wishlists_item_state_lock">Reservat</string>
+    <string name="shared_wishlists_item_state_purchased">Comprat</string>
+    <string name="shared_wishlists_item_state_share_request">Sol·licitud compartir</string>
+    <string name="shared_wishlists_items_collaborate_info_banner">Els productes en els quals participis apareixeran emmarcats</string>
+    <string name="shared_wishlists_item_state_title">Estat del producte</string>
+    <string name="shared_wishlists_item_state_available_description_text">Ja l’has comprat, el vols reservar perquè no se t’avancin o t’agradaria comprar-lo amb algú més?\n\nCanvia l’estat perquè tothom estigui assabentat</string>
+    <string name="shared_wishlists_item_state_lock_description_text">
+        <![CDATA[Aquest ítem ja ha estat reservat per <b>%s</b> el %s.\n\nLa reserva es mantindrà fins al %s a les 23:59.]]>
+    </string>
+    <string name="shared_wishlists_item_state_purchased_description_text">
+        <![CDATA[Aquest ítem ja ha estat comprat per <b>%s</b> el %s.]]>
+    </string>
+    <string name="shared_wishlists_item_state_share_request_description_text">
+        <![CDATA[L\'usuari/ària <b>%s</b> desitja comprar aquest product amb %d persona/es més (entre %d persones en total). Vols unir-te?\n\nLa sol·licitud estarà activa fins al %s a les 23:59.]]>
+    </string>
+    <string name="shared_wishlists_item_state_selector_purchased">Comprat</string>
+    <string name="shared_wishlists_item_state_selector_lock">Reservat</string>
+    <string name="shared_wishlists_item_state_selector_request_share">Sol·licitar compartir</string>
+    <string name="shared_wishlists_item_state_selector_unlock">Anul·lar reserva</string>
+    <string name="shared_wishlists_item_state_selector_join_share_request">Unir-me a la sol·licitud</string>
+    <string name="shared_wishlists_item_state_selector_delete_share_request">Anul·lar sol·licitud</string>
+    <string name="shared_wishlists_item_state_selector_lock_supporting_text">
+        <![CDATA[La reserva es mantindrà <b>2 dies</b>, després tornarà a estar disponible de nou.]]>
+    </string>
+    <string name="shared_wishlists_item_state_selector_request_share_supporting_text">
+        <![CDATA[La sol·licitud es mantindrà <b>2 dies</b>, després tornarà a estar disponible de nou. Es notificarà de la sol·licitud al xat del grup.]]>
+    </string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_text">
+        <![CDATA[Indica amb quantes persones vols compartir-ho <b>(sense comptar-te a tu)</b>.]]>
+    </string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_label">Nombre de participants</string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_error">Nombre invàlid. Mínim 1 i màxim %d.</string>
+</resources>

@@ -1,6 +1,7 @@
 package com.splanes.uoc.wishlify.data.feature.groups.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.groups
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
 import com.splanes.uoc.wishlify.data.feature.groups.model.GroupEntity
@@ -22,6 +23,20 @@ class GroupsRemoteDataSource(
         .get()
         .await()
         .readAll()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+
+  suspend fun fetchGroupById(id: String): GroupEntity? =
+    try {
+      groups
+        .document(id)
+        .get()
+        .await()
+        .toObject()
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
     } catch (e: Throwable) {

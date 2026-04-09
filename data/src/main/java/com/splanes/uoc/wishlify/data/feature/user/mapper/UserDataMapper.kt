@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.data.feature.user.mapper
 
+import com.splanes.uoc.wishlify.data.common.utils.nowInMillis
 import com.splanes.uoc.wishlify.data.feature.user.model.UserBasic
 import com.splanes.uoc.wishlify.data.feature.user.model.UserEntity
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
@@ -29,8 +30,8 @@ class UserDataMapper {
         secretSantaDeadlineReminders = true,
       ),
       metadata = UserEntity.Metadata(
-        createdAt = System.currentTimeMillis(),
-        lastAccess = System.currentTimeMillis()
+        createdAt = nowInMillis(),
+        lastAccess = nowInMillis()
       )
     )
 

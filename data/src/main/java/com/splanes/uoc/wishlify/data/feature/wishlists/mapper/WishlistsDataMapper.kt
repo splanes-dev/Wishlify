@@ -1,6 +1,7 @@
 package com.splanes.uoc.wishlify.data.feature.wishlists.mapper
 
 import com.splanes.uoc.wishlify.data.common.media.mapper.ImageMediaDataMapper
+import com.splanes.uoc.wishlify.data.common.utils.nowInMillis
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.user.model.UserBasic
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.CategoryEntity
@@ -8,6 +9,8 @@ import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistItemEntity
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
+import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
+import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
@@ -135,10 +138,10 @@ class WishlistsDataMapper(
       editors = listOf(uid),
       editorInviteLink = request.editorInviteLink.token,
       createdBy = uid,
-      createdAt = System.currentTimeMillis(),
+      createdAt = nowInMillis(),
       lastUpdate = WishlistEntity.UpdateMetadata(
         updatedBy = uid,
-        updatedAt = System.currentTimeMillis()
+        updatedAt = nowInMillis()
       ),
     )
 
@@ -151,7 +154,7 @@ class WishlistsDataMapper(
       shareStatus = WishlistEntity.ShareStatus.Shared,
       sharedWishlistId = sharedWishlistId,
       lastUpdate = WishlistEntity.UpdateMetadata(
-        updatedAt = System.currentTimeMillis(),
+        updatedAt = nowInMillis(),
         updatedBy = uid
       )
     )
@@ -221,10 +224,10 @@ class WishlistsDataMapper(
       link = request.link,
       tags = request.tags,
       createdBy = uid,
-      createdAt = System.currentTimeMillis(),
+      createdAt = nowInMillis(),
       lastUpdate = WishlistItemEntity.UpdateMetadata(
         updatedBy = uid,
-        updatedAt = System.currentTimeMillis()
+        updatedAt = nowInMillis()
       ),
       purchased = null,
     )
@@ -255,16 +258,16 @@ class WishlistsDataMapper(
       link = request.link,
       tags = request.tags,
       createdBy = uid,
-      createdAt = System.currentTimeMillis(),
+      createdAt = nowInMillis(),
       lastUpdate = WishlistItemEntity.UpdateMetadata(
         updatedBy = uid,
-        updatedAt = System.currentTimeMillis()
+        updatedAt = nowInMillis()
       ),
       purchased = when (request.purchased) {
         UpdateWishlistItemRequest.Purchased ->
           WishlistItemEntity.PurchaseMetadata(
             purchasedBy = uid,
-            purchasedAt = System.currentTimeMillis()
+            purchasedAt = nowInMillis()
           )
 
         UpdateWishlistItemRequest.Available -> null
@@ -276,5 +279,30 @@ class WishlistsDataMapper(
           )
         }
       },
+    )
+
+  fun mapToLinkedWishlist(entity: WishlistEntity): SharedWishlist.LinkedWishlist =
+    SharedWishlist.LinkedWishlist(
+      id = entity.id,
+      name = entity.title,
+      photo = imageMediaMapper.map(entity.photo),
+      target = entity.target
+    )
+
+  fun mapToLinkedItem(entity: WishlistItemEntity): SharedWishlistItem.LinkedItem =
+    SharedWishlistItem.LinkedItem(
+      id = entity.id,
+      photoUrl = entity.photoUrl,
+      name = entity.name,
+      description = entity.description.orEmpty(),
+      store = entity.store.orEmpty(),
+      unitPrice = entity.unitPrice,
+      amount = entity.amount,
+      priority = when (entity.priority) {
+        WishlistItemEntity.Priority.Standard -> WishlistItem.Priority.Standard
+        WishlistItemEntity.Priority.Top -> WishlistItem.Priority.Top
+        WishlistItemEntity.Priority.Supertop -> WishlistItem.Priority.Supertop
+      },
+      link = entity.link.orEmpty(),
     )
 }

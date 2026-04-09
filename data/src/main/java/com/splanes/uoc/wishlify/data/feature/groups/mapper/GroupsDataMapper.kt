@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.data.feature.groups.mapper
 
+import com.splanes.uoc.wishlify.data.common.utils.nowInMillis
 import com.splanes.uoc.wishlify.data.feature.groups.model.GroupEntity
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.groups.model.CreateGroupRequest
@@ -26,6 +27,6 @@ class GroupsDataMapper {
       },
       members = request.members + uid,
       createdBy = uid,
-      createdAt = System.currentTimeMillis()
+      createdAt = nowInMillis()
     )
 }
