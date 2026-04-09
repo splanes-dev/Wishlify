@@ -226,9 +226,13 @@ fun SharedWishlistThirdPartyDetailLoadingScreen(
     topBar = {
       TopAppBar(
         title = {
-          Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+          if (uiState.target.isNotBlank()) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+              Text(text = uiState.wishlistName)
+              Text(text = uiState.target, style = WishlifyTheme.typography.bodySmall)
+            }
+          } else {
             Text(text = uiState.wishlistName)
-            Text(text = uiState.target, style = WishlifyTheme.typography.bodySmall)
           }
         },
         navigationIcon = {
@@ -276,9 +280,13 @@ fun SharedWishlistThirdPartyDetailErrorScreen(
     topBar = {
       TopAppBar(
         title = {
-          Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+          if (uiState.target.isNotBlank()) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+              Text(text = uiState.wishlistName)
+              Text(text = uiState.target, style = WishlifyTheme.typography.bodySmall)
+            }
+          } else {
             Text(text = uiState.wishlistName)
-            Text(text = uiState.target, style = WishlifyTheme.typography.bodySmall)
           }
         },
         navigationIcon = {

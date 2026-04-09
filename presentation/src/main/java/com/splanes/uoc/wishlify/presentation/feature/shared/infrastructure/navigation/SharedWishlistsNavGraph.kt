@@ -66,7 +66,14 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
       composable<SharedWishlists.List> {
         SharedWishlistsListRoute(
           viewModel = koinViewModel(),
-          onNavToOwnSharedWishlistDetail = {},
+          onNavToOwnSharedWishlistDetail = { wishlist ->
+            val route = SharedWishlists.OwnDetail(
+              sharedWishlistId = wishlist.id,
+              sharedWishlistName = wishlist.linkedWishlist.name,
+              target = wishlist.linkedWishlist.target.orEmpty()
+            )
+            navController.navigate(route)
+          },
           onNavToThirdPartySharedWishlistDetail = { wishlist ->
             val route = SharedWishlists.ThirdPartyDetail(
               sharedWishlistId = wishlist.id,
@@ -95,8 +102,20 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
         )
       }
 
-      composable<SharedWishlists.OwnDetail> {
-        SharedWishlistOwnDetailRoute()
+      composable<SharedWishlists.OwnDetail> { backStackEntry ->
+
+        val route = backStackEntry.toRoute<SharedWishlists.OwnDetail>()
+
+        SharedWishlistOwnDetailRoute(
+          viewModel = koinViewModel {
+            parametersOf(
+              route.sharedWishlistId,
+              route.sharedWishlistName,
+              route.target
+            )
+          },
+          onBack = { navController.popBackStack() }
+        )
       }
     }
   }

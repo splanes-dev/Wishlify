@@ -1,4 +1,4 @@
-package com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.components
+package com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -20,21 +21,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.utils.formatted
+import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 import java.util.Date
 
 @Composable
-fun SharedWishlistHeader(
+fun SharedOwnWishlistHeader(
   group: Group.Basic?,
   participantsCount: Int,
-  itemsAvailableCount: Int,
   deadline: Date,
   modifier: Modifier = Modifier,
 ) {
@@ -47,12 +46,20 @@ fun SharedWishlistHeader(
       verticalAlignment = Alignment.CenterVertically,
     ) {
       HeaderInfo(
-        icon = painterResource(R.drawable.ic_gift),
-        text = pluralStringResource(
-          R.plurals.shared_wishlists_available_items_count,
-          itemsAvailableCount,
-          itemsAvailableCount
-        )
+        icon = rememberVectorPainter(Icons.Outlined.Group),
+        text = when {
+          group != null && participantsCount != 0 ->
+            stringResource(
+              R.string.shared_wishlists_detail_participants_header,
+              group.membersCount + participantsCount
+            )
+
+          group != null -> group.name
+          else -> stringResource(
+            R.string.shared_wishlists_detail_participants_header,
+            participantsCount
+          )
+        }
       )
 
       Spacer(Modifier.weight(1f))
@@ -60,21 +67,10 @@ fun SharedWishlistHeader(
       Deadline(deadline)
     }
 
-    HeaderInfo(
-      icon = rememberVectorPainter(Icons.Outlined.Group),
-      text = when {
-        group != null && participantsCount != 0 ->
-          stringResource(
-            R.string.shared_wishlists_detail_participants_header,
-            group.membersCount + participantsCount
-          )
-
-        group != null -> group.name
-        else -> stringResource(
-          R.string.shared_wishlists_detail_participants_header,
-          participantsCount
-        )
-      }
+    InfoBanner(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 4.dp)
     )
 
     HorizontalDivider(
@@ -113,7 +109,7 @@ private fun HeaderInfo(
 @Composable
 private fun Deadline(deadline: Date) {
   Surface(
-    color = WishlifyTheme.colorScheme.tertiaryFixed,
+    color = WishlifyTheme.colorScheme.tertiaryContainer,
     shape = WishlifyTheme.shapes.extraSmall
   ) {
     Row(
@@ -136,6 +132,41 @@ private fun Deadline(deadline: Date) {
         text = deadline.time.formatted(),
         style = WishlifyTheme.typography.titleMedium,
         color = WishlifyTheme.colorScheme.onTertiaryContainer
+      )
+    }
+  }
+}
+
+@Composable
+private fun InfoBanner(modifier: Modifier = Modifier) {
+  Surface(
+    modifier = modifier,
+    shape = WishlifyTheme.shapes.small,
+    color = WishlifyTheme.colorScheme.secondaryContainer
+  ) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(
+          start = 8.dp,
+          top = 8.dp,
+          bottom = 8.dp
+        ),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Icon(
+        imageVector = Icons.Outlined.Info,
+        contentDescription = null,
+        tint = WishlifyTheme.colorScheme.onSecondaryContainer
+      )
+
+      Text(
+        modifier = Modifier
+          .weight(1f)
+          .padding(horizontal = 16.dp),
+        text = htmlString(R.string.shared_wishlists_own_wishlist_items_locked_info_banner),
+        style = WishlifyTheme.typography.bodySmall,
+        color = WishlifyTheme.colorScheme.onSecondaryContainer
       )
     }
   }

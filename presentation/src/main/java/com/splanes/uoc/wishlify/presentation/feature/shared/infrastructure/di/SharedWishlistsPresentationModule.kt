@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.di
 
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.SharedWishlistOwnDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.SharedWishlistThirdPartyDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.mapper.SharedWishlistItemStateErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.mapper.SharedWishlistItemUiMapper
@@ -30,6 +31,16 @@ internal val SharedWishlistsPresentationModule = module {
       itemUiMapper = get(),
       itemStateErrorMapper = get(),
       errorUiMapper = get()
+    )
+  }
+  viewModel { (wishlistId: String, wishlistName: String, target: String) ->
+    SharedWishlistOwnDetailViewModel(
+      sharedWishlistId = wishlistId,
+      sharedWishlistName = wishlistName,
+      target = target,
+      fetchSharedWishlistUseCase = get(),
+      fetchSharedWishlistItemsUseCase = get(),
+      errorUiMapper = get(),
     )
   }
 

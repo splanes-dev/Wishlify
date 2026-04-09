@@ -16,5 +16,9 @@ data object SharedWishlists {
   )
 
   @Serializable
-  data class OwnDetail(val sharedWishlistId: String, val sharedWishlistName: String)
+  data class OwnDetail(
+    val sharedWishlistId: String,
+    val sharedWishlistName: String,
+    val target: String
+  )
 }

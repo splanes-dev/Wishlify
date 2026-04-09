@@ -77,7 +77,7 @@ class SharedWishlistsRepositoryImpl(
         val numOfItemsDeferred = async {
           entities
             .map { entity ->
-              async { entity.id to sharedWishlistsRemoteDataSource.countSharedWishlistItems(entity.id) }
+              async { entity.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(entity.wishlist) }
             }
             .awaitAll()
             .toMap()
@@ -144,7 +144,7 @@ class SharedWishlistsRepositoryImpl(
         }
 
         val numOfItemsDeferred = async {
-          val count = sharedWishlistsRemoteDataSource.countSharedWishlistItems(entity.id)
+          val count = wishlistsRemoteDataSource.fetchWishlistItemsCount(entity.wishlist)
           mapOf(entity.id to count)
         }
 

@@ -177,7 +177,7 @@ class WishlistsDataMapper(
         WishlistItemEntity.Priority.Supertop -> WishlistItem.Priority.Supertop
       },
       link = entity.link.orEmpty(),
-      tags = entity.tags,
+      tags = entity.tags.filter { it.isNotBlank() },
       createdBy = users
         .first { u -> u.uid == entity.createdBy }
         .let(userDataMapper::map),

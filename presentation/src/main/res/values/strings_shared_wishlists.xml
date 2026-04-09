@@ -23,13 +23,13 @@
     <string name="shared_wishlists_item_state_title">Estat del producte</string>
     <string name="shared_wishlists_item_state_available_description_text">Ja l’has comprat, el vols reservar perquè no se t’avancin o t’agradaria comprar-lo amb algú més?\n\nCanvia l’estat perquè tothom estigui assabentat</string>
     <string name="shared_wishlists_item_state_lock_description_text">
-        <![CDATA[Aquest ítem ja ha estat reservat per <b>%s</b> el %s.\n\nLa reserva es mantindrà fins al %s a les 23:59.]]>
+        <![CDATA[Aquest ítem ja ha estat reservat per <b>%s</b> el %s.<br/><br/>La reserva es mantindrà fins al %s a les 23:59.]]>
     </string>
     <string name="shared_wishlists_item_state_purchased_description_text">
         <![CDATA[Aquest ítem ja ha estat comprat per <b>%s</b> el %s.]]>
     </string>
     <string name="shared_wishlists_item_state_share_request_description_text">
-        <![CDATA[L\'usuari/ària <b>%s</b> desitja comprar aquest product amb %d persona/es més (entre %d persones en total). Vols unir-te?\n\nLa sol·licitud estarà activa fins al %s a les 23:59.]]>
+        <![CDATA[L\'usuari/ària <b>%s</b> desitja comprar aquest product amb %d persona/es més (entre %d persones en total). Vols unir-te?<br/><br/>La sol·licitud estarà activa fins al %s a les 23:59.]]>
     </string>
     <string name="shared_wishlists_item_state_selector_purchased">Comprat</string>
     <string name="shared_wishlists_item_state_selector_lock">Reservat</string>
@@ -48,4 +48,7 @@
     </string>
     <string name="shared_wishlists_item_state_request_share_num_of_participants_label">Nombre de participants</string>
     <string name="shared_wishlists_item_state_request_share_num_of_participants_error">Nombre invàlid. Mínim 1 i màxim %d.</string>
+    <string name="shared_wishlists_own_wishlist_items_locked_info_banner">
+        <![CDATA[<b>La llista està bloquejada fins a la data límit.</b><br/>No serà possible afegir, editar o eliminar productes ja que podria afectar als altres usuaris.]]>
+    </string>
 </resources>
