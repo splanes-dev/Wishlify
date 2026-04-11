@@ -34,7 +34,10 @@ sealed interface WishlistDetailUiState {
     val items: List<WishlistItem>,
     val isLoading: Boolean,
     val error: ErrorUiModel?
-  ) : WishlistDetailUiState
+  ) : WishlistDetailUiState {
+
+    fun isShareable() = items.any { item -> item.purchased == null }
+  }
 }
 
 

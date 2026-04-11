@@ -106,18 +106,20 @@ fun SharedWishlistThirdPartyDetailScreen(
         )
       },
       floatingActionButton = {
-        // TODO: Badge
-        Box {
-          FloatingActionButton(
-            shape = WishlifyTheme.shapes.medium,
-            containerColor = WishlifyTheme.colorScheme.tertiaryContainer,
-            contentColor = WishlifyTheme.colorScheme.onTertiaryContainer,
-            onClick = onChatClick,
-          ) {
-            Text(
-              text = stringResource(R.string.chat),
-              style = WishlifyTheme.typography.titleMedium,
-            )
+        if (!uiState.wishlist.isFinished()) {
+          // TODO: Badge
+          Box {
+            FloatingActionButton(
+              shape = WishlifyTheme.shapes.medium,
+              containerColor = WishlifyTheme.colorScheme.tertiaryContainer,
+              contentColor = WishlifyTheme.colorScheme.onTertiaryContainer,
+              onClick = onChatClick,
+            ) {
+              Text(
+                text = stringResource(R.string.chat),
+                style = WishlifyTheme.typography.titleMedium,
+              )
+            }
           }
         }
       },
@@ -143,7 +145,7 @@ fun SharedWishlistThirdPartyDetailScreen(
           )
         }
 
-        if (uiState.isInfoBannerVisible) {
+        if (uiState.isInfoBannerVisible && !uiState.wishlist.isFinished()) {
           item(key = "banner") {
             SharedWishlistItemInfoBanner(
               modifier = Modifier

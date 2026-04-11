@@ -33,7 +33,8 @@ fun SharedWishlistsListRoute(
               onNavToThirdPartySharedWishlistDetail(wishlist)
           }
         },
-        onTabClick = viewModel::onTabClick
+        onTabClick = viewModel::onTabClick,
+        onSharedBackToPrivate = viewModel::onSharedBackToPrivate
       )
 
     is SharedWishlistsListUiState.Loading ->

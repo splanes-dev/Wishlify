@@ -69,7 +69,7 @@ class WishlistsNewListViewModel(
   fun onCreate(form: WishlistsNewListForm) {
     if (validateForm(form)) {
       val currentState = viewModelState.value
-      val request = wishlistFormUiMapper.requestOf(
+      val request = wishlistFormUiMapper.createWishlistRequestOf(
         isOwnWishlist = currentState.isOwnWishlist,
         categories = currentState.categories,
         editorLink = currentState.editorLink,

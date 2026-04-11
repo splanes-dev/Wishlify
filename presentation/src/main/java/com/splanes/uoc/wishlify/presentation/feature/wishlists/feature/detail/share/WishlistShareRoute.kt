@@ -9,14 +9,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun WishlistShareRoute(
   viewModel: WishlistShareViewModel,
   onNavToNewGroup: () -> Unit,
-  onFinish: (result: Boolean) -> Unit,
+  onFinish: (shared: Boolean, wishlistName: String?) -> Unit,
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
   LaunchedEffect(Unit) {
     viewModel.uiSideEffect.collect { effect ->
       when (effect) {
-        WishlistShareUiSideEffect.WishlistShared -> onFinish(true)
+        is WishlistShareUiSideEffect.WishlistShared -> onFinish(true, effect.wishlistName)
       }
     }
   }
@@ -24,12 +24,12 @@ fun WishlistShareRoute(
   when (val state = uiState) {
     WishlistShareUiState.Error ->
       WishlistShareErrorScreen(
-        onCancel = { onFinish(false) }
+        onCancel = { onFinish(false, null) }
       )
 
     WishlistShareUiState.Loading ->
       WishlistShareLoadingScreen(
-        onCancel = { onFinish(false) }
+        onCancel = { onFinish(false, null) }
       )
 
     is WishlistShareUiState.Share ->
@@ -39,7 +39,7 @@ fun WishlistShareRoute(
         onCreateGroup = onNavToNewGroup,
         onClearDateError = viewModel::onClearDateError,
         onDismissError = viewModel::onDismissError,
-        onCancel = { onFinish(false) }
+        onCancel = { onFinish(false, null) }
       )
   }
 }

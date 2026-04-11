@@ -25,6 +25,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.Wish
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListRoute
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.edition.WishlistsEditListRoute
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
@@ -76,8 +77,15 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         }
 
         // Result handler from share wishlist
-        navController.NavResultHandler<String>(key = NavResult.SHARE_WISHLIST) { sharedWishlistName ->
-          viewModel.onWishlistShared(sharedWishlistName)
+        navController.NavResultHandler<Pair<Boolean, String?>>(key = NavResult.SHARE_WISHLIST) { (shared, wishlistName) ->
+          if (shared) {
+            viewModel.onWishlistShared(wishlistName.orEmpty())
+          }
+        }
+
+        // Result handler from update wishlist
+        navController.NavResultHandler<Boolean>(key = NavResult.UPDATE_WISHLIST) { updated ->
+          viewModel.onUpdateWishlistResult(updated = updated)
         }
 
         WishlistsListRoute(
@@ -87,6 +95,14 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
           },
           onNavToWishlistDetail = { wishlist ->
             val route = Wishlists.Detail(wishlist.id, name = wishlist.title)
+            navController.navigate(route)
+          },
+          onNavToEditWishlist = { wishlist ->
+            val route = Wishlists.EditList(wishlistId = wishlist.id)
+            navController.navigate(route)
+          },
+          onNavToShareWishlist = { wishlist ->
+            val route = Wishlists.ShareList(wishlistId = wishlist.id)
             navController.navigate(route)
           },
           onNavToAdminCategories = {
@@ -112,7 +128,28 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         val route = backStackEntry.toRoute<Wishlists.NewList>()
         WishlistsNewListRoute(
           viewModel = koinViewModel { parametersOf(route.isOwn) },
-          onFinish = { navController.popBackStackWithResult(result = it) }
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.NEW_WISHLIST,
+              result = it
+            )
+          }
+        )
+      }
+
+      composable<Wishlists.EditList>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) { backStackEntry ->
+        val route = backStackEntry.toRoute<Wishlists.EditList>()
+        WishlistsEditListRoute(
+          viewModel = koinViewModel { parametersOf(route.wishlistId) },
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.UPDATE_WISHLIST,
+              result = it
+            )
+          }
         )
       }
 
@@ -136,13 +173,11 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         }
 
         // Result handler from share-wishlist
-        navController.NavResultHandler<Boolean>(key = NavResult.SHARE_WISHLIST) { shared ->
-          if (shared) {
-            navController.popBackStackWithResult(
-              key = NavResult.SHARE_WISHLIST,
-              result = route.name
-            )
-          }
+        navController.NavResultHandler<Pair<Boolean, String?>>(key = NavResult.SHARE_WISHLIST) { result ->
+          navController.popBackStackWithResult(
+            key = NavResult.SHARE_WISHLIST,
+            result = result
+          )
         }
 
         WishlistDetailRoute(
@@ -204,10 +239,10 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
         WishlistShareRoute(
           viewModel = viewModel,
           onNavToNewGroup = { navController.navigate(Groups.NewGroup) },
-          onFinish = {
+          onFinish = { shared, wishlistName ->
             navController.popBackStackWithResult(
               key = NavResult.SHARE_WISHLIST,
-              result = it
+              result = shared to wishlistName
             )
           }
         )
@@ -218,6 +253,7 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
 
 private object NavResult {
   const val NEW_WISHLIST = "new-wishlist"
+  const val UPDATE_WISHLIST = "update-wishlist"
   const val NEW_ITEM = "new-item"
   const val UPDATE_ITEM = "update-item"
   const val SHARE_WISHLIST = "share-wishlist"

@@ -8,6 +8,7 @@
     <string name="wishlists_list_others_empty_state_description">No tens llistes creades pels altres.\nNo esperis a l\'últim moment i comença a guardar desitjos pels teus amics i familiars.</string>
     <string name="wishlists_list_tab_own">Meves</string>
     <string name="wishlists_list_tab_others">Pels altres</string>
+    <string name="wishlists_edit_list_title">Editar wishlist</string>
     <string name="wishlists_new_list_title">Crear nova wishlist</string>
     <string name="wishlists_new_list_name_input">Nom wishlist</string>
     <string name="wishlists_new_list_third_party_input">Destinatari</string>
@@ -68,6 +69,7 @@
     <string name="wishlists_item_purchased_info_description2"> per l\'usuari:</string>
     <string name="wishlists_edit_item_title">Editar producte</string>
     <string name="wishlists_search">Cercar wishlist</string>
+    <string name="wishlists_search_description">Masses llistats i no trobes el que estàs buscant? Fes ús del cercador per trobar la wishlist:</string>
     <string name="wishlists_filter">Filtrar wishlists</string>
     <string name="wishlists_admin_categories">Administrar categories</string>
     <string name="wishlists_admin_categories_title">Admin. Categories</string>
@@ -87,5 +89,9 @@
     </string>
     <string name="wishlists_create_group">Crear nou grup</string>
     <string name="wishlists_shared_wishlist_feedback">Wishlist "%s" compartida correctament</string>
+    <string name="wishlists_share_wishlist_with_purchased_items_dialog">El llistat que vols compartir conté productes comprats.\nTingues en compte que únicament es compartiran aquells que estan disponibles.</string>
+    <string name="wishlists_item_edit">Editar wishlist</string>
+    <string name="wishlists_item_share">Compartir wishlist</string>
+    <string name="wishlists_item_delete">Eliminar wishlist</string>
 
 </resources>

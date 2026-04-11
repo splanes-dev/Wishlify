@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistType
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsTab
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 
 class WishlistsListViewModel(
   private val fetchWishlistsUseCase: FetchWishlistsUseCase,
+  private val deleteWishlistUseCase: DeleteWishlistUseCase,
   private val errorUiMapper: ErrorUiMapper
 ) : ViewModel() {
 
@@ -52,8 +54,34 @@ class WishlistsListViewModel(
     }
   }
 
+  fun onUpdateWishlistResult(updated: Boolean) {
+    if (updated) {
+      fetchWishlists(tab = viewModelState.value.tabSelected)
+    }
+  }
+
   fun onWishlistShared(name: String) {
     viewModelState.update { state -> state.copy(sharedWishlistFeedback = name) }
+  }
+
+  fun onDeleteWishlist(wishlist: Wishlist) {
+    viewModelState.update { state -> state.copy(isLoading = true) }
+    viewModelScope.launch {
+      deleteWishlistUseCase(wishlist)
+        .onSuccess {
+          viewModelState.update { state ->
+            state.copy(
+              isLoading = false,
+              wishlists = state.wishlists - wishlist
+            )
+          }
+        }
+        .onFailure { error ->
+          viewModelState.update { state ->
+            state.copy(isLoading = false, error = error)
+          }
+        }
+    }
   }
 
   fun onClearSharedWishlistFeedback() {
@@ -119,8 +147,8 @@ class WishlistsListViewModel(
         else ->
           WishlistsListUiState.Listing(
             tabSelected = tabSelected,
-            wishlistsOwn = wishlists.own(),
-            wishlistsThirdParty = wishlists.thirdParty(),
+            wishlistsOwn = wishlists.own().sortedByDescending { it.createdAt },
+            wishlistsThirdParty = wishlists.thirdParty().sortedByDescending { it.createdAt },
             sharedWishlistFeedback = sharedWishlistFeedback,
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)

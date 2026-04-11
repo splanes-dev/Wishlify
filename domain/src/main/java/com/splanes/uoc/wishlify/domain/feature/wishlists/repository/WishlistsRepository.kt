@@ -9,6 +9,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWis
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.ShareWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistItemRequest
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistRequest
 
 interface WishlistsRepository {
   suspend fun fetchWishlists(type: WishlistType, uid: String): Result<List<Wishlist>>
@@ -22,10 +23,18 @@ interface WishlistsRepository {
     request: CreateWishlistRequest
   ): Result<Unit>
 
+  suspend fun updateWishlist(
+    uid: String,
+    imageMedia: ImageMedia,
+    request: UpdateWishlistRequest
+  ): Result<Unit>
+
   suspend fun shareWishlist(
     uid: String,
     request: ShareWishlistRequest
   ): Result<Unit>
+
+  suspend fun deleteWishlist(wishlist: String): Result<Unit>
 
   suspend fun addWishlistItem(
     uid: String,

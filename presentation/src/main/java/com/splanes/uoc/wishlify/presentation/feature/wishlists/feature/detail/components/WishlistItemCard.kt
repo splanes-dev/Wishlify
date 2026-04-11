@@ -1,7 +1,6 @@
 package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,15 +26,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.R
-import com.splanes.uoc.wishlify.presentation.common.components.image.RemoteImage
+import com.splanes.uoc.wishlify.presentation.common.components.CardImage
 import com.splanes.uoc.wishlify.presentation.common.utils.capitalize
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.utils.color
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.utils.formatPrice
@@ -184,26 +183,11 @@ fun ItemImage(
       .width(135.dp)
       .fillMaxHeight()
   ) {
-    when (photoUrl) {
-      null -> {
-        Image(
-          modifier = Modifier
-            .fillMaxSize()
-            .background(color = WishlifyTheme.colorScheme.surfaceBright),
-          painter = painterResource(R.drawable.item_placeholder),
-          contentDescription = null,
-          contentScale = ContentScale.Crop
-        )
-      }
-
-      else -> {
-        RemoteImage(
-          modifier = Modifier.fillMaxSize(),
-          url = photoUrl,
-          contentScale = ContentScale.Crop
-        )
-      }
-    }
+    CardImage(
+      media = photoUrl?.let(ImageMedia::Url),
+      placeholder = painterResource(R.drawable.item_placeholder),
+      enabled = !purchased
+    )
 
     if (purchased) {
       Column(

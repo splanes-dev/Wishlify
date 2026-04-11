@@ -13,6 +13,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.cate
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.mapper.WishlistFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.mapper.WishlistFormUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.edition.WishlistsEditListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.Wishlists
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.WishlistsNavGraph
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.mapper.CategoryFormErrorMapper
@@ -43,6 +44,20 @@ internal val WishlistsPresentationModule = module {
       wishlistFormErrorMapper = get(),
       categoryFormErrorMapper = get(),
       categoryUiMapper = get(),
+      errorUiMapper = get(),
+    )
+  }
+  viewModel { (wishlistId: String) ->
+    WishlistsEditListViewModel(
+      wishlistId = wishlistId,
+      fetchCategoriesUseCase = get(),
+      fetchWishlistUseCase = get(),
+      updateWishlistUseCase = get(),
+      createCategoryUseCase = get(),
+      categoryUiMapper = get(),
+      wishlistFormUiMapper = get(),
+      wishlistFormErrorMapper = get(),
+      categoryFormErrorMapper = get(),
       errorUiMapper = get(),
     )
   }

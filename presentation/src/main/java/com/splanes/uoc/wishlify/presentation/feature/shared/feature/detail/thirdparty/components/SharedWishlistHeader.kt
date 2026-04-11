@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Group
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.Event
+import androidx.compose.material.icons.rounded.EventBusy
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -27,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.utils.formatted
+import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
+import com.splanes.uoc.wishlify.presentation.common.utils.isExpired
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 import java.util.Date
 
@@ -77,6 +81,14 @@ fun SharedWishlistHeader(
       }
     )
 
+    if (deadline.isExpired()) {
+      InfoBanner(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 4.dp)
+      )
+    }
+
     HorizontalDivider(
       modifier = Modifier
         .fillMaxWidth()
@@ -112,8 +124,35 @@ private fun HeaderInfo(
 
 @Composable
 private fun Deadline(deadline: Date) {
+
+  val expired = deadline.isExpired()
+
+  val containerColor = if (expired) {
+    WishlifyTheme.colorScheme.error.copy(alpha = .7f)
+  } else {
+    WishlifyTheme.colorScheme.tertiaryFixed
+  }
+
+  val contentColor = if (expired) {
+    WishlifyTheme.colorScheme.onError
+  } else {
+    WishlifyTheme.colorScheme.onTertiaryContainer
+  }
+
+  val icon = if (expired) {
+    Icons.Rounded.EventBusy
+  } else {
+    Icons.Rounded.Event
+  }
+
+  val text = if (expired) {
+    stringResource(R.string.finished)
+  } else {
+    deadline.time.formatted()
+  }
+
   Surface(
-    color = WishlifyTheme.colorScheme.tertiaryFixed,
+    color = containerColor,
     shape = WishlifyTheme.shapes.extraSmall
   ) {
     Row(
@@ -127,15 +166,50 @@ private fun Deadline(deadline: Date) {
     ) {
       Icon(
         modifier = Modifier.size(24.dp),
-        imageVector = Icons.Rounded.Event,
+        imageVector = icon,
         contentDescription = stringResource(R.string.deadline),
-        tint = WishlifyTheme.colorScheme.onTertiaryContainer
+        tint = contentColor
       )
 
       Text(
-        text = deadline.time.formatted(),
+        text = text,
         style = WishlifyTheme.typography.titleMedium,
-        color = WishlifyTheme.colorScheme.onTertiaryContainer
+        color = contentColor
+      )
+    }
+  }
+}
+
+@Composable
+private fun InfoBanner(modifier: Modifier = Modifier) {
+  Surface(
+    modifier = modifier,
+    shape = WishlifyTheme.shapes.small,
+    color = WishlifyTheme.colorScheme.secondaryContainer
+  ) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(
+          start = 8.dp,
+          top = 8.dp,
+          bottom = 8.dp
+        ),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Icon(
+        imageVector = Icons.Outlined.Info,
+        contentDescription = null,
+        tint = WishlifyTheme.colorScheme.onSecondaryContainer
+      )
+
+      Text(
+        modifier = Modifier
+          .weight(1f)
+          .padding(horizontal = 16.dp),
+        text = htmlString(R.string.shared_wishlists_third_party_wishlist_items_expired_info_banner),
+        style = WishlifyTheme.typography.bodySmall,
+        color = WishlifyTheme.colorScheme.onSecondaryContainer
       )
     }
   }

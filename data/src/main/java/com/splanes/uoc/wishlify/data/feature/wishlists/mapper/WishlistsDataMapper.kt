@@ -17,6 +17,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistItemRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistItemRequest
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistRequest
 import java.util.Date
 
 class WishlistsDataMapper(
@@ -43,6 +44,7 @@ class WishlistsDataMapper(
     entity: WishlistEntity,
     category: CategoryEntity?,
     numOfItemsMap: Map<String, Int>,
+    numOfNonPurchasedItemsMap: Map<String, Int>,
     users: List<UserBasic>,
   ): Wishlist =
     when (entity.type) {
@@ -67,6 +69,7 @@ class WishlistsDataMapper(
             .filter { u -> u.uid in entity.editors }
             .map(userDataMapper::map),
           numOfItems = numOfItemsMap[entity.id] ?: 0,
+          numOfNonPurchasedItems = numOfNonPurchasedItemsMap[entity.id] ?: 0,
           createdBy = users
             .first { u -> u.uid == entity.createdBy }
             .let(userDataMapper::map),
@@ -100,6 +103,7 @@ class WishlistsDataMapper(
             .filter { u -> u.uid in entity.editors }
             .map(userDataMapper::map),
           numOfItems = numOfItemsMap[entity.id] ?: 0,
+          numOfNonPurchasedItems = numOfNonPurchasedItemsMap[entity.id] ?: 0,
           createdBy = users
             .first { u -> u.uid == entity.createdBy }
             .let(userDataMapper::map),
@@ -139,6 +143,37 @@ class WishlistsDataMapper(
       editorInviteLink = request.editorInviteLink.token,
       createdBy = uid,
       createdAt = nowInMillis(),
+      lastUpdate = WishlistEntity.UpdateMetadata(
+        updatedBy = uid,
+        updatedAt = nowInMillis()
+      ),
+    )
+
+  fun wishlistFromRequest(
+    uid: String,
+    imageMedia: ImageMedia,
+    request: UpdateWishlistRequest
+  ): WishlistEntity =
+    WishlistEntity(
+      id = request.currentWishlist.id,
+      title = request.title,
+      description = request.description,
+      photo = imageMediaMapper.map(imageMedia),
+      type = when (request) {
+        is UpdateWishlistRequest.Own -> WishlistEntity.Type.Own
+        is UpdateWishlistRequest.ThirdParty -> WishlistEntity.Type.ThirdParty
+      },
+      target = (request as? UpdateWishlistRequest.ThirdParty)?.target,
+      category = request.category?.let { category ->
+        WishlistEntity.Category(
+          owner = uid,
+          id = category.id
+        )
+      },
+      editors = listOf(uid),
+      editorInviteLink = request.editorInviteLink.token,
+      createdBy = request.currentWishlist.createdBy.uid,
+      createdAt = request.currentWishlist.createdAt.time,
       lastUpdate = WishlistEntity.UpdateMetadata(
         updatedBy = uid,
         updatedAt = nowInMillis()

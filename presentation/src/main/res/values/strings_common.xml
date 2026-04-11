@@ -55,4 +55,6 @@
     <string name="options">Opcions</string>
     <string name="searcher">Cercador</string>
     <string name="chat">Xat</string>
+    <string name="search_results">Resultats de la cerca:</string>
+    <string name="search_results_no_results_prompt">No hi ha resultats</string>
 </resources>

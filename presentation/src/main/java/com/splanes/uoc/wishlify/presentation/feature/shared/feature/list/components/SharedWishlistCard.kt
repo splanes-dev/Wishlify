@@ -1,15 +1,12 @@
 package com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,22 +22,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.presentation.R
-import com.splanes.uoc.wishlify.presentation.common.components.image.ImagePreset
-import com.splanes.uoc.wishlify.presentation.common.components.image.RemoteImage
+import com.splanes.uoc.wishlify.presentation.common.components.CardImage
+import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonCustom
 import com.splanes.uoc.wishlify.presentation.common.utils.formatted
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
@@ -52,7 +47,9 @@ fun SharedWishlistCard(
   onClick: () -> Unit,
 ) {
   Card(
-    modifier = modifier.height(120.dp),
+    modifier = modifier
+      .height(120.dp)
+      .alpha(if (sharedWishlist.isFinished()) .7f else 1f),
     shape = WishlifyTheme.shapes.small,
     border = BorderStroke(
       width = 1.dp,
@@ -64,29 +61,10 @@ fun SharedWishlistCard(
     onClick = onClick
   ) {
     Row(modifier = Modifier.fillMaxWidth()) {
-      when (val image = sharedWishlist.linkedWishlist.photo) {
-        is ImageMedia.Preset -> {
-          val preset = remember(image) { ImagePreset.findById(image.id.toInt()) }
-          Image(
-            modifier = Modifier
-              .width(135.dp)
-              .fillMaxHeight()
-              .background(color = WishlifyTheme.colorScheme.surfaceBright),
-            painter = painterResource(preset.res),
-            contentDescription = preset.name,
-            contentScale = ContentScale.Crop
-          )
-        }
-        is ImageMedia.Url -> {
-          RemoteImage(
-            modifier = Modifier
-              .width(135.dp)
-              .fillMaxHeight(),
-            url = image.url,
-            contentScale = ContentScale.Crop
-          )
-        }
-      }
+      CardImage(
+        media = sharedWishlist.linkedWishlist.photo,
+        enabled = !sharedWishlist.isFinished()
+      )
 
       Column(
         modifier = Modifier
@@ -103,18 +81,16 @@ fun SharedWishlistCard(
             overflow = TextOverflow.Ellipsis
           )
 
-          when {
-            sharedWishlist.isFinished() -> {
-              Icon(
-                modifier = Modifier
-                  .size(16.dp)
-                  .clickable { onSettingsClick() },
+          when (sharedWishlist) {
+            is SharedWishlist.Own if sharedWishlist.isFinished() -> {
+              IconButtonCustom(
                 painter = painterResource(R.drawable.ic_item_settings),
-                tint = WishlifyTheme.colorScheme.onSurface,
-                contentDescription = null
+                contentColor = WishlifyTheme.colorScheme.onSurface,
+                onClick = onSettingsClick
               )
             }
-            sharedWishlist is SharedWishlist.ThirdParty && sharedWishlist.pendingNotificationsCount != 0 -> {
+
+            is SharedWishlist.ThirdParty if sharedWishlist.pendingNotificationsCount != 0 -> {
               val count = sharedWishlist.pendingNotificationsCount
               Box(
                 modifier = Modifier
@@ -131,6 +107,10 @@ fun SharedWishlistCard(
                   color = WishlifyTheme.colorScheme.onError
                 )
               }
+            }
+
+            else -> {
+              // Nothing to do
             }
           }
         }
@@ -239,13 +219,13 @@ private fun DateInfo(
   if (sharedWishlist.isFinished()) {
     Surface(
       shape = WishlifyTheme.shapes.extraSmall,
-      color = WishlifyTheme.colorScheme.errorContainer
+      border = BorderStroke(width = 1.dp, color = WishlifyTheme.colorScheme.outline)
     ) {
       Text(
         modifier = Modifier.padding(4.dp),
         text = stringResource(R.string.finished),
         style = WishlifyTheme.typography.labelSmall,
-        color = WishlifyTheme.colorScheme.error
+        color = WishlifyTheme.colorScheme.onSurface
       )
     }
   } else {

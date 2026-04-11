@@ -1,5 +1,7 @@
 package com.splanes.uoc.wishlify.data.feature.shared.repository
 
+import com.splanes.uoc.wishlify.data.common.media.datasource.MediaRemoteDataSource
+import com.splanes.uoc.wishlify.data.common.media.mapper.ImageMediaDataMapper
 import com.splanes.uoc.wishlify.data.feature.groups.datasource.GroupsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.groups.mapper.GroupsDataMapper
 import com.splanes.uoc.wishlify.data.feature.shared.datasource.SharedWishlistsRemoteDataSource
@@ -8,7 +10,9 @@ import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSourc
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.wishlists.mapper.WishlistsDataMapper
+import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
+import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaPath
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItemUpdateStateRequest
@@ -16,16 +20,19 @@ import com.splanes.uoc.wishlify.domain.feature.shared.repository.SharedWishlists
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class SharedWishlistsRepositoryImpl(
   private val sharedWishlistsRemoteDataSource: SharedWishlistsRemoteDataSource,
   private val groupsRemoteDataSource: GroupsRemoteDataSource,
   private val wishlistsRemoteDataSource: WishlistsRemoteDataSource,
   private val userRemoteDataSource: UserRemoteDataSource,
+  private val mediaRemoteDataSource: MediaRemoteDataSource,
   private val mapper: SharedWishlistsDataMapper,
   private val groupsMapper: GroupsDataMapper,
   private val wishlistsDataMapper: WishlistsDataMapper,
   private val userDataMapper: UserDataMapper,
+  private val mediaDataMapper: ImageMediaDataMapper
 ) : SharedWishlistsRepository {
 
   override suspend fun fetchSharedWishlists(uid: String): Result<List<SharedWishlist>> =
@@ -77,7 +84,12 @@ class SharedWishlistsRepositoryImpl(
         val numOfItemsDeferred = async {
           entities
             .map { entity ->
-              async { entity.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(entity.wishlist) }
+              async {
+                entity.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(
+                  entity.wishlist,
+                  excludePurchased = true
+                )
+              }
             }
             .awaitAll()
             .toMap()
@@ -144,7 +156,10 @@ class SharedWishlistsRepositoryImpl(
         }
 
         val numOfItemsDeferred = async {
-          val count = wishlistsRemoteDataSource.fetchWishlistItemsCount(entity.wishlist)
+          val count = wishlistsRemoteDataSource.fetchWishlistItemsCount(
+            entity.wishlist,
+            excludePurchased = true
+          )
           mapOf(entity.id to count)
         }
 
@@ -162,6 +177,51 @@ class SharedWishlistsRepositoryImpl(
           numOfItemsMap = numOfItemsById,
           pendingNotificationsMap = emptyMap() // TODO
         )
+      }
+    }
+
+  override suspend fun unshareSharedWishlist(
+    sharedWishlistId: String,
+    linkedWishlistId: String
+  ): Result<Unit> =
+    runCatching {
+      coroutineScope {
+        val sharedItemsDeferred = async {
+          sharedWishlistsRemoteDataSource.fetchSharedWishlistItems(sharedWishlistId)
+        }
+
+        val baseWishlistDeferred = async {
+          wishlistsRemoteDataSource.fetchWishlist(linkedWishlistId)
+        }
+
+        val sharedItems = sharedItemsDeferred.await()
+        val baseWishlist = baseWishlistDeferred.await()
+
+        val sharedItemsToDelete = sharedItems.map { it.id }
+        val baseItemsToDelete = sharedItems
+          .filter { it.purchased != null }
+          .map { it.item }
+
+        val updatedWishlist = baseWishlist.copy(
+          shareStatus = WishlistEntity.ShareStatus.Private,
+          sharedWishlistId = null
+        )
+
+        // Update linked wishlist
+        wishlistsRemoteDataSource.upsertWishlist(updatedWishlist)
+
+        // Batch delete of purchased items & shared-wishlist (+ items)
+        wishlistsRemoteDataSource.removeWishlistItems(linkedWishlistId, baseItemsToDelete)
+        sharedWishlistsRemoteDataSource.removeWishlist(sharedWishlistId, sharedItemsToDelete)
+
+        // TODO: Delete chat once implemented
+
+        launch {
+          baseItemsToDelete
+            .map { item -> ImageMediaPath.WishlistItem(linkedWishlistId, item) }
+            .map { path -> mediaDataMapper.pathOf(path) }
+            .forEach { path -> mediaRemoteDataSource.delete(path) }
+        }
       }
     }
 
@@ -208,6 +268,7 @@ class SharedWishlistsRepositoryImpl(
         val sharedItemById = sharedItems.associateBy { it.item }
 
         baseItems
+          .filter { entity -> entity.purchased == null }
           .map { entity -> wishlistsDataMapper.mapToLinkedItem(entity) }
           .map { linkedItem ->
             mapper.mapItem(

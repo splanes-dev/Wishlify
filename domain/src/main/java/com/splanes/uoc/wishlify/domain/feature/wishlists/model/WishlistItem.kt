@@ -23,10 +23,10 @@ data class WishlistItem(
   val price
     get() = unitPrice * amount
 
-  enum class Priority {
-    Standard,
-    Top,
-    Supertop,
+  enum class Priority(val weight: Int) {
+    Standard(0),
+    Top(1),
+    Supertop(2),
   }
 
   data class UpdateMetadata(

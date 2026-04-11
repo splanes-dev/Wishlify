@@ -15,6 +15,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWis
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.ShareWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistItemRequest
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.repository.WishlistsRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -88,9 +89,18 @@ class WishlistsRepositoryImpl(
             .toMap()
         }
 
+        // Non purchased items count fetch
+        val itemsNonPurchasedCountByIdDeferred = async {
+          wishlists
+            .map { w -> async { w.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(w.id, excludePurchased = true) } }
+            .awaitAll()
+            .toMap()
+        }
+
         val usersByUid = usersByUidDeferred.await()
         val categoriesById = categoriesByIdDeferred.await()
         val itemsCountById = itemsCountByIdDeferred.await()
+        val itemsNonPurchasedCountById = itemsNonPurchasedCountByIdDeferred.await()
 
         wishlists.map { wishlist ->
           val category = wishlist.category?.id?.let(categoriesById::get)
@@ -108,6 +118,7 @@ class WishlistsRepositoryImpl(
             entity = wishlist,
             category = category,
             numOfItemsMap = itemsCountById,
+            numOfNonPurchasedItemsMap = itemsNonPurchasedCountById,
             users = relatedUsers.map(userMapper::mapToBasic)
           )
         }
@@ -145,15 +156,22 @@ class WishlistsRepositoryImpl(
           wishlist.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(wishlist.id)
         }
 
+        // Non purchased items count fetch
+        val itemsNonPurchasedCountByIdDeferred = async {
+          wishlist.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(wishlist.id, excludePurchased = true)
+        }
+
         val users = usersDeferred.await()
         val category = categoryDeferred?.await()
         val itemsCountById = itemsCountByIdDeferred.await()
+        val itemsNonPurchasedCountById = itemsNonPurchasedCountByIdDeferred.await()
 
         wishlistsMapper.mapWishlist(
           uid = uid,
           entity = wishlist,
           category = category,
           numOfItemsMap = mapOf(itemsCountById),
+          numOfNonPurchasedItemsMap = mapOf(itemsNonPurchasedCountById),
           users = users.map(userMapper::mapToBasic)
         )
       }
@@ -239,6 +257,16 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertWishlist(entity)
     }
 
+  override suspend fun updateWishlist(
+    uid: String,
+    imageMedia: ImageMedia,
+    request: UpdateWishlistRequest
+  ): Result<Unit> =
+    runCatching {
+      val entity = wishlistsMapper.wishlistFromRequest(uid, imageMedia, request)
+      wishlistsRemoteDataSource.upsertWishlist(entity)
+    }
+
   override suspend fun shareWishlist(
     uid: String,
     request: ShareWishlistRequest
@@ -255,6 +283,11 @@ class WishlistsRepositoryImpl(
 
       sharedWishlistsRemoteDataSource.upsertSharedWishlist(sharedWishlistEntity)
       wishlistsRemoteDataSource.upsertWishlist(entity = updatedWishlist)
+    }
+
+  override suspend fun deleteWishlist(wishlist: String): Result<Unit> =
+    runCatching {
+      wishlistsRemoteDataSource.removeWishlist(wishlistId = wishlist)
     }
 
   override suspend fun addWishlistItem(

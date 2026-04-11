@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Sell
+import androidx.compose.material.icons.rounded.QuestionMark
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -36,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.common.components.ConfirmationDialog
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
@@ -55,22 +58,31 @@ import com.splanes.uoc.wishlify.presentation.common.components.button.IconButton
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenu
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenuItem
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCard
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCardSettingsBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsSearchBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsSettingsBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistCardSettings
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsSettings
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsTab
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WishlistsListScreen(
   uiState: WishlistsListUiState.Listing,
   onTabClick: (tab: WishlistsTab) -> Unit,
-  onCreateWishlist: () -> Unit,
+  onCreateWishlist: (isOwn: Boolean) -> Unit,
   onWishlistClick: (Wishlist) -> Unit,
+  onEditWishlist: (Wishlist) -> Unit,
+  onShareWishlist: (Wishlist) -> Unit,
+  onDeleteWishlist: (Wishlist) -> Unit,
   onAdminCategories: () -> Unit,
   onClearSharedWishlistFeedback: () -> Unit,
   onDismissError: () -> Unit,
 ) {
+
+  val coroutineScope = rememberCoroutineScope()
 
   val wishlists = when (uiState.tabSelected) {
     WishlistsTab.Own -> uiState.wishlistsOwn
@@ -79,6 +91,18 @@ fun WishlistsListScreen(
 
   var isSettingsModalOpen by remember { mutableStateOf(false) }
   val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isSearchModalOpen by remember { mutableStateOf(false) }
+  val searchSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isWishlistSettingsModalOpen by remember { mutableStateOf(false) }
+  val wishlistSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isDeleteItemDialogVisible by remember { mutableStateOf(false) }
+
+  var isShareInfoDialogVisible by remember { mutableStateOf(false) }
+
+  var wishlistSelected: Wishlist? by remember { mutableStateOf(null) }
 
   val resources = LocalResources.current
   val snackbarState = remember { SnackbarHostState() }
@@ -144,7 +168,7 @@ fun WishlistsListScreen(
             icon = painterResource(R.drawable.ic_wishlists),
             text = stringResource(R.string.wishlists_wishlist),
             onClick = {
-              onCreateWishlist()
+              onCreateWishlist(uiState.tabSelected == WishlistsTab.Own)
               collapse()
             }
           )
@@ -190,7 +214,10 @@ fun WishlistsListScreen(
               .padding(horizontal = 16.dp)
               .animateItem(),
             wishlist = wishlist,
-            onSettingsClick = {},
+            onSettingsClick = {
+              wishlistSelected = wishlist
+              isWishlistSettingsModalOpen = true
+            },
             onClick = { onWishlistClick(wishlist) }
           )
         }
@@ -204,7 +231,7 @@ fun WishlistsListScreen(
       onSettingClick = { setting ->
         when (setting) {
           WishlistsSettings.Search -> {
-            // TODO
+            isSearchModalOpen = true
           }
 
           WishlistsSettings.Filter -> {
@@ -215,6 +242,86 @@ fun WishlistsListScreen(
         }
       }
     )
+
+    wishlistSelected?.let { wishlist ->
+      WishlistCardSettingsBottomSheet(
+        visible = isWishlistSettingsModalOpen,
+        sheetState = wishlistSettingsSheetState,
+        settings = buildList {
+          addAll(WishlistCardSettings.entries)
+          if (!wishlist.isShareable()) remove(WishlistCardSettings.Share)
+        },
+        onDismiss = {
+          coroutineScope
+            .launch { wishlistSettingsSheetState.hide() }
+            .invokeOnCompletion {
+              wishlistSelected = null
+              isWishlistSettingsModalOpen = false
+            }
+        },
+        onSettingClick = { setting ->
+          when (setting) {
+            WishlistCardSettings.Edit -> {
+              onEditWishlist(wishlist)
+              coroutineScope
+                .launch { wishlistSettingsSheetState.hide() }
+                .invokeOnCompletion {
+                  wishlistSelected = null
+                  isWishlistSettingsModalOpen = false
+                }
+            }
+
+            WishlistCardSettings.Share -> {
+              isShareInfoDialogVisible = true
+              coroutineScope
+                .launch { wishlistSettingsSheetState.hide() }
+                .invokeOnCompletion { isWishlistSettingsModalOpen = false }
+            }
+
+            WishlistCardSettings.Delete -> {
+              isDeleteItemDialogVisible = true
+              coroutineScope
+                .launch { wishlistSettingsSheetState.hide() }
+                .invokeOnCompletion { isWishlistSettingsModalOpen = false }
+            }
+          }
+        }
+      )
+    }
+
+    WishlistsSearchBottomSheet(
+      visible = isSearchModalOpen,
+      sheetState = searchSheetState,
+      wishlists = wishlists,
+      onDismiss = { isSearchModalOpen = false },
+      onWishlistClick = { wishlist ->
+        isSettingsModalOpen = false
+        onWishlistClick(wishlist)
+      }
+    )
+
+    if (isShareInfoDialogVisible) {
+      ConfirmationDialog(
+        icon = Icons.Rounded.QuestionMark,
+        title = stringResource(R.string.error_dialog_title_warning),
+        description = stringResource(R.string.wishlists_share_wishlist_with_purchased_items_dialog),
+        onDismiss = {
+          isShareInfoDialogVisible = false
+          wishlistSelected = null
+        },
+        onConfirm = { wishlistSelected?.let { onShareWishlist(it) } }
+      )
+    }
+
+    if (isDeleteItemDialogVisible) {
+      ConfirmationDialog(
+        onDismiss = {
+          isDeleteItemDialogVisible = false
+          wishlistSelected = null
+        },
+        onConfirm = { wishlistSelected?.let { onDeleteWishlist(it) } }
+      )
+    }
 
     uiState.error?.let { error ->
       ErrorDialog(
@@ -234,7 +341,7 @@ fun WishlistsListScreen(
 fun WishlistsListEmptyScreen(
   uiState: WishlistsListUiState.Empty,
   onTabClick: (tab: WishlistsTab) -> Unit,
-  onCreateWishlist: () -> Unit,
+  onCreateWishlist: (isOwn: Boolean) -> Unit,
   onClearSharedWishlistFeedback: () -> Unit,
   onAdminCategories: () -> Unit,
   onDismissError: () -> Unit,
@@ -308,7 +415,7 @@ fun WishlistsListEmptyScreen(
             icon = painterResource(R.drawable.ic_wishlists),
             text = stringResource(R.string.wishlists_wishlist),
             onClick = {
-              onCreateWishlist()
+              onCreateWishlist(uiState.tabSelected == WishlistsTab.Own)
               collapse()
             }
           )
@@ -353,20 +460,9 @@ fun WishlistsListEmptyScreen(
     WishlistsSettingsBottomSheet(
       visible = isSettingsModalOpen,
       sheetState = settingsSheetState,
+      settings = listOf(WishlistsSettings.AdminCategories),
       onDismiss = { isSettingsModalOpen = false },
-      onSettingClick = { setting ->
-        when (setting) {
-          WishlistsSettings.Search -> {
-            // TODO
-          }
-
-          WishlistsSettings.Filter -> {
-            // TODO
-          }
-
-          WishlistsSettings.AdminCategories -> onAdminCategories()
-        }
-      }
+      onSettingClick = { onAdminCategories() }
     )
 
     uiState.error?.let { error ->

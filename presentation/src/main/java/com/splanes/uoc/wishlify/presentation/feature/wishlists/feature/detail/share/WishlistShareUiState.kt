@@ -20,5 +20,5 @@ sealed interface WishlistShareUiState {
 }
 
 sealed interface WishlistShareUiSideEffect {
-  data object WishlistShared : WishlistShareUiSideEffect
+  data class WishlistShared(val wishlistName: String) : WishlistShareUiSideEffect
 }

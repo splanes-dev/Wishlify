@@ -82,7 +82,7 @@ class WishlistShareViewModel(
         shareWishlistUseCase(request)
           .onSuccess {
             viewModelState.update { state -> state.copy(isLoading = false) }
-            uiSideEffectChannel.send(WishlistShareUiSideEffect.WishlistShared)
+            uiSideEffectChannel.send(WishlistShareUiSideEffect.WishlistShared(currentState.wishlist.title))
           }
           .onFailure { error ->
             viewModelState.update { state ->

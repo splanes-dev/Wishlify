@@ -270,7 +270,7 @@ class WishlistDetailViewModel(
           WishlistDetailUiState.Listing(
             wishlistName = wishlistName,
             wishlist = wishlist,
-            items = items,
+            items = items.sorted(),
             itemSelected = itemSelected,
             isItemDetailModalOpen = isItemDetailModalOpen,
             isItemDetailButtonLoading = isItemDetailButtonLoading,
@@ -280,5 +280,11 @@ class WishlistDetailViewModel(
             error = error?.let(errorUiMapper::map)
           )
       }
+
+    private fun List<WishlistItem>.sorted() = sortedWith(
+      compareBy<WishlistItem> { it.purchased != null }
+        .thenByDescending { it.priority.weight }
+        .thenBy { it.createdAt }
+    )
   }
 }

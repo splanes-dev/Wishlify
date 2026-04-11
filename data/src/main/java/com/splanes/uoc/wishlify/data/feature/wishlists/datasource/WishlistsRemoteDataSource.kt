@@ -54,9 +54,16 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
-  suspend fun fetchWishlistItemsCount(id: String): Int =
+  suspend fun fetchWishlistItemsCount(id: String, excludePurchased: Boolean = false): Int =
     try {
       wishlistItemsOf(id)
+        .let { query ->
+          if (excludePurchased) {
+            query.whereEqualTo("purchased", null)
+          } else {
+            query
+          }
+        }
         .get()
         .await()
         .count()
@@ -108,6 +115,20 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  suspend fun removeWishlist(wishlistId: String) {
+    try {
+      wishlists
+        .document(wishlistId)
+        .delete()
+        .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
   suspend fun upsertWishlistItem(wishlistId: String, entity: WishlistItemEntity) {
     try {
       wishlistItemsOf(wishlistId)
@@ -128,6 +149,22 @@ class WishlistsRemoteDataSource(
         .document(itemId)
         .delete()
         .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
+  suspend fun removeWishlistItems(wishlistId: String, items: List<String>) {
+    try {
+      db.withBatch { batch ->
+        items.forEach { item ->
+          val ref = wishlistItemsOf(wishlistId).document(item)
+          batch.delete(ref)
+        }
+      }
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
     } catch (e: Throwable) {

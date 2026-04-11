@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.rounded.QuestionMark
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,6 +83,8 @@ fun WishlistDetailScreen(
 
   var isDeleteItemDialogVisible by remember { mutableStateOf(false) }
 
+  var isShareInfoDialogVisible by remember { mutableStateOf(false) }
+
   LaunchedEffect(uiState.isNewItemByLinkModalOpen) {
     if (uiState.isNewItemByLinkModalOpen) {
       isNewItemByLinkModalOpen = true
@@ -114,7 +117,14 @@ fun WishlistDetailScreen(
           actions = {
             IconButton(
               shapes = IconButtonShape,
-              onClick = onShare
+              enabled = uiState.isShareable(),
+              onClick = {
+                if (uiState.items.any { it.purchased != null }) {
+                  isShareInfoDialogVisible = true
+                } else {
+                  onShare()
+                }
+              },
             ) {
               Icon(
                 imageVector = Icons.Rounded.Share,
@@ -214,9 +224,20 @@ fun WishlistDetailScreen(
                   .invokeOnCompletion { onCloseItemDetailModal() }
               }
             }
+
             else -> onItemAction(item, action)
           }
         }
+      )
+    }
+
+    if (isShareInfoDialogVisible) {
+      ConfirmationDialog(
+        icon = Icons.Rounded.QuestionMark,
+        title = stringResource(R.string.error_dialog_title_warning),
+        description = stringResource(R.string.wishlists_share_wishlist_with_purchased_items_dialog),
+        onDismiss = { isShareInfoDialogVisible = false },
+        onConfirm = onShare
       )
     }
 
@@ -250,7 +271,6 @@ fun WishlistDetailEmptyScreen(
   uiState: WishlistDetailUiState.Empty,
   onCreateItem: (link: String?) -> Unit,
   onBack: () -> Unit,
-  onShare: () -> Unit,
   onChangeItemByLinkModalVisibility: (visible: Boolean) -> Unit,
   onClearInputError: (WishlistItemForm.Input) -> Unit,
   onDismissError: () -> Unit
@@ -288,16 +308,6 @@ fun WishlistDetailEmptyScreen(
             }
           },
           actions = {
-            IconButton(
-              shapes = IconButtonShape,
-              onClick = onShare
-            ) {
-              Icon(
-                imageVector = Icons.Rounded.Share,
-                contentDescription = stringResource(R.string.share)
-              )
-            }
-
             IconButton(
               shapes = IconButtonShape,
               onClick = {}

@@ -13,11 +13,15 @@ sealed class Wishlist(
   open val category: WishlistCategory?,
   open val editorInviteLink: InviteLink,
   open val editors: List<User.Basic>,
+  open val numOfNonPurchasedItems: Int,
   open val numOfItems: Int,
   open val createdBy: User.Basic,
   open val createdAt: Date,
   open val lastUpdate: UpdateMetadata
 ) {
+
+  fun isShareable() =
+    numOfItems > 0 && numOfNonPurchasedItems > 0
 
   data class Own(
     override val id: String,
@@ -27,6 +31,7 @@ sealed class Wishlist(
     override val category: WishlistCategory?,
     override val editorInviteLink: InviteLink,
     override val editors: List<User.Basic>,
+    override val numOfNonPurchasedItems: Int,
     override val numOfItems: Int,
     override val createdBy: User.Basic,
     override val createdAt: Date,
@@ -39,6 +44,7 @@ sealed class Wishlist(
     category = category,
     editorInviteLink = editorInviteLink,
     editors = editors,
+    numOfNonPurchasedItems = numOfNonPurchasedItems,
     numOfItems = numOfItems,
     createdBy = createdBy,
     createdAt = createdAt,
@@ -53,6 +59,7 @@ sealed class Wishlist(
     override val category: WishlistCategory?,
     override val editorInviteLink: InviteLink,
     override val editors: List<User.Basic>,
+    override val numOfNonPurchasedItems: Int,
     override val numOfItems: Int,
     override val createdBy: User.Basic,
     override val createdAt: Date,
@@ -67,6 +74,7 @@ sealed class Wishlist(
     editorInviteLink = editorInviteLink,
     editors = editors,
     numOfItems = numOfItems,
+    numOfNonPurchasedItems = numOfNonPurchasedItems,
     createdBy = createdBy,
     createdAt = createdAt,
     lastUpdate = lastUpdate,

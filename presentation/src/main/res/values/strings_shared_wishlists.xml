@@ -51,4 +51,26 @@
     <string name="shared_wishlists_own_wishlist_items_locked_info_banner">
         <![CDATA[<b>La llista està bloquejada fins a la data límit.</b><br/>No serà possible afegir, editar o eliminar productes ja que podria afectar als altres usuaris.]]>
     </string>
+    <string name="shared_wishlists_wishlist_settings_back_to_privates">Retornar a llistes privades</string>
+    <string name="shared_wishlists_finished">Wishlists Finalitzades</string>
+    <string name="shared_wishlists_finished_header_own_description">
+        <![CDATA[Pots retornar-les a les teves llistes privades; en cas contrari, <b>s’eliminaran automàticament al cap de 30 dies</b>.]]>
+    </string>
+    <string name="shared_wishlists_finished_header_third_party_description">
+        <![CDATA[<b>S’eliminaran automàticament al cap de 30 dies des de la seva expiració</b>.]]>
+    </string>
+    <string name="shared_wishlists_finished_show">Veure</string>
+    <string name="shared_wishlists_finished_hide">Ocultar</string>
+    <string name="shared_wishlists_third_party_wishlist_items_expired_info_banner">
+        <![CDATA[<b>El periode de compartir llista ha finalitzat.</b><br/>Pots consultar el llistat, però no es podran actualitzar els estats dels productes.<br/><br/><b>El llistat s\'eliminarà automàticament 30 dies després de la data límit.</b>]]>
+    </string>
+    <string name="shared_wishlists_own_wishlist_items_expired_info_banner">
+        <![CDATA[<b>El periode de compartir llista ha finalitzat.</b><br/>Pots consultar el llistat, però no es pot actualitzar. Si així ho desitges, pots retornar la wishlist a les <b>teves wishlists privades</b> des del menú d\'opcions.<br/><br/><b>El llistat s\'eliminarà automàticament 30 dies després de la data límit.</b>]]>
+    </string>
+    <string name="shared_wishlists_back_to_private_dialog_title">
+        Retornar a llistes privades
+    </string>
+    <string name="shared_wishlists_back_to_private_dialog_description">
+        En retornar aquesta wishlist a les teves llistes privades, els ítems que ja han estat comprats s’eliminaran. Estàs segur que vols continuar?
+    </string>
 </resources>

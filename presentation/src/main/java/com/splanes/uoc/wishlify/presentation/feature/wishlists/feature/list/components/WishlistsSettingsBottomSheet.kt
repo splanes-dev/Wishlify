@@ -18,6 +18,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.mode
 fun WishlistsSettingsBottomSheet(
   visible: Boolean,
   sheetState: SheetState,
+  settings: List<WishlistsSettings> = WishlistsSettings.entries,
   onDismiss: () -> Unit,
   onSettingClick: (WishlistsSettings) -> Unit,
 ) {
@@ -25,7 +26,7 @@ fun WishlistsSettingsBottomSheet(
   SettingsBottomSheet(
     visible = visible,
     sheetState = sheetState,
-    settings = WishlistsSettings.entries.map { setting ->
+    settings = settings.map { setting ->
       SettingsBottomSheet.Option(
         id = setting.name,
         icon = setting.icon(),

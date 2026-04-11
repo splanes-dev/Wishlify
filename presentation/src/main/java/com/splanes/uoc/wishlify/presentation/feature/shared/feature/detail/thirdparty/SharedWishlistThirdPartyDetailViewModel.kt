@@ -261,7 +261,7 @@ class SharedWishlistThirdPartyDetailViewModel(
           isItemDetailButtonLoading = isItemDetailButtonLoading,
           itemSelected = itemSelected,
           itemStateActions = itemStateActions,
-          items = items,
+          items = items.sorted(),
           shareRequestError = shareRequestError?.let(itemStateErrorMapper::map),
           isLoading = isLoading,
           error = error?.let(errorUiMapper::map)
@@ -270,5 +270,10 @@ class SharedWishlistThirdPartyDetailViewModel(
       else ->
         SharedWishlistThirdPartyDetailUiState.Error(sharedWishlistName, target)
     }
+
+    private fun List<SharedWishlistItem>.sorted() = sortedWith(
+      compareBy<SharedWishlistItem> { it.state }
+        .thenByDescending { it.state.isCurrentUserParticipant }
+    )
   }
 }

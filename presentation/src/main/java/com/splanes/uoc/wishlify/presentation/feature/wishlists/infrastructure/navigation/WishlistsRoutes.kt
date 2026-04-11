@@ -15,6 +15,9 @@ data object Wishlists {
   data class NewList(val isOwn: Boolean)
 
   @Serializable
+  data class EditList(val wishlistId: String)
+
+  @Serializable
   data class ShareList(val wishlistId: String)
 
   @Serializable

@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ fun RemoteImage(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.None,
+    colorFilter: ColorFilter? = null,
     loading: @Composable () -> Unit = { RemoteImageLoading() },
     error: @Composable () -> Unit = { RemoteImageError(contentDescription) },
     onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null,
@@ -46,6 +48,7 @@ fun RemoteImage(
         model = imageRequest,
         contentDescription = contentDescription,
         contentScale = contentScale,
+        colorFilter = colorFilter,
         onSuccess = onSuccess,
         onError = onError,
         loading = { loading() },

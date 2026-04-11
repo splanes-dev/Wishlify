@@ -6,8 +6,8 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.flow.filterNotNull
 
 
-// A SavedStateHandle key is used to set/get NavResultCallback<T>
 private const val NavResultDefaultKey = "NavResultDefaultKey"
+
 fun <T> NavController.popBackStackWithResult(key: String = NavResultDefaultKey, result: T) {
   previousBackStackEntry?.savedStateHandle?.set(key, result)
   popBackStack()

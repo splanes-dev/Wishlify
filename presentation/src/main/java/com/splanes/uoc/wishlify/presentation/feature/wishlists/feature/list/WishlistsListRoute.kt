@@ -9,6 +9,8 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 fun WishlistsListRoute(
   viewModel: WishlistsListViewModel,
   onNavToNewWishlist: (isOwn: Boolean) -> Unit,
+  onNavToEditWishlist: (wishlist: Wishlist) -> Unit,
+  onNavToShareWishlist: (wishlist: Wishlist) -> Unit,
   onNavToWishlistDetail: (wishlist: Wishlist) -> Unit,
   onNavToAdminCategories: () -> Unit,
 ) {
@@ -26,7 +28,7 @@ fun WishlistsListRoute(
       WishlistsListEmptyScreen(
         uiState = state,
         onTabClick = viewModel::onTabClick,
-        onCreateWishlist = { onNavToNewWishlist(true) },
+        onCreateWishlist = { onNavToNewWishlist(it) },
         onAdminCategories = onNavToAdminCategories,
         onClearSharedWishlistFeedback = viewModel::onClearSharedWishlistFeedback,
         onDismissError = viewModel::onDismissError
@@ -36,8 +38,11 @@ fun WishlistsListRoute(
       WishlistsListScreen(
         uiState = state,
         onTabClick = viewModel::onTabClick,
-        onCreateWishlist = { onNavToNewWishlist(true) },
+        onCreateWishlist = { onNavToNewWishlist(it) },
         onWishlistClick = onNavToWishlistDetail,
+        onEditWishlist = onNavToEditWishlist,
+        onShareWishlist = onNavToShareWishlist,
+        onDeleteWishlist = viewModel::onDeleteWishlist,
         onClearSharedWishlistFeedback = viewModel::onClearSharedWishlistFeedback,
         onAdminCategories = onNavToAdminCategories,
         onDismissError = viewModel::onDismissError

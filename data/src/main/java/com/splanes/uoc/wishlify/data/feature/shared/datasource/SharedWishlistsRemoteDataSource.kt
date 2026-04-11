@@ -6,6 +6,7 @@ import com.google.firebase.firestore.toObject
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlistItems
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlists
+import com.splanes.uoc.wishlify.data.common.firebase.utils.db.withBatch
 import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistEntity
 import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistItemEntity
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
@@ -82,6 +83,24 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  suspend fun removeWishlist(id: String, items: List<String>) {
+    try {
+      db.withBatch { batch ->
+        items.forEach { item ->
+          val ref = wishlistItemsOf(id).document(item)
+          batch.delete(ref)
+        }
+        val ref = sharedWishlists.document(id)
+        batch.delete(ref)
+      }
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
   suspend fun fetchSharedWishlistItems(wishlist: String): List<SharedWishlistItemEntity> =
     try {
       wishlistItemsOf(wishlist)
@@ -95,7 +114,10 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
-  suspend fun fetchSharedWishlistItemById(wishlist: String, item: String): SharedWishlistItemEntity? =
+  suspend fun fetchSharedWishlistItemById(
+    wishlist: String,
+    item: String
+  ): SharedWishlistItemEntity? =
     try {
       wishlistItemsOf(wishlist)
         .document(item)
@@ -122,20 +144,6 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
   }
-
-
-  suspend fun countSharedWishlistItems(wishlist: String): Int =
-    try {
-      wishlistItemsOf(wishlist)
-        .get()
-        .await()
-        .count()
-    } catch (_: UnknownHostException) {
-      throw GenericError.NoInternet()
-    } catch (e: Throwable) {
-      Timber.e(e)
-      throw GenericError.Unknown(cause = e)
-    }
 
   private fun wishlistItemsOf(id: String) =
     db.sharedWishlists.document(id).sharedWishlistItems

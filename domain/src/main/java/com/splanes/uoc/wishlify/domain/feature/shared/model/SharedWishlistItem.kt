@@ -24,8 +24,25 @@ data class SharedWishlistItem(
     val price get() = unitPrice * amount
   }
 
-  sealed interface State {
+  sealed interface State : Comparable<State> {
     val isCurrentUserParticipant: Boolean
+
+    override fun compareTo(other: State): Int {
+      return when (this) {
+        Available -> if (other is Available) 0 else -1
+        is Lock -> when (other) {
+          is Lock -> 0
+          is Purchased -> -1
+          else -> 1
+        }
+        is Purchased -> if (other is Purchased) 0 else 1
+        is ShareRequest -> when (other) {
+          is ShareRequest -> 0
+          is Available -> 1
+          else -> -1
+        }
+      }
+    }
   }
 
   data object Available : State {

@@ -31,7 +31,6 @@ fun WishlistDetailRoute(
         uiState = state,
         onCreateItem = onNavToNewItem,
         onBack = onBack,
-        onShare = onNavToShare,
         onChangeItemByLinkModalVisibility = viewModel::onChangeItemByLinkModalVisibility,
         onClearInputError = viewModel::onClearInputError,
         onDismissError = viewModel::onDismissError,
