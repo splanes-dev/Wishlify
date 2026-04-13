@@ -61,6 +61,15 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  fun onOpenItemStateModal(item: SharedWishlistItem) {
+    viewModelState.update { state ->
+      state.copy(
+        itemSelectedToUpdateState = item,
+        isWishlistItemStateModalOpen = true
+      )
+    }
+  }
+
   fun onCloseItemDetailModal() {
     viewModelState.update { state ->
       state.copy(
@@ -72,8 +81,66 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  fun onCloseItemStateModal() {
+    viewModelState.update { state ->
+      state.copy(
+        itemSelectedToUpdateState = null,
+        isWishlistItemStateModalOpen = false,
+        shareRequestError = null,
+      )
+    }
+  }
+
   fun onClearShareRequestError() {
     viewModelState.update { state -> state.copy(shareRequestError = null) }
+  }
+
+  fun onUpdateItemState(item: SharedWishlistItem, action: SharedWishlistItemAction.UpdateState) {
+    val wishlist = viewModelState.value.sharedWishlist
+
+    if (wishlist == null) {
+      viewModelState.update { state -> state.copy(error = GenericError.Unknown()) }
+      return
+    }
+
+    // -1 'cause the current user doesn't count
+    val maxNumOfParticipants = wishlist.totalParticipantsCount() - 1
+
+    if (validateForm(action, maxNumOfParticipants)) {
+      val request = itemUiMapper.updateRequestOf(wishlist, item, action)
+
+      viewModelState.update { state -> state.copy(isLoading = true) }
+      viewModelScope.launch {
+        val result = updateSharedWishlistItemUseCase(request)
+        result
+          .mapCatching {
+            fetchSharedWishlistItemUseCase(
+              sharedWishlistId = wishlist.id,
+              sharedWishlistItemId = item.id
+            ).getOrThrow()
+          }
+          .onSuccess { itemUpdated ->
+            viewModelState.update { state ->
+              state.copy(
+                items = (state.items - item) + itemUpdated,
+                itemSelectedToUpdateState = null,
+                isWishlistItemStateModalOpen = false,
+                isLoading = false,
+              )
+            }
+          }
+          .onFailure { error ->
+            viewModelState.update { state ->
+              state.copy(
+                itemSelectedToUpdateState = null,
+                isWishlistItemStateModalOpen = false,
+                isLoading = false,
+                error = error
+              )
+            }
+          }
+      }
+    }
   }
 
   fun onDismissBanner() {
@@ -235,10 +302,12 @@ class SharedWishlistThirdPartyDetailViewModel(
     val sharedWishlist: SharedWishlist.ThirdParty? = null,
     val items: List<SharedWishlistItem> = emptyList(),
     val itemSelected: SharedWishlistItem? = null,
+    val itemSelectedToUpdateState: SharedWishlistItem? = null,
     val itemStateActions: List<SharedWishlistItemStateAction> = emptyList(),
     val isInfoBannerVisible: Boolean = true,
     val isItemDetailModalOpen: Boolean = false,
     val isItemDetailButtonLoading: Boolean = false,
+    val isWishlistItemStateModalOpen: Boolean = false,
     val shareRequestError: SharedWishlistItemStateRequestError? = null,
     val isLoadingFullscreen: Boolean = true,
     val isLoading: Boolean = false,
@@ -260,6 +329,8 @@ class SharedWishlistThirdPartyDetailViewModel(
           isItemDetailModalOpen = isItemDetailModalOpen,
           isItemDetailButtonLoading = isItemDetailButtonLoading,
           itemSelected = itemSelected,
+          itemSelectedToUpdateState = itemSelectedToUpdateState,
+          isWishlistItemStateModalOpen = isWishlistItemStateModalOpen,
           itemStateActions = itemStateActions,
           items = items.sorted(),
           shareRequestError = shareRequestError?.let(itemStateErrorMapper::map),

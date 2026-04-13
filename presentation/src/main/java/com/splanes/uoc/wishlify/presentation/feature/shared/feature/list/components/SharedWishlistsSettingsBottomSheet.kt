@@ -1,7 +1,8 @@
 package com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.SettingsBackupRestore
+import androidx.compose.material.icons.outlined.FilterAlt
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
@@ -12,42 +13,35 @@ import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.model.S
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SharedWishlistSettingsBottomSheet(
+fun SharedWishlistsSettingsBottomSheet(
   visible: Boolean,
   sheetState: SheetState,
-  settings: List<SharedWishlistsSettings>,
   onDismiss: () -> Unit,
-  onSettingClick: (SharedWishlistsSettings) -> Unit
+  onSettingClick: (SharedWishlistsSettings) -> Unit,
 ) {
   SettingsBottomSheet(
     visible = visible,
     sheetState = sheetState,
-    settings = settings.mapIndexed { index, setting ->
+    settings = SharedWishlistsSettings.entries.map { setting ->
       SettingsBottomSheet.Option(
-        id = index.toString(),
+        id = setting.name,
         icon = setting.icon(),
-        text = setting.text(),
-        contentColor = setting.color()
+        text = setting.text()
       )
     },
     onDismiss = onDismiss,
-    onSettingClick = { option ->
-      onSettingClick(settings[option.id.toInt()])
-    }
+    onSettingClick = { option -> onSettingClick(SharedWishlistsSettings.valueOf(option.id)) }
   )
 }
 
 @Composable
 private fun SharedWishlistsSettings.icon() = when (this) {
-  SharedWishlistsSettings.BackToPrivate -> Icons.Outlined.SettingsBackupRestore
+  SharedWishlistsSettings.Search -> Icons.Rounded.Search
+  SharedWishlistsSettings.Filter -> Icons.Outlined.FilterAlt
 }
 
 @Composable
 private fun SharedWishlistsSettings.text() = when (this) {
-  SharedWishlistsSettings.BackToPrivate -> R.string.shared_wishlists_wishlist_settings_back_to_privates
+  SharedWishlistsSettings.Search -> R.string.wishlists_search
+  SharedWishlistsSettings.Filter -> R.string.wishlists_filter
 }.let { id -> stringResource(id) }
-
-@Composable
-private fun SharedWishlistsSettings.color() = when (this) {
-  SharedWishlistsSettings.BackToPrivate -> null
-}

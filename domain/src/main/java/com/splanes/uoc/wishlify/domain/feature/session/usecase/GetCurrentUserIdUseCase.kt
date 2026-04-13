@@ -7,6 +7,6 @@ class GetCurrentUserIdUseCase(
   private val repository: SessionRepository,
 ) : UseCase() {
 
-  suspend operator fun invoke(): Result<String> =
+  operator fun invoke(): Result<String> =
     repository.getCurrentUid()
 }

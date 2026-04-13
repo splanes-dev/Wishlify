@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
@@ -219,6 +220,7 @@ private fun DateInfo(
   if (sharedWishlist.isFinished()) {
     Surface(
       shape = WishlifyTheme.shapes.extraSmall,
+      color = Color.Transparent,
       border = BorderStroke(width = 1.dp, color = WishlifyTheme.colorScheme.outline)
     ) {
       Text(

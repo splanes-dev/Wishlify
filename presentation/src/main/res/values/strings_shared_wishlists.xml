@@ -73,4 +73,9 @@
     <string name="shared_wishlists_back_to_private_dialog_description">
         En retornar aquesta wishlist a les teves llistes privades, els ítems que ja han estat comprats s’eliminaran. Estàs segur que vols continuar?
     </string>
+    <string name="shared_wishlists_update_state_bottom_sheet_title">Actualitzar l\'estat</string>
+    <string name="shared_wishlists_join_to_share_bottom_sheet_title">Sol·licitud de compartir</string>
+    <string name="shared_wishlists_join_to_share_bottom_sheet_button">Compartir regal</string>
+    <string name="shared_wishlists_chat_empty_state_title">Oooh…</string>
+    <string name="shared_wishlists_chat_empty_state_description">No hi ha missatges encara.\nTrenca el gel i envia el primer missatge!</string>
 </resources>

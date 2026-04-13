@@ -2,15 +2,18 @@ package com.splanes.uoc.wishlify.data.feature.shared.mapper
 
 import com.splanes.uoc.wishlify.data.common.utils.expirationDateInMillis
 import com.splanes.uoc.wishlify.data.common.utils.nowInMillis
+import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistChatMessageEntity
 import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistEntity
 import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistItemEntity
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.common.utils.newUuid
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
+import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistChatMessage
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItemStateRequest
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItemUpdateStateRequest
+import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistSendMessageRequest
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.ShareWishlistRequest
 import java.sql.Date
@@ -203,6 +206,41 @@ class SharedWishlistsDataMapper {
       } else {
         SharedWishlistItem.Available
       }
+    )
+
+  fun mapMessage(
+    uid: String,
+    message: SharedWishlistChatMessageEntity,
+    users: Map<String, User.Basic>,
+  ) : SharedWishlistChatMessage =
+    when (message.type) {
+      SharedWishlistChatMessageEntity.Type.User ->
+        SharedWishlistChatMessage.User(
+          id = message.id,
+          text = message.text,
+          createdBy = users[message.createdBy] ?: error("No user found for message received"),
+          createdAt = Date(message.createdAt),
+          isCurrentUserMessage = uid == message.createdBy
+        )
+
+      SharedWishlistChatMessageEntity.Type.System ->
+        SharedWishlistChatMessage.System(
+          id = message.id,
+          text = message.text,
+          createdAt = Date(message.createdAt),
+        )
+    }
+
+  fun mapMessage(
+    uid: String,
+    request: SharedWishlistSendMessageRequest
+  ) =
+    SharedWishlistChatMessageEntity(
+      id = newUuid(),
+      type = SharedWishlistChatMessageEntity.Type.User,
+      text = request.text,
+      createdBy = uid,
+      createdAt = nowInMillis()
     )
 
   private fun mapItemState(

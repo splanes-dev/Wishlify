@@ -381,7 +381,7 @@ fun WishlistsListEmptyScreen(
           actions = {
             IconButton(
               shapes = IconButtonShape,
-              onClick = {}
+              onClick = { isSettingsModalOpen = true }
             ) {
               Icon(
                 imageVector = Icons.Rounded.Tune,

@@ -12,7 +12,7 @@ class SessionRepositoryImpl(
   override fun observeSessionState(): Flow<SessionState> =
     dataSource.observeAuthState()
 
-  override suspend fun getCurrentUid(): Result<String> =
+  override fun getCurrentUid(): Result<String> =
     runCatching {
       dataSource.getCurrentUserUidOrThrow()
     }

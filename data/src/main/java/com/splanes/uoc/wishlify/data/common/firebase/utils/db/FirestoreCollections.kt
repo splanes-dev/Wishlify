@@ -29,6 +29,9 @@ val DocumentReference.wishlistItems
 val DocumentReference.sharedWishlistItems
   get() = collection(Subcollections.SHARED_WISHLIST_ITEMS)
 
+val DocumentReference.chatMessages
+  get() = collection(Subcollections.SHARED_WISHLIST_CHAT_MESSAGES)
+
 private object Collections {
   const val USERS = "users"
   const val WISHLISTS = "wishlists"
@@ -41,4 +44,5 @@ private object Subcollections {
   const val CATEGORIES = "wishlist-categories"
   const val WISHLIST_ITEMS = "items"
   const val SHARED_WISHLIST_ITEMS = "items"
+  const val SHARED_WISHLIST_CHAT_MESSAGES = "chat"
 }

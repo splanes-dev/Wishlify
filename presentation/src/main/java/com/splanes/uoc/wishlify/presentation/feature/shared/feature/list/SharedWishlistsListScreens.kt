@@ -46,9 +46,12 @@ import com.splanes.uoc.wishlify.presentation.common.components.TabSelector
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
 import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistCard
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistItemSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistMoveToPrivateDialog
-import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistsFinishedHeader
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistsSearchBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistsSettingsBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.model.SharedWishlistsItemSettings
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.model.SharedWishlistsSettings
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.model.SharedWishlistsTab
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
@@ -76,9 +79,15 @@ fun SharedWishlistsListScreen(
   }
   var areWishlistsFinishedVisible by remember { mutableStateOf(true) }
 
-  var itemSelected: SharedWishlist.Own? by remember { mutableStateOf(null) }
   var isSettingsModalOpen by remember { mutableStateOf(false) }
-  val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  val settingSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isSearchModalOpen by remember { mutableStateOf(false) }
+  val searchSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var itemSelected: SharedWishlist.Own? by remember { mutableStateOf(null) }
+  var isItemSettingsModalOpen by remember { mutableStateOf(false) }
+  val itemSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
   var isBackToPrivateDialogOpen by remember { mutableStateOf(false) }
 
@@ -95,7 +104,7 @@ fun SharedWishlistsListScreen(
           actions = {
             IconButton(
               shapes = IconButtonShape,
-              onClick = { /* todo */ }
+              onClick = { isSettingsModalOpen = true }
             ) {
               Icon(
                 imageVector = Icons.Rounded.Tune,
@@ -181,7 +190,7 @@ fun SharedWishlistsListScreen(
                 onSettingsClick = {
                   if (wishlist is SharedWishlist.Own) {
                     itemSelected = wishlist
-                    isSettingsModalOpen = true
+                    isItemSettingsModalOpen = true
                   } else {
                     // Third party expired wishlists has no settings
                     Timber.e("Trying to open setting of third party expired wishlist. Should not be possible, no settings available.")
@@ -197,21 +206,21 @@ fun SharedWishlistsListScreen(
 
     itemSelected?.let { wishlist ->
 
-      SharedWishlistSettingsBottomSheet(
-        visible = isSettingsModalOpen,
-        sheetState = settingsSheetState,
-        settings = SharedWishlistsSettings.entries,
+      SharedWishlistItemSettingsBottomSheet(
+        visible = isItemSettingsModalOpen,
+        sheetState = itemSettingsSheetState,
+        settings = SharedWishlistsItemSettings.entries,
         onDismiss = {
-          isSettingsModalOpen = false
+          isItemSettingsModalOpen = false
           itemSelected = null
         },
         onSettingClick = { setting ->
           when (setting) {
-            SharedWishlistsSettings.BackToPrivate -> isBackToPrivateDialogOpen = true
+            SharedWishlistsItemSettings.BackToPrivate -> isBackToPrivateDialogOpen = true
           }
           coroutineScope
-            .launch { settingsSheetState.hide() }
-            .invokeOnCompletion { isSettingsModalOpen = false }
+            .launch { itemSettingsSheetState.hide() }
+            .invokeOnCompletion { isItemSettingsModalOpen = false }
         },
       )
 
@@ -225,6 +234,36 @@ fun SharedWishlistsListScreen(
         )
       }
     }
+
+    SharedWishlistsSettingsBottomSheet(
+      visible = isSettingsModalOpen,
+      sheetState = settingSheetState,
+      onDismiss = { isSettingsModalOpen = false },
+      onSettingClick = { setting ->
+        when (setting) {
+          SharedWishlistsSettings.Search -> isSearchModalOpen = true
+          SharedWishlistsSettings.Filter -> {
+            // TODO
+          }
+        }
+        coroutineScope
+          .launch { settingSheetState.hide() }
+          .invokeOnCompletion { isSettingsModalOpen = false }
+      }
+    )
+
+    SharedWishlistsSearchBottomSheet(
+      visible = isSearchModalOpen,
+      sheetState = searchSheetState,
+      wishlists = wishlists,
+      onDismiss = { isSearchModalOpen = false },
+      onClick = { wishlist ->
+        onWishlistClick(wishlist)
+        coroutineScope
+          .launch { searchSheetState.hide() }
+          .invokeOnCompletion { isSearchModalOpen = false }
+      },
+    )
 
     if (uiState.isLoading) {
       Loader(modifier = Modifier.fillMaxSize())
@@ -248,17 +287,6 @@ fun SharedWishlistsListEmptyScreen(
       topBar = {
         TopAppBar(
           title = { Text(text = stringResource(R.string.shared_wishlists)) },
-          actions = {
-            IconButton(
-              shapes = IconButtonShape,
-              onClick = { }
-            ) {
-              Icon(
-                imageVector = Icons.Rounded.Tune,
-                contentDescription = stringResource(R.string.settings)
-              )
-            }
-          }
         )
       }
     ) { paddings ->

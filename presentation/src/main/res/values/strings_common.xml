@@ -57,4 +57,9 @@
     <string name="chat">Xat</string>
     <string name="search_results">Resultats de la cerca:</string>
     <string name="search_results_no_results_prompt">No hi ha resultats</string>
+    <string name="filter_items">Filtrar productes</string>
+    <string name="chat_bot">Bot - Wishlify</string>
+    <string name="you">Tu</string>
+    <string name="chat_message_placeholder">Missatge</string>
+    <string name="chat_load_more_btn">Carregar missatges anteriors</string>
 </resources>

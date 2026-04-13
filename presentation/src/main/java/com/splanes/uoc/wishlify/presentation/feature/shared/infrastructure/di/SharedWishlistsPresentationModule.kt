@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.di
 
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.chat.SharedWishlistThirdPartyChatViewModel
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.SharedWishlistOwnDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.SharedWishlistThirdPartyDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.mapper.SharedWishlistItemStateErrorMapper
@@ -40,7 +41,18 @@ internal val SharedWishlistsPresentationModule = module {
       target = target,
       fetchSharedWishlistUseCase = get(),
       fetchSharedWishlistItemsUseCase = get(),
+      unshareWishlistUseCase = get(),
       errorUiMapper = get(),
+    )
+  }
+  viewModel { (wishlistId: String, wishlistName: String, target: String) ->
+    SharedWishlistThirdPartyChatViewModel(
+      sharedWishlistId = wishlistId,
+      sharedWishlistName = wishlistName,
+      target = target,
+      sendMessageSharedWishlistChatUseCase = get(),
+      subscribeSharedWishlistChatUseCase = get(),
+      fetchSharedWishlistChatOlderMessagesUseCase = get(),
     )
   }
 

@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.data.feature.groups.datasource.GroupsRemoteDataS
 import com.splanes.uoc.wishlify.data.feature.groups.mapper.GroupsDataMapper
 import com.splanes.uoc.wishlify.data.feature.shared.datasource.SharedWishlistsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.shared.mapper.SharedWishlistsDataMapper
+import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistChatMessageEntity
 import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemoteDataSource
@@ -13,13 +14,18 @@ import com.splanes.uoc.wishlify.data.feature.wishlists.mapper.WishlistsDataMappe
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaPath
+import com.splanes.uoc.wishlify.domain.common.model.ChatPage
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
+import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistChatMessage
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItemUpdateStateRequest
+import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistSendMessageRequest
 import com.splanes.uoc.wishlify.domain.feature.shared.repository.SharedWishlistsRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SharedWishlistsRepositoryImpl(
@@ -210,11 +216,9 @@ class SharedWishlistsRepositoryImpl(
         // Update linked wishlist
         wishlistsRemoteDataSource.upsertWishlist(updatedWishlist)
 
-        // Batch delete of purchased items & shared-wishlist (+ items)
+        // Batch delete of purchased items & shared-wishlist (+ items + chat)
         wishlistsRemoteDataSource.removeWishlistItems(linkedWishlistId, baseItemsToDelete)
         sharedWishlistsRemoteDataSource.removeWishlist(sharedWishlistId, sharedItemsToDelete)
-
-        // TODO: Delete chat once implemented
 
         launch {
           baseItemsToDelete
@@ -343,5 +347,78 @@ class SharedWishlistsRepositoryImpl(
         wishlist = request.sharedWishlist.id,
         entity = entity
       )
+    }
+
+  override fun subscribeToWishlistsChatMessages(
+    uid: String,
+    sharedWishlistId: String,
+    limit: Int
+  ): Flow<List<SharedWishlistChatMessage>> =
+    sharedWishlistsRemoteDataSource
+      .subscribeToChat(sharedWishlistId, limit)
+      .map { entities ->
+        coroutineScope {
+          val users = entities
+            .asSequence()
+            .filter { msg -> msg.type == SharedWishlistChatMessageEntity.Type.User }
+            .map { msg -> msg.createdBy }
+            .distinct()
+            .map { uid -> async { userRemoteDataSource.fetchUserById(uid) } }
+            .toList()
+            .awaitAll()
+            .asSequence()
+            .filterNotNull()
+            .map { user -> userDataMapper.mapToBasic(user) }
+            .map { basic -> userDataMapper.map(basic) }
+            .associateBy { user -> user.uid }
+
+          entities.map { entity -> mapper.mapMessage(uid, entity, users) }
+        }
+      }
+
+  override suspend fun fetchSharedWishlistMessages(
+    uid: String,
+    wishlistId: String,
+    cursor: Long,
+    limit: Int
+  ): Result<ChatPage<SharedWishlistChatMessage>> =
+    runCatching {
+      val page = sharedWishlistsRemoteDataSource.fetchSharedWishlistChatMessages(
+        wishlist = wishlistId,
+        from = cursor,
+        limit = limit
+      )
+
+      val users = coroutineScope {
+        page
+          .messages
+          .filter { msg -> msg.type == SharedWishlistChatMessageEntity.Type.User }
+          .map { msg -> msg.createdBy }
+          .distinct()
+          .map { uid -> async { userRemoteDataSource.fetchUserById(uid) } }
+          .awaitAll()
+          .filterNotNull()
+          .map { user -> userDataMapper.mapToBasic(user) }
+          .map { basic -> userDataMapper.map(basic) }
+          .associateBy { user -> user.uid }
+      }
+
+      val messages = page.messages.map { entity -> mapper.mapMessage(uid, entity, users) }
+
+      ChatPage(
+        messages = messages,
+        nextCursor = page.nextCursor,
+        hasMore = page.hasMore
+      )
+    }
+
+  override suspend fun sendMessageToChat(
+    uid: String,
+    request: SharedWishlistSendMessageRequest
+  ): Result<Unit> =
+    runCatching {
+      val entity = mapper.mapMessage(uid, request)
+      sharedWishlistsRemoteDataSource
+        .upsertSharedWishlistMessage(request.wishlist, entity)
     }
 }

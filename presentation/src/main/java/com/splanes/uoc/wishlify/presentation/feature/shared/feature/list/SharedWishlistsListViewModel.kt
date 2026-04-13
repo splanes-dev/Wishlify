@@ -48,6 +48,11 @@ class SharedWishlistsListViewModel(
     }
   }
 
+  fun onReloadWishlists() {
+    val tab = viewModelState.value.tabSelected
+    fetchSharedWishlists(tab)
+  }
+
   fun onSharedBackToPrivate(wishlist: SharedWishlist) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {

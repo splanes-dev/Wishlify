@@ -39,13 +39,15 @@ class UserDataMapper {
     UserBasic(
       uid = entity.uid,
       username = entity.username,
-      code = entity.code
+      code = entity.code,
+      photoUrl = entity.photoUrl
     )
 
   fun map(basic: UserBasic): User.Basic =
     User.Basic(
       uid = basic.uid,
       username = basic.username,
-      code = basic.code
+      code = basic.code,
+      photoUrl = basic.photoUrl
     )
 }

@@ -2,12 +2,13 @@ package com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.splanes.uoc.wishlify.domain.common.error.GenericError
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistUseCase
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UnshareWishlistUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
-import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.WishlistDetailUiSideEffect
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class SharedWishlistOwnDetailViewModel(
   private val sharedWishlistId: String,
@@ -26,6 +28,7 @@ class SharedWishlistOwnDetailViewModel(
   target: String,
   private val fetchSharedWishlistUseCase: FetchSharedWishlistUseCase,
   private val fetchSharedWishlistItemsUseCase: FetchSharedWishlistItemsUseCase,
+  private val unshareWishlistUseCase: UnshareWishlistUseCase,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
@@ -47,7 +50,7 @@ class SharedWishlistOwnDetailViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
-  private val uiSideEffectChannel = Channel<WishlistDetailUiSideEffect>()
+  private val uiSideEffectChannel = Channel<SharedWishlistOwnDetailUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
   fun onOpenItemDetail(item: SharedWishlistItem) {
@@ -56,6 +59,27 @@ class SharedWishlistOwnDetailViewModel(
         itemSelected = item,
         isItemDetailModalOpen = true
       )
+    }
+  }
+
+  fun onBackToPrivate() {
+    viewModelState.update { state -> state.copy(isLoading = true) }
+    viewModelScope.launch {
+      runCatching {
+        val currentState = viewModelState.value
+        val wishlist = currentState.wishlist as? SharedWishlist.Own ?: throw GenericError.Unknown()
+        unshareWishlistUseCase(wishlist).getOrThrow()
+      }.onSuccess {
+        viewModelState.update { state -> state.copy(isLoading = false) }
+        uiSideEffectChannel.send(SharedWishlistOwnDetailUiSideEffect.WishlistUnshared)
+      }.onFailure { error ->
+        viewModelState.update { state ->
+          state.copy(
+            isLoading = false,
+            error = error,
+          )
+        }
+      }
     }
   }
 

@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface SessionRepository {
   fun observeSessionState(): Flow<SessionState>
-  suspend fun getCurrentUid(): Result<String>
+  fun getCurrentUid(): Result<String>
 }

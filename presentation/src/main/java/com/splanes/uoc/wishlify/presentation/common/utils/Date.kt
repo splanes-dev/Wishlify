@@ -5,11 +5,16 @@ import java.time.Instant
 import java.util.Date
 import java.util.Locale
 
-fun Date.formatted(): String =
-  SimpleDateFormat("dd/MM/yy", Locale.getDefault()).format(this)
+fun Date.formatted(pattern: DateTimePattern = DateTimePattern.DateOnly): String =
+  SimpleDateFormat(pattern.value, Locale.getDefault()).format(this)
 
-fun Long.formatted(): String =
-  SimpleDateFormat("dd/MM/yy", Locale.getDefault()).format(this)
+fun Long.formatted(pattern: DateTimePattern = DateTimePattern.DateOnly): String =
+  SimpleDateFormat(pattern.value, Locale.getDefault()).format(this)
 
 fun Date.isExpired(): Boolean =
   toInstant().isBefore(Instant.now())
+
+enum class DateTimePattern(val value: String) {
+  DateOnly("dd/MM/yy"),
+  TimeOnly("hh:mm")
+}

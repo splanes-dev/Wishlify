@@ -44,6 +44,7 @@ import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.third
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.components.SharedWishlistItemCardAnimated
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.components.SharedWishlistItemDetailBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.components.SharedWishlistItemInfoBanner
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.components.SharedWishlistItemStateBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.model.SharedWishlistItemAction
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 import kotlinx.coroutines.launch
@@ -53,8 +54,11 @@ import kotlinx.coroutines.launch
 fun SharedWishlistThirdPartyDetailScreen(
   uiState: SharedWishlistThirdPartyDetailUiState.Listing,
   onItemAction: (item: SharedWishlistItem, action: SharedWishlistItemAction) -> Unit,
+  onUpdateItemState: (item: SharedWishlistItem, action: SharedWishlistItemAction.UpdateState) -> Unit,
+  onOpenItemStateModal: (item: SharedWishlistItem) -> Unit,
   onChatClick: () -> Unit,
   onCloseItemDetailModal: () -> Unit,
+  onCloseItemStateModal: () -> Unit,
   onClearShareRequestError: () -> Unit,
   onDismissBanner: () -> Unit,
   onBack: () -> Unit,
@@ -65,6 +69,8 @@ fun SharedWishlistThirdPartyDetailScreen(
   val context = LocalContext.current
 
   val detailSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  val itemStateSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
   Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
@@ -166,9 +172,7 @@ fun SharedWishlistThirdPartyDetailScreen(
               .animateItem(),
             item = item,
             onClick = { onItemAction(item, SharedWishlistItemAction.Open) },
-            onSettingsClick = {
-              // TODO
-            }
+            onSettingsClick = { onOpenItemStateModal(item) }
           )
         }
       }
@@ -201,6 +205,22 @@ fun SharedWishlistThirdPartyDetailScreen(
             else -> onItemAction(item, action)
           }
         }
+      )
+    }
+
+    uiState.itemSelectedToUpdateState?.let { item ->
+      SharedWishlistItemStateBottomSheet(
+        visible = uiState.isWishlistItemStateModalOpen,
+        sheetState = itemStateSheetState,
+        item = item,
+        shareRequestError = uiState.shareRequestError,
+        onClearShareRequestError = onClearShareRequestError,
+        onDismiss = {
+          coroutineScope
+            .launch { detailSheetState.hide() }
+            .invokeOnCompletion { onCloseItemStateModal() }
+        },
+        onUpdateState = { action -> onUpdateItemState(item, action) }
       )
     }
 

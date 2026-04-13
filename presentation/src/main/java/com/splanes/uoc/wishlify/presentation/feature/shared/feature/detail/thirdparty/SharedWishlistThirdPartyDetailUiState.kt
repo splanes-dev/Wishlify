@@ -22,16 +22,14 @@ sealed interface SharedWishlistThirdPartyDetailUiState {
     val wishlist: SharedWishlist.ThirdParty,
     val isInfoBannerVisible: Boolean,
     val isItemDetailModalOpen: Boolean,
+    val isWishlistItemStateModalOpen: Boolean,
     val isItemDetailButtonLoading: Boolean,
     val itemSelected: SharedWishlistItem?,
+    val itemSelectedToUpdateState: SharedWishlistItem?,
     val itemStateActions: List<SharedWishlistItemStateAction>,
     val items: List<SharedWishlistItem>,
     val shareRequestError: String?,
     val isLoading: Boolean,
     val error: ErrorUiModel?
   ) : SharedWishlistThirdPartyDetailUiState
-}
-
-sealed interface SharedWishlistThirdPartyDetailUiSideEffect {
-
 }

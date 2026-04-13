@@ -1,4 +1,4 @@
-package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components
+package com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,25 +17,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
-import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
+import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.SearchBottomSheet
 import com.splanes.uoc.wishlify.presentation.common.components.image.ImagePreset
 import com.splanes.uoc.wishlify.presentation.common.components.image.RemoteImage
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
-import kotlinx.coroutines.FlowPreview
 
-@OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WishlistsSearchBottomSheet(
+fun SharedWishlistsSearchBottomSheet(
   visible: Boolean,
   sheetState: SheetState,
-  wishlists: List<Wishlist>,
+  wishlists: List<SharedWishlist>,
   modifier: Modifier = Modifier,
   onDismiss: () -> Unit,
-  onWishlistClick: (Wishlist) -> Unit,
+  onClick: (SharedWishlist) -> Unit,
 ) {
-
   SearchBottomSheet(
     modifier = modifier,
     visible = visible,
@@ -46,15 +44,15 @@ fun WishlistsSearchBottomSheet(
     queryLabel = stringResource(R.string.wishlists_new_list_name_input),
     onDismiss = onDismiss,
     onSearch = { items, query ->
-      items.filter { it.title.contains(query, ignoreCase = true) }
+      items.filter { it.linkedWishlist.name.contains(query, ignoreCase = true) }
     },
-    onResultClick = onWishlistClick,
-    resultContent = { result -> ResultRow(wishlist = result) }
+    onResultClick = onClick,
+    resultContent = { result -> ResultRow(wishlist = result.linkedWishlist) }
   )
 }
 
 @Composable
-private fun ResultRow(wishlist: Wishlist) {
+private fun ResultRow(wishlist: SharedWishlist.LinkedWishlist) {
   when (val image = wishlist.photo) {
     is ImageMedia.Preset -> {
       val preset = remember(image) { ImagePreset.findById(image.id.toInt()) }
@@ -84,7 +82,7 @@ private fun ResultRow(wishlist: Wishlist) {
   Spacer(Modifier.width(12.dp))
 
   Text(
-    text = wishlist.title,
+    text = wishlist.name,
     style = WishlifyTheme.typography.bodyLarge,
     color = WishlifyTheme.colorScheme.onSurface
   )

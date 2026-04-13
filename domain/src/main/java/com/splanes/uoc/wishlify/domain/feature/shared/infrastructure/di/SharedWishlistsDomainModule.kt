@@ -1,9 +1,12 @@
 package com.splanes.uoc.wishlify.domain.feature.shared.infrastructure.di
 
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistChatOlderMessagesUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.SendMessageSharedWishlistChatUseCase
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.SubscribeSharedWishlistChatUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UnshareWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UpdateSharedWishlistItemUseCase
 import org.koin.core.module.dsl.singleOf
@@ -17,4 +20,7 @@ internal val SharedWishlistsDomainModule = module {
   singleOf(::FetchSharedWishlistItemUseCase)
   singleOf(::UpdateSharedWishlistItemUseCase)
   singleOf(::UnshareWishlistUseCase)
+  singleOf(::SendMessageSharedWishlistChatUseCase)
+  singleOf(::SubscribeSharedWishlistChatUseCase)
+  singleOf(::FetchSharedWishlistChatOlderMessagesUseCase)
 }

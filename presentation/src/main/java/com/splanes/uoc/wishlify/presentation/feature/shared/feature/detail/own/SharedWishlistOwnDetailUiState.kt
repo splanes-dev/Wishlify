@@ -26,3 +26,7 @@ sealed interface SharedWishlistOwnDetailUiState {
     val error: ErrorUiModel?
   ) : SharedWishlistOwnDetailUiState
 }
+
+sealed interface SharedWishlistOwnDetailUiSideEffect {
+  data object WishlistUnshared : SharedWishlistOwnDetailUiSideEffect
+}

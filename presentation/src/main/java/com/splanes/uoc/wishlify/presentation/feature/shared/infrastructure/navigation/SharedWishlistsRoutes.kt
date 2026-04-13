@@ -21,4 +21,11 @@ data object SharedWishlists {
     val sharedWishlistName: String,
     val target: String
   )
+
+  @Serializable
+  data class ThirdPartyChat(
+    val sharedWishlistId: String,
+    val sharedWishlistName: String,
+    val target: String
+  )
 }

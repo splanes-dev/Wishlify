@@ -38,6 +38,7 @@ fun TextInput(
   leadingIcon: ImageVector,
   modifier: Modifier = Modifier,
   label: String = "",
+  placeholder: String? = null,
   cleanable: Boolean = true,
   readOnly: Boolean = false,
   trailingIcon: (@Composable () -> Unit)? = null,
@@ -54,6 +55,7 @@ fun TextInput(
     leadingIcon = rememberVectorPainter(leadingIcon),
     modifier = modifier,
     label = label,
+    placeholder = placeholder,
     cleanable = cleanable,
     readOnly = readOnly,
     trailingIcon = trailingIcon,
@@ -73,6 +75,7 @@ fun TextInput(
   leadingIcon: Painter,
   modifier: Modifier = Modifier,
   label: String = "",
+  placeholder: String? = null,
   cleanable: Boolean = true,
   readOnly: Boolean = false,
   trailingIcon: (@Composable () -> Unit)? = null,
@@ -92,7 +95,12 @@ fun TextInput(
     },
     value = state.text,
     onValueChange = state::onValueChanged,
-    label = { Text(text = label) },
+    label = label.takeUnless { it.isBlank() }?.let {
+      @Composable { Text(text = label) }
+    },
+    placeholder = placeholder?.let {
+      @Composable { Text(text = placeholder) }
+    },
     leadingIcon = {
       Icon(
         painter = leadingIcon,

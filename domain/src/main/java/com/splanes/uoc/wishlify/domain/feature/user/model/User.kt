@@ -6,5 +6,6 @@ sealed class User {
     val uid: String,
     val username: String,
     val code: String,
+    val photoUrl: String?
   )
 }

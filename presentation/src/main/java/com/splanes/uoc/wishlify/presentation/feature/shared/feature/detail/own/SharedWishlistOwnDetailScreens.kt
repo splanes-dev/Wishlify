@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.outlined.FilterAlt
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -24,7 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -38,9 +43,12 @@ import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
 import com.splanes.uoc.wishlify.presentation.common.utils.openBrowserLink
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.components.SharedOwnWishlistDetailSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.components.SharedOwnWishlistHeader
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.components.SharedOwnWishlistItemCard
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.components.SharedOwnWishlistItemDetailBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.model.SharedOwnWishlistSettings
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistMoveToPrivateDialog
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 import kotlinx.coroutines.launch
 
@@ -51,6 +59,7 @@ fun SharedWishlistOwnDetailScreen(
   uiState: SharedWishlistOwnDetailUiState.Listing,
   onOpenItemDetail: (SharedWishlistItem) -> Unit,
   onCloseItemDetailModal: () -> Unit,
+  onBackToPrivates: () -> Unit,
   onDismissError: () -> Unit,
   onBack: () -> Unit,
 ) {
@@ -59,6 +68,11 @@ fun SharedWishlistOwnDetailScreen(
   val context = LocalContext.current
 
   val detailSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isSettingsModalOpen by remember { mutableStateOf(false) }
+  val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isBackToPrivateDialogOpen by remember { mutableStateOf(false) }
 
   Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
@@ -87,14 +101,26 @@ fun SharedWishlistOwnDetailScreen(
             }
           },
           actions = {
-            IconButton(
-              shapes = IconButtonShape,
-              onClick = { /* todo */ }
-            ) {
-              Icon(
-                imageVector = Icons.Outlined.FilterAlt,
-                contentDescription = stringResource(R.string.filter)
-              )
+            if (uiState.wishlist.isFinished()) {
+              IconButton(
+                shapes = IconButtonShape,
+                onClick = { isSettingsModalOpen = true }
+              ) {
+                Icon(
+                  imageVector = Icons.Outlined.Tune,
+                  contentDescription = stringResource(R.string.settings)
+                )
+              }
+            } else {
+              IconButton(
+                shapes = IconButtonShape,
+                onClick = { /* todo */ }
+              ) {
+                Icon(
+                  imageVector = Icons.Outlined.FilterAlt,
+                  contentDescription = stringResource(R.string.filter)
+                )
+              }
             }
           }
         )
@@ -148,6 +174,31 @@ fun SharedWishlistOwnDetailScreen(
               .invokeOnCompletion { onCloseItemDetailModal() }
           }
         }
+      )
+    }
+
+    SharedOwnWishlistDetailSettingsBottomSheet(
+      visible = isSettingsModalOpen,
+      sheetState = settingsSheetState,
+      settings = SharedOwnWishlistSettings.entries,
+      onDismiss = { isSettingsModalOpen = false },
+      onSettingClick = { setting ->
+        when (setting) {
+          SharedOwnWishlistSettings.Filter -> {
+            // TODO
+          }
+          SharedOwnWishlistSettings.BackToPrivates -> isBackToPrivateDialogOpen = true
+        }
+        coroutineScope
+          .launch { settingsSheetState.hide() }
+          .invokeOnCompletion { isSettingsModalOpen = false }
+      }
+    )
+
+    if (isBackToPrivateDialogOpen) {
+      SharedWishlistMoveToPrivateDialog(
+        onDismiss = { isBackToPrivateDialogOpen = false },
+        onConfirm = { onBackToPrivates() }
       )
     }
 

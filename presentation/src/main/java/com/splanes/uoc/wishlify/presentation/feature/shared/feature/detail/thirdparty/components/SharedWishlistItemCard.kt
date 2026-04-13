@@ -6,21 +6,16 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -33,14 +28,15 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.R
-import com.splanes.uoc.wishlify.presentation.common.components.image.RemoteImage
+import com.splanes.uoc.wishlify.presentation.common.components.CardImage
+import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonCustom
 import com.splanes.uoc.wishlify.presentation.feature.shared.components.SharedWishlistItemStateLabel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.utils.color
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.utils.formatPrice
@@ -132,29 +128,10 @@ fun SharedWishlistItemCard(
     onClick = onClick
   ) {
     Row(modifier = Modifier.fillMaxWidth()) {
-      when (val image = item.linkedItem.photoUrl) {
-        null -> {
-          Image(
-            modifier = Modifier
-              .width(135.dp)
-              .fillMaxHeight()
-              .background(color = WishlifyTheme.colorScheme.surfaceBright),
-            painter = painterResource(R.drawable.item_placeholder),
-            contentDescription = item.linkedItem.name,
-            contentScale = ContentScale.Crop
-          )
-        }
-
-        else -> {
-          RemoteImage(
-            modifier = Modifier
-              .width(135.dp)
-              .fillMaxHeight(),
-            url = image,
-            contentScale = ContentScale.Crop
-          )
-        }
-      }
+      CardImage(
+        media = item.linkedItem.photoUrl?.let(ImageMedia::Url),
+        placeholder = painterResource(R.drawable.item_placeholder),
+      )
 
       Column(
         modifier = Modifier
@@ -172,13 +149,10 @@ fun SharedWishlistItemCard(
           )
 
           if (item.state.hasSettings()) {
-            Icon(
-              modifier = Modifier
-                .size(16.dp)
-                .clickable { onSettingsClick() },
+            IconButtonCustom(
               painter = painterResource(R.drawable.ic_item_settings),
-              tint = WishlifyTheme.colorScheme.onSurface,
-              contentDescription = null
+              contentColor = WishlifyTheme.colorScheme.onSurface,
+              onClick = onSettingsClick
             )
           }
         }
