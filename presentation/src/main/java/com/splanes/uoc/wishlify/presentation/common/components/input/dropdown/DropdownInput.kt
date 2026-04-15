@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -60,7 +61,11 @@ fun DropdownInput(
   var widthPx by remember { mutableIntStateOf(0) }
   val widthDp by remember { derivedStateOf { with(density) { widthPx.toDp() } } }
   val textFieldState = rememberTextFieldState(initial?.text.orEmpty())
-  var selected by remember { mutableStateOf(initial) }
+  var selected by remember(initial) { mutableStateOf(initial) }
+
+  LaunchedEffect(initial) {
+    textFieldState.setTextAndPlaceCursorAtEnd(initial?.text.orEmpty())
+  }
 
   ExposedDropdownMenuBox(
     modifier = modifier,

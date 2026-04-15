@@ -18,6 +18,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -41,6 +43,8 @@ import com.splanes.uoc.wishlify.presentation.common.components.ConfirmationDialo
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
+import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonShape
+import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonText
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.components.CategoryItem
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.model.CategoryAction
@@ -176,9 +180,17 @@ fun WishlistsCategoriesScreen(
 @Composable
 fun WishlistsCategoriesEmptyScreen(
   uiState: WishlistsCategoriesUiState.Empty,
+  onCategoryAction: (CategoryAction) -> Unit,
+  onCreateOrUpdateCategory: (name: String, color: Category.CategoryColor) -> Unit,
+  onClearInputError: () -> Unit,
+  onCloseCategoryModal: () -> Unit,
   onBack: () -> Unit,
   onDismissError: () -> Unit,
 ) {
+
+  val coroutineScope = rememberCoroutineScope()
+  val categorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
   Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
       modifier = Modifier.fillMaxSize(),
@@ -208,17 +220,51 @@ fun WishlistsCategoriesEmptyScreen(
             horizontal = 16.dp,
             vertical = 24.dp
           ),
-        verticalArrangement = Arrangement.Center
       ) {
 
         EmptyState(
-          modifier = Modifier.fillMaxWidth(),
+          modifier = Modifier.weight(1f),
           image = painterResource(R.drawable.wishlists_items_empty_state),
           title = stringResource(R.string.wishlists_list_empty_state_title),
           description = stringResource(R.string.wishlists_admin_categories_empty),
+          button = {
+            Button(
+              modifier = Modifier.fillMaxWidth(),
+              shapes = ButtonShape,
+              colors = ButtonDefaults.buttonColors(
+                contentColor = WishlifyTheme.colorScheme.onSuccess,
+                containerColor = WishlifyTheme.colorScheme.success,
+              ),
+              onClick = { onCategoryAction(CategoryAction.New) }
+            ) {
+              Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = "",
+              )
+
+              Spacer(Modifier.width(8.dp))
+
+              ButtonText(text = stringResource(R.string.wishlists_new_category))
+            }
+          }
         )
       }
     }
+
+    NewCategoryBottomSheet(
+      isVisible = uiState.isCategoryModalVisible,
+      sheetState = categorySheetState,
+      error = uiState.categoryNameInputError,
+      onClearInputError = onClearInputError,
+      onDismiss = {
+        coroutineScope.launch {
+          categorySheetState.hide()
+        }.invokeOnCompletion {
+          onCloseCategoryModal()
+        }
+      },
+      onCreate = onCreateOrUpdateCategory,
+    )
 
     uiState.error?.let { error ->
       ErrorDialog(

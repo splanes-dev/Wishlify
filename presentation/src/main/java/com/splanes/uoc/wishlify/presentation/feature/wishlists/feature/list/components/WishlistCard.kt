@@ -36,7 +36,7 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 fun WishlistCard(
   wishlist: Wishlist,
   modifier: Modifier = Modifier,
-  onSettingsClick: () -> Unit,
+  onSettingsClick: (() -> Unit)?,
   onClick: () -> Unit,
 ) {
   Card(
@@ -69,11 +69,13 @@ fun WishlistCard(
             overflow = TextOverflow.Ellipsis
           )
 
-          IconButtonCustom(
-            painter = painterResource(R.drawable.ic_item_settings),
-            contentColor = WishlifyTheme.colorScheme.onSurface,
-            onClick = onSettingsClick
-          )
+          if (onSettingsClick != null) {
+            IconButtonCustom(
+              painter = painterResource(R.drawable.ic_item_settings),
+              contentColor = WishlifyTheme.colorScheme.onSurface,
+              onClick = onSettingsClick
+            )
+          }
         }
 
         (wishlist as? Wishlist.ThirdParty)?.let { w ->

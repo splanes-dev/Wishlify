@@ -1,37 +1,35 @@
 [versions]
 # Plugins
 ## Android Gradle Plugin
-agp = "9.1.0"
+agp = "9.2.0-rc01"
 # Kotlin Plugin
 kotlin = "2.3.20"
 # Google Services Plugin
 google-services = "4.4.4"
 
 # Kotlin
-kotlin-serialization = "1.10.0"
-kotlin-coroutines = "1.10.2"
+kotlin-serialization = "1.11.0"
 
 # Koin
-koin = "4.2.0"
+koin = "4.2.1"
 
 # Android
 ## Core
 androidx-core-ktx = "1.18.0"
 androidx-core-splashscreen = "1.2.0"
-androidx-appcompat = "1.7.1"
 androidx-lifecycle = "2.10.0"
 androidx-navigation = "2.9.7"
-androidx-credentials = "1.5.0"
+androidx-credentials = "1.6.0"
 ## Jetpack Compose
 androidx-compose-bom = "2026.03.01"
 androidx-compose-activity = "1.13.0"
-androdix-material3 = "1.5.0-alpha16"
+androdix-material3 = "1.5.0-alpha17"
 
 # Google Identity
 google-identity = "1.2.0"
 
 # Firebase
-google-firebase-bom = "34.11.0"
+google-firebase-bom = "34.12.0"
 
 # Coil
 coil = "2.7.0"
@@ -56,14 +54,12 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 ## Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidx-core-splashscreen" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewModelSavedState = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidx-lifecycle" }
 androidx-navigation-navigationCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
-androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "androidx-navigation" }
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidx-credentials" }
 androidx-credentials-playServicesAuth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidx-credentials" }
 

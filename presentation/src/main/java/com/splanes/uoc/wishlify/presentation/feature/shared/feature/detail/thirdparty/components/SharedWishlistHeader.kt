@@ -130,7 +130,7 @@ private fun Deadline(deadline: Date) {
   val containerColor = if (expired) {
     WishlifyTheme.colorScheme.error.copy(alpha = .7f)
   } else {
-    WishlifyTheme.colorScheme.tertiaryFixed
+    WishlifyTheme.colorScheme.tertiaryContainer
   }
 
   val contentColor = if (expired) {

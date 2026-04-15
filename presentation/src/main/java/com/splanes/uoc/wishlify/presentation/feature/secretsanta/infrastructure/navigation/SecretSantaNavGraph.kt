@@ -12,8 +12,25 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.feature.groups.infrastructure.navigation.Groups
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.SecretSantaDetailRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.SecretSantaDetailViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.SecretSantaListRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.SecretSantaListViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.SecretSantaNewEventRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.SecretSantaNewEventViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.edition.SecretSantaUpdateEventRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.edition.SecretSantaUpdateEventViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share.SecretSantaShareWishlistRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share.SecretSantaShareWishlistViewModel
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackStackWithResult
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class SecretSantaNavGraph : FeatureHomeNavGraph {
 
@@ -51,8 +68,162 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
   ) {
     navigation<SecretSanta>(startDestination = SecretSanta.List) {
       composable<SecretSanta.List> {
+        val viewModel = koinViewModel<SecretSantaListViewModel>()
 
+        navController.NavResultHandler<Boolean>(key = NavResult.NEW_EVENT) { created ->
+          if (created) {
+            viewModel.onNewEventResult()
+          }
+        }
+
+        SecretSantaListRoute(
+          viewModel = viewModel,
+          onNavToNewEvent = { navController.navigate(SecretSanta.NewEvent) },
+          onNavToDetail = { event ->
+            val route = SecretSanta.Detail(eventId = event.id, name = event.name)
+            navController.navigate(route)
+          }
+        )
+      }
+
+      composable<SecretSanta.NewEvent>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) {
+
+        val viewModel = koinViewModel<SecretSantaNewEventViewModel>()
+
+        navController.NavResultHandler<Boolean>(key = NavResult.NEW_GROUP) { created ->
+          if (created) {
+            viewModel.onNewGroupResult()
+          }
+        }
+
+        navController.NavResultHandler<List<String>>(key = NavResult.SEARCH) { users ->
+          if (users.isNotEmpty()) {
+            viewModel.onUserSearchResult(users)
+          }
+        }
+
+        SecretSantaNewEventRoute(
+          viewModel = viewModel,
+          onNavToCreateGroup = { navController.navigate(Groups.NewGroup) },
+          onNavToSearchUsers = { navController.navigate(Groups.SearchUsers) },
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.NEW_EVENT,
+              result = it
+            )
+          }
+        )
+      }
+
+      composable<SecretSanta.UpdateEvent>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) { backStackEntry ->
+
+        val route = backStackEntry.toRoute<SecretSanta.UpdateEvent>()
+
+        val viewModel = koinViewModel<SecretSantaUpdateEventViewModel> {
+          parametersOf(route.eventId)
+        }
+
+        navController.NavResultHandler<Boolean>(key = NavResult.NEW_GROUP) { created ->
+          if (created) {
+            viewModel.onNewGroupResult()
+          }
+        }
+
+        navController.NavResultHandler<List<String>>(key = NavResult.SEARCH) { users ->
+          if (users.isNotEmpty()) {
+            viewModel.onUserSearchResult(users)
+          }
+        }
+
+        SecretSantaUpdateEventRoute(
+          viewModel = viewModel,
+          onNavToCreateGroup = { navController.navigate(Groups.NewGroup) },
+          onNavToSearchUsers = { navController.navigate(Groups.SearchUsers) },
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.UPDATE_EVENT,
+              result = it
+            )
+          }
+        )
+      }
+
+      composable<SecretSanta.Detail>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit
+      ) { backStackEntry ->
+        val route = backStackEntry.toRoute<SecretSanta.Detail>()
+
+        val viewModel = koinViewModel<SecretSantaDetailViewModel> {
+          parametersOf(route.eventId, route.name)
+        }
+
+        navController.NavResultHandler<Boolean>(key = NavResult.UPDATE_EVENT) { updated ->
+          if (updated) {
+            viewModel.onEventUpdated()
+          }
+        }
+
+        navController.NavResultHandler<Boolean>(key = NavResult.WISHLIST_SHARED) { shared ->
+          if (shared) {
+            viewModel.onEventUpdated()
+          }
+        }
+
+        SecretSantaDetailRoute(
+          viewModel = viewModel,
+          onNavToEdit = { eventId ->
+            val route = SecretSanta.UpdateEvent(eventId)
+            navController.navigate(route)
+          },
+          onNavToShareWishlist = { eventId ->
+            val route = SecretSanta.ShareWishlist(eventId)
+            navController.navigate(route)
+          },
+          onNavBack = {
+            navController.popBackStackWithResult(
+              key = NavResult.UPDATED_FROM_DETAIL,
+              result = it
+            )
+          }
+        )
+      }
+
+      composable<SecretSanta.ShareWishlist>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) { backStackEntry ->
+        val route = backStackEntry.toRoute<SecretSanta.ShareWishlist>()
+
+        val viewModel = koinViewModel<SecretSantaShareWishlistViewModel> {
+          parametersOf(route.eventId)
+        }
+
+        SecretSantaShareWishlistRoute(
+          viewModel = viewModel,
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.WISHLIST_SHARED,
+              result = it
+            )
+          }
+        )
       }
     }
   }
+}
+
+private object NavResult {
+  const val NEW_EVENT = "new-event"
+  const val UPDATE_EVENT = "update-event"
+  const val NEW_GROUP = "new-group"
+  const val SEARCH = "search-users"
+  const val UPDATED_FROM_DETAIL = "updated-from-detail"
+  const val WISHLIST_SHARED = "wishlist-shared"
 }

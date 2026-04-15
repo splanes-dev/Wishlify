@@ -4,8 +4,8 @@ import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
-import com.splanes.uoc.wishlify.data.common.firebase.utils.db.chatMessages
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
+import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlistChatMessages
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlistItems
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlists
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.withBatch
@@ -238,5 +238,5 @@ class SharedWishlistsRemoteDataSource(
     db.sharedWishlists.document(id).sharedWishlistItems
 
   private fun wishlistChatOf(id: String) =
-    db.sharedWishlists.document(id).chatMessages
+    db.sharedWishlists.document(id).sharedWishlistChatMessages
 }

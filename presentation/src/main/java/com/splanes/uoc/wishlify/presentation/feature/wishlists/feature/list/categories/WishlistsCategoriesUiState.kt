@@ -8,6 +8,8 @@ sealed interface WishlistsCategoriesUiState {
 
   data object Loading : WishlistsCategoriesUiState
   data class Empty(
+    val isCategoryModalVisible: Boolean,
+    val categoryNameInputError: String?,
     val error: ErrorUiModel?,
   ) : WishlistsCategoriesUiState
 

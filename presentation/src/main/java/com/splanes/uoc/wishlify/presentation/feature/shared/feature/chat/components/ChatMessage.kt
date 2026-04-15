@@ -138,7 +138,7 @@ private fun ChatImage(
   ) {
     val painter = when {
       isSystem -> painterResource(R.drawable.app_logo)
-      photoUrl.isNullOrBlank() -> painterResource(R.drawable.img_placholder_avatar)
+      photoUrl.isNullOrBlank() -> painterResource(R.drawable.img_placeholder_avatar)
       else -> null
     }
 

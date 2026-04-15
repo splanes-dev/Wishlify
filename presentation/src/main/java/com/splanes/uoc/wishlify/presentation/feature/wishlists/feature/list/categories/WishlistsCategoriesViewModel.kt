@@ -244,6 +244,8 @@ class WishlistsCategoriesViewModel(
 
         categories.isEmpty() ->
           WishlistsCategoriesUiState.Empty(
+            categoryNameInputError = categoryNameInputError?.let(categoryFormErrorMapper::map),
+            isCategoryModalVisible = isCategoryModalVisible,
             error = error?.let(errorUiMapper::map),
           )
 

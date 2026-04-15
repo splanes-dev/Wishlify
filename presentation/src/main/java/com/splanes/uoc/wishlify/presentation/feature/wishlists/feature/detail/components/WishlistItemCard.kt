@@ -46,7 +46,7 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 fun WishlistItemCard(
   item: WishlistItem,
   modifier: Modifier = Modifier,
-  onSettingsClick: () -> Unit,
+  onSettingsClick: (() -> Unit)?,
   onClick: () -> Unit,
 ) {
   Card(
@@ -82,14 +82,16 @@ fun WishlistItemCard(
             overflow = TextOverflow.Ellipsis
           )
 
-          Icon(
-            modifier = Modifier
-              .size(16.dp)
-              .clickable { onSettingsClick() },
-            painter = painterResource(R.drawable.ic_item_settings),
-            tint = WishlifyTheme.colorScheme.onSurface,
-            contentDescription = null
-          )
+          if (onSettingsClick != null) {
+            Icon(
+              modifier = Modifier
+                .size(16.dp)
+                .clickable { onSettingsClick() },
+              painter = painterResource(R.drawable.ic_item_settings),
+              tint = WishlifyTheme.colorScheme.onSurface,
+              contentDescription = null
+            )
+          }
         }
 
         Spacer(Modifier.height(4.dp))

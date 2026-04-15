@@ -24,9 +24,12 @@
     <string name="settings">Configuració</string>
     <string name="close">Tancar</string>
     <string name="finished">Finalitzada</string>
+    <string name="event_finished">Finalitzat</string>
     <string name="save">Desar</string>
     <string name="share">Compartir</string>
     <string name="filter">Filtrar</string>
+    <string name="next">Següent</string>
+    <string name="important">Important</string>
     <string name="deadline">Data límit</string>
     <string name="update">Actualitzar</string>
     <string name="and">i</string>
@@ -51,6 +54,7 @@
     <string name="confirmation_dialog_title_warning">Atenció!</string>
     <string name="confirmation_dialog_title_confirm">Confirmació</string>
     <string name="confirmation_dialog_description">Segur que vols continuar?\nAquesta acció no es pot desfer.</string>
+    <string name="chat_anonymous">Xat anònim</string>
     <string name="confirm">Confirmar</string>
     <string name="options">Opcions</string>
     <string name="searcher">Cercador</string>

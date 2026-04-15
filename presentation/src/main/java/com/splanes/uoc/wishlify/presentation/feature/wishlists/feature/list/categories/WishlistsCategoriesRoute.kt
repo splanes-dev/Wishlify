@@ -28,6 +28,10 @@ fun WishlistsCategoriesRoute(
     is WishlistsCategoriesUiState.Empty ->
       WishlistsCategoriesEmptyScreen(
         uiState = state,
+        onCategoryAction = viewModel::onCategoryAction,
+        onCreateOrUpdateCategory = viewModel::onCreateOrUpdateCategory,
+        onClearInputError = viewModel::onClearInputError,
+        onCloseCategoryModal = viewModel::onCloseCategoryModal,
         onBack = onBack,
         onDismissError = viewModel::onDismissError
       )

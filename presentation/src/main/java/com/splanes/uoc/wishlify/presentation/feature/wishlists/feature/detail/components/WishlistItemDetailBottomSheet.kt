@@ -85,6 +85,7 @@ fun WishlistItemDetailBottomSheet(
   sheetState: SheetState,
   item: WishlistItem,
   isButtonLoading: Boolean,
+  readOnly: Boolean = false,
   onDismiss: () -> Unit,
   onAction: (WishlistItemAction) -> Unit,
 ) {
@@ -169,60 +170,62 @@ fun WishlistItemDetailBottomSheet(
           Spacer(Modifier.height(16.dp))
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        if (!readOnly) {
+          Spacer(modifier = Modifier.height(8.dp))
 
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          OutlinedIconButton(
-            shapes = IconButtonShape,
-            border = BorderStroke(1.dp, WishlifyTheme.colorScheme.error),
-            colors = IconButtonDefaults.outlinedIconButtonColors(
-              contentColor = WishlifyTheme.colorScheme.error
-            ),
-            onClick = { onAction(WishlistItemAction.Delete) }
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
           ) {
-            Icon(
-              imageVector = Icons.Outlined.DeleteForever,
-              contentDescription = stringResource(R.string.delete),
+            OutlinedIconButton(
+              shapes = IconButtonShape,
+              border = BorderStroke(1.dp, WishlifyTheme.colorScheme.error),
+              colors = IconButtonDefaults.outlinedIconButtonColors(
+                contentColor = WishlifyTheme.colorScheme.error
+              ),
+              onClick = { onAction(WishlistItemAction.Delete) }
+            ) {
+              Icon(
+                imageVector = Icons.Outlined.DeleteForever,
+                contentDescription = stringResource(R.string.delete),
+              )
+            }
+
+            Spacer(Modifier.width(4.dp))
+
+            OutlinedButton(
+              shapes = ButtonShape,
+              border = BorderStroke(
+                width = 1.dp,
+                color = WishlifyTheme.colorScheme.primary
+              ),
+              colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = WishlifyTheme.colorScheme.primary
+              ),
+              onClick = { onAction(WishlistItemAction.Edit) }
+            ) {
+              Icon(
+                modifier = Modifier.size(20.dp),
+                imageVector = Icons.Rounded.BorderColor,
+                contentDescription = stringResource(R.string.edit),
+              )
+
+              Spacer(modifier = Modifier.width(4.dp))
+
+              ButtonText(
+                text = stringResource(R.string.edit),
+                style = WishlifyTheme.typography.labelLarge,
+              )
+            }
+
+            Spacer(Modifier.width(16.dp))
+
+            TogglePurchaseButton(
+              purchase = item.purchased,
+              isLoading = isButtonLoading,
+              onClick = { onAction(WishlistItemAction.TogglePurchase) }
             )
           }
-
-          Spacer(Modifier.width(4.dp))
-
-          OutlinedButton(
-            shapes = ButtonShape,
-            border = BorderStroke(
-              width = 1.dp,
-              color = WishlifyTheme.colorScheme.primary
-            ),
-            colors = ButtonDefaults.outlinedButtonColors(
-              contentColor = WishlifyTheme.colorScheme.primary
-            ),
-            onClick = { onAction(WishlistItemAction.Edit) }
-          ) {
-            Icon(
-              modifier = Modifier.size(20.dp),
-              imageVector = Icons.Rounded.BorderColor,
-              contentDescription = stringResource(R.string.edit),
-            )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            ButtonText(
-              text = stringResource(R.string.edit),
-              style = WishlifyTheme.typography.labelLarge,
-            )
-          }
-
-          Spacer(Modifier.width(16.dp))
-
-          TogglePurchaseButton(
-            purchase = item.purchased,
-            isLoading = isButtonLoading,
-            onClick = { onAction(WishlistItemAction.TogglePurchase) }
-          )
         }
 
         Spacer(Modifier.height(16.dp))
