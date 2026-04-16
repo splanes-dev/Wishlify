@@ -10,15 +10,22 @@ import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaPartic
 import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemoteDataSource
+import com.splanes.uoc.wishlify.data.feature.wishlists.mapper.WishlistsDataMapper
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
+import com.splanes.uoc.wishlify.domain.common.model.ChatPage
 import com.splanes.uoc.wishlify.domain.feature.secresanta.model.CreateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaChatMessage
 import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEventDetail
+import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaWishlist
 import com.splanes.uoc.wishlify.domain.feature.secresanta.model.UpdateSecretSantaEventRequest
 import com.splanes.uoc.wishlify.domain.feature.secresanta.repository.SecretSantaRepository
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SecretSantaRepositoryImpl(
   private val secretSantaRemoteDataSource: SecretSantaRemoteDataSource,
@@ -27,6 +34,7 @@ class SecretSantaRepositoryImpl(
   private val wishlistsRemoteDataSource: WishlistsRemoteDataSource,
   private val userDataMapper: UserDataMapper,
   private val groupsMapper: GroupsDataMapper,
+  private val wishlistMapper: WishlistsDataMapper,
   private val mapper: SecretSantaDataMapper,
 ) : SecretSantaRepository {
 
@@ -46,7 +54,7 @@ class SecretSantaRepositoryImpl(
           .map { id ->
             async {
               val assignment = secretSantaRemoteDataSource.fetchAssignment(uid, id)
-              assignment?.let { id to assignment.target }
+              assignment?.let { id to assignment.receiver }
             }
           }
           .awaitAll()
@@ -80,9 +88,8 @@ class SecretSantaRepositoryImpl(
         val group = entity.group?.let { id -> groupsRemoteDataSource.fetchGroupById(id) }
 
         var receiverHobbiesEnabled = false
-        val receiver = if (entity.drawStatus == SecretSantaEventEntity.DrawStatus.Done) {
-          val assignmentEntity = secretSantaRemoteDataSource.fetchAssignment(uid, eventId)
-          assignmentEntity?.target
+        val assignment = if (entity.drawStatus == SecretSantaEventEntity.DrawStatus.Done) {
+          secretSantaRemoteDataSource.fetchAssignment(uid, eventId)
         } else {
           null
         }
@@ -90,7 +97,7 @@ class SecretSantaRepositoryImpl(
         val usersToFetch = buildList {
           add(entity.createdBy)
           addAll(entity.participants)
-          receiver?.let(::add)
+          assignment?.receiver?.let(::add)
           group?.members?.run(::addAll)
         }.distinct()
 
@@ -101,7 +108,7 @@ class SecretSantaRepositoryImpl(
             .filterNotNull()
             .also { entities ->
               receiverHobbiesEnabled =
-                entities.find { it.uid == receiver }?.hobbies?.enabled == true
+                entities.find { it.uid == assignment?.receiver }?.hobbies?.enabled == true
             }
             .map { entity -> userDataMapper.mapToBasic(entity) }
             .map { basic -> userDataMapper.map(basic) }
@@ -109,9 +116,9 @@ class SecretSantaRepositoryImpl(
         }
 
         val receiverWishlistDeferred = async {
-          if (entity.drawStatus == SecretSantaEventEntity.DrawStatus.Done && receiver != null) {
+          if (entity.drawStatus == SecretSantaEventEntity.DrawStatus.Done && assignment?.receiver != null) {
             val participantWishlistEntity =
-              secretSantaRemoteDataSource.fetchParticipantWishlist(eventId, receiver)
+              secretSantaRemoteDataSource.fetchParticipantWishlist(eventId, assignment.receiver)
             participantWishlistEntity?.wishlist
           } else {
             null
@@ -135,7 +142,8 @@ class SecretSantaRepositoryImpl(
         mapper.mapDetail(
           entity = entity,
           group = group?.let { g -> groupsMapper.mapToBasic(g, isActive = true) },
-          receiver = receiver,
+          receiver = assignment?.receiver,
+          giver = assignment?.receiver,
           receiverWishlist = receiverWishlist,
           receiverSharedHobbies = receiverHobbiesEnabled,
           currentUserWishlist = currentUserWishlist,
@@ -174,7 +182,10 @@ class SecretSantaRepositoryImpl(
         val event = secretSantaRemoteDataSource.fetchSecretSantaEvent(eventId)
           ?: error("No secret santa event found for id=$eventId")
 
-        val entities = assignments.mapValues { (_, target) -> SecretSantaAssignmentEntity(target) }
+        val entities = assignments.mapValues { (_, receiver) ->
+          val giver = assignments.keys.first { user -> assignments[user] == receiver }
+          SecretSantaAssignmentEntity(receiver, giver)
+        }
         entities
           .map { (uid, assignment) ->
             async { secretSantaRemoteDataSource.upsertAssignment(eventId, uid, assignment) }
@@ -183,6 +194,14 @@ class SecretSantaRepositoryImpl(
 
         val eventUpdated = event.copy(drawStatus = SecretSantaEventEntity.DrawStatus.Done)
         secretSantaRemoteDataSource.upsertSecretSantaEvent(entity = eventUpdated)
+
+        val chats = mapper.createChatsFromAssignments(assignments)
+
+        chats
+          .map { entity ->
+            async { secretSantaRemoteDataSource.upsertSecretSantaEventChat(eventId, entity) }
+          }
+          .awaitAll()
       }
     }
 
@@ -193,13 +212,19 @@ class SecretSantaRepositoryImpl(
   ): Result<Unit> =
     runCatching {
       coroutineScope {
+        val wishlist = wishlistsRemoteDataSource.fetchWishlist(wishlistId)
         val items = wishlistsRemoteDataSource.fetchWishlistItems(wishlistId)
         val filtered = items.filter { it.purchased == null }
 
         secretSantaRemoteDataSource.upsertParticipantWishlist(
           eventId = eventId,
           uid = uid,
-          entity = SecretSantaParticipantWishlistEntity(wishlistId)
+          entity = SecretSantaParticipantWishlistEntity(wishlistId, wishlist.title)
+        )
+
+        secretSantaRemoteDataSource.removeParticipantWishlistItems(
+          eventId = eventId,
+          uid = uid
         )
 
         filtered
@@ -214,5 +239,153 @@ class SecretSantaRepositoryImpl(
           }
           .awaitAll()
       }
+    }
+
+  override suspend fun unshareWishlistToGiver(
+    uid: String,
+    eventId: String
+  ): Result<Unit> =
+    runCatching {
+      secretSantaRemoteDataSource.removeParticipantWishlistItems(
+        eventId = eventId,
+        uid = uid
+      )
+
+      secretSantaRemoteDataSource.removeParticipantWishlist(
+        eventId = eventId,
+        uid = uid
+      )
+    }
+
+  override suspend fun fetchSecretSantaWishlist(
+    eventId: String,
+    wishlistOwnerId: String
+  ): Result<SecretSantaWishlist> =
+    runCatching {
+      val entity = secretSantaRemoteDataSource.fetchParticipantWishlist(eventId, wishlistOwnerId)
+        ?: error("No participant wishlist found for event $eventId and owner $wishlistOwnerId")
+      SecretSantaWishlist(entity.wishlist, entity.title)
+    }
+
+  override suspend fun fetchSecretSantaWishlistItems(
+    eventId: String,
+    wishlistOwnerId: String
+  ): Result<List<WishlistItem>> =
+    runCatching {
+      coroutineScope {
+        val entities = secretSantaRemoteDataSource.fetchParticipantWishlistItems(
+          eventId = eventId,
+          uid = wishlistOwnerId
+        )
+
+        val users = entities
+          .map { async { userRemoteDataSource.fetchUserById(it.createdBy) } }
+          .awaitAll()
+          .filterNotNull()
+          .map { user -> userDataMapper.mapToBasic(user) }
+
+        entities.map { entity -> wishlistMapper.mapItem(entity, users) }
+      }
+    }
+
+  override suspend fun subscribeToSecretSantaChatMessages(
+    uid: String,
+    eventId: String,
+    chatId: String,
+    limit: Int
+  ): Result<Flow<List<SecretSantaChatMessage>>> =
+    runCatching {
+      coroutineScope {
+        val assignment = secretSantaRemoteDataSource.fetchAssignment(uid, eventId)
+          ?: error("No assignment found for eventId=$eventId and user=$uid")
+
+        val usersToFetch = listOf(assignment.giver, assignment.receiver)
+        val users = usersToFetch
+          .map { uid -> async { userRemoteDataSource.fetchUserById(uid) } }
+          .awaitAll()
+          .filterNotNull()
+          .map { user -> userDataMapper.mapToBasic(user) }
+          .map { basic -> userDataMapper.map(basic) }
+
+        secretSantaRemoteDataSource
+          .subscribeToChat(eventId, chatId, limit)
+          .map { entities ->
+            entities.map { message ->
+              mapper.mapMessage(
+                entity = message,
+                chatId = chatId,
+                uid = uid,
+                users = users
+              )
+            }
+          }
+      }
+    }
+
+  override suspend fun fetchSecretSantaChatMessages(
+    uid: String,
+    eventId: String,
+    chatId: String,
+    cursor: Long,
+    limit: Int
+  ): Result<ChatPage<SecretSantaChatMessage>> =
+    runCatching {
+      coroutineScope {
+        val assignment = secretSantaRemoteDataSource.fetchAssignment(uid, eventId)
+          ?: error("No assignment found for eventId=$eventId and user=$uid")
+
+        val usersToFetch = listOf(assignment.giver, assignment.receiver)
+
+        val pageDeferred = async {
+          secretSantaRemoteDataSource.fetchSecretSantaEventChatMessages(
+            eventId = eventId,
+            chatId = chatId,
+            from = cursor,
+            limit = limit,
+          )
+        }
+
+        val usersDeferred = async {
+          usersToFetch
+            .map { uid -> async { userRemoteDataSource.fetchUserById(uid) } }
+            .awaitAll()
+            .filterNotNull()
+            .map { user -> userDataMapper.mapToBasic(user) }
+            .map { basic -> userDataMapper.map(basic) }
+        }
+
+        val page = pageDeferred.await()
+        val users = usersDeferred.await()
+
+        val messages = page.messages.map { message ->
+          mapper.mapMessage(
+            entity = message,
+            chatId = chatId,
+            uid = uid,
+            users = users
+          )
+        }
+
+        ChatPage(
+          messages = messages,
+          nextCursor = page.nextCursor,
+          hasMore = page.hasMore
+        )
+      }
+    }
+
+  override suspend fun sendMessageToChat(
+    uid: String,
+    eventId: String,
+    chatId: String,
+    text: String
+  ): Result<Unit> =
+    runCatching {
+      val entity = mapper.mapMessage(uid = uid, text = text)
+      secretSantaRemoteDataSource.upsertSecretSantaEventChatMessage(
+        eventId = eventId,
+        chatId = chatId,
+        entity = entity
+      )
     }
 }

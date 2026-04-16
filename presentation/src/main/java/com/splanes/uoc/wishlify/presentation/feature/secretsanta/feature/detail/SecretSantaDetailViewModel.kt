@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.DoSecretSantaDrawUseCase
 import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.FetchSecretSantaDetailUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.model.SecretSantaChatType
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.model.SecretSantaDetailAction
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,14 +47,27 @@ class SecretSantaDetailViewModel(
 
   fun onAction(event: SecretSantaEventDetail, action: SecretSantaDetailAction) {
     when (action) {
-      SecretSantaDetailAction.OpenGiverChat -> TODO()
-      SecretSantaDetailAction.OpenReceiverChat -> TODO()
-      is SecretSantaDetailAction.SeeGiverWishlist -> TODO()
+      SecretSantaDetailAction.OpenGiverChat ->
+        onOpenChat(event, SecretSantaChatType.AsReceiver)
+
+      SecretSantaDetailAction.OpenReceiverChat ->
+        onOpenChat(event, SecretSantaChatType.AsGiver)
+
+      is SecretSantaDetailAction.SeeGiverWishlist ->
+        onOpenSharedWishlist(event = event, isOwnWishlist = true)
+
       SecretSantaDetailAction.SeeReceiverHobbies -> TODO()
-      is SecretSantaDetailAction.SeeReceiverWishlist -> TODO()
-      SecretSantaDetailAction.ShareGiverWishlist -> onShareWishlistToGiver(event)
-      SecretSantaDetailAction.DoDraw -> onDoDraw(event)
-      SecretSantaDetailAction.EditEvent -> onEditEvent(event)
+      is SecretSantaDetailAction.SeeReceiverWishlist ->
+        onOpenSharedWishlist(event = event, isOwnWishlist = false)
+
+      SecretSantaDetailAction.ShareGiverWishlist ->
+        onShareWishlistToGiver(event)
+
+      SecretSantaDetailAction.DoDraw ->
+        onDoDraw(event)
+
+      SecretSantaDetailAction.EditEvent ->
+        onEditEvent(event)
     }
   }
 
@@ -97,6 +111,35 @@ class SecretSantaDetailViewModel(
 
   private fun onShareWishlistToGiver(event: SecretSantaEventDetail) {
     uiSideEffectChannel.trySend(SecretSantaDetailUiSideEffect.NavToShareWishlist(event.id))
+  }
+
+  private fun onOpenSharedWishlist(
+    event: SecretSantaEventDetail,
+    isOwnWishlist: Boolean
+  ) {
+    val e = event as? SecretSantaEventDetail.DrawDone
+    val effect = SecretSantaDetailUiSideEffect.NavToWishlist(
+      eventId = event.id,
+      wishlistOwnerId = e?.receiver?.uid?.takeIf { !isOwnWishlist },
+      isOwnWishlist = isOwnWishlist,
+    )
+    uiSideEffectChannel.trySend(effect)
+  }
+
+  private fun onOpenChat(event: SecretSantaEventDetail, type: SecretSantaChatType) {
+    val e = event as? SecretSantaEventDetail.DrawDone
+      ?: error("Tyring to open chat of secret santa event (${event.id}) but draw is not done...")
+
+    val effect = SecretSantaDetailUiSideEffect.NavToChat(
+      eventId = e.id,
+      chatType = type.value,
+      otherUid = when (type) {
+        SecretSantaChatType.AsReceiver -> event.giver
+        SecretSantaChatType.AsGiver -> event.receiver.uid
+      }
+    )
+
+    uiSideEffectChannel.trySend(effect)
   }
 
   private data class ViewModelState(

@@ -22,6 +22,17 @@ sealed interface SecretSantaDetailUiState {
 }
 
 sealed interface SecretSantaDetailUiSideEffect {
-  data class NavToEdit(val event: String): SecretSantaDetailUiSideEffect
-  data class NavToShareWishlist(val event: String): SecretSantaDetailUiSideEffect
+  data class NavToEdit(val event: String) : SecretSantaDetailUiSideEffect
+  data class NavToShareWishlist(val event: String) : SecretSantaDetailUiSideEffect
+  data class NavToWishlist(
+    val eventId: String,
+    val wishlistOwnerId: String?,
+    val isOwnWishlist: Boolean,
+  ) : SecretSantaDetailUiSideEffect
+
+  data class NavToChat(
+    val eventId: String,
+    val chatType: String,
+    val otherUid: String,
+  ) : SecretSantaDetailUiSideEffect
 }

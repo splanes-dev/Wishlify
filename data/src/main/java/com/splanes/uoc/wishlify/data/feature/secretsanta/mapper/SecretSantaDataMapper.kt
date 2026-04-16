@@ -1,11 +1,15 @@
 package com.splanes.uoc.wishlify.data.feature.secretsanta.mapper
 
 import com.splanes.uoc.wishlify.data.common.utils.nowInMillis
+import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaChatEntity
+import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaChatMessageEntity
 import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaEventEntity
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
+import com.splanes.uoc.wishlify.domain.common.utils.newUuid
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.secresanta.model.CreateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaChatMessage
 import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEventDetail
 import com.splanes.uoc.wishlify.domain.feature.secresanta.model.UpdateSecretSantaEventRequest
@@ -102,6 +106,7 @@ class SecretSantaDataMapper {
     entity: SecretSantaEventEntity,
     group: Group.Basic?,
     receiver: String?,
+    giver: String?,
     receiverWishlist: String?,
     receiverSharedHobbies: Boolean,
     currentUserWishlist: String?,
@@ -155,9 +160,43 @@ class SecretSantaDataMapper {
           currentUserSharedWishlist = currentUserWishlist,
           receiverSharedHobbies = receiverSharedHobbies,
           receiverChatNotificationCount = 0, // TODO
+          giver = giver ?: error("No giver found"),
           giverChatNotificationCount = 0, // TODO
           createdBy = users[entity.createdBy] ?: error("No user found for createdBy user id ${entity.createdBy}"),
           createdAt = Date(entity.createdAt)
         )
     }
+
+  fun createChatsFromAssignments(assignments: Map<String, String>): List<SecretSantaChatEntity> =
+    assignments.map { (giver, receiver) ->
+      SecretSantaChatEntity(
+        id = "${giver}_${receiver}",
+        receiver = receiver,
+        giver = giver,
+        createdAt = nowInMillis()
+      )
+    }
+
+  fun mapMessage(
+    entity: SecretSantaChatMessageEntity,
+    chatId: String,
+    uid: String,
+    users: List<User.Basic>
+  ): SecretSantaChatMessage =
+    SecretSantaChatMessage(
+      chatId = chatId,
+      messageId = entity.id,
+      sender = users.first { it.uid == entity.sender },
+      text = entity.text,
+      sentAt = Date(entity.createdAt),
+      isCurrentUserMessage = entity.sender == uid
+    )
+
+  fun mapMessage(uid: String, text: String): SecretSantaChatMessageEntity =
+    SecretSantaChatMessageEntity(
+      id = newUuid(),
+      sender = uid,
+      text = text,
+      createdAt = nowInMillis()
+    )
 }

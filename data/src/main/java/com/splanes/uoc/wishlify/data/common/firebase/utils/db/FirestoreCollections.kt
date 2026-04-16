@@ -44,6 +44,12 @@ val DocumentReference.secretSantaParticipantsWishlist
 val DocumentReference.secretSantaParticipantsWishlistItems
   get() = collection(Subcollections.SECRET_SANTA_PARTICIPANTS_WISHLIST_ITEMS)
 
+val DocumentReference.secretSantaChats
+  get() = collection(Subcollections.SECRET_SANTA_CHATS)
+
+val DocumentReference.secretSantaChatMessages
+  get() = collection(Subcollections.SECRET_SANTA_CHAT_MESSAGES)
+
 
 private object Collections {
   const val USERS = "users"
@@ -62,4 +68,6 @@ private object Subcollections {
   const val SECRET_SANTA_ASSIGNMENTS = "assignments"
   const val SECRET_SANTA_PARTICIPANTS_WISHLIST = "participants-wishlist"
   const val SECRET_SANTA_PARTICIPANTS_WISHLIST_ITEMS = "items"
+  const val SECRET_SANTA_CHATS = "chats"
+  const val SECRET_SANTA_CHAT_MESSAGES = "messages"
 }

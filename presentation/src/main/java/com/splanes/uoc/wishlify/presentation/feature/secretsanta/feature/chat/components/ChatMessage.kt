@@ -1,4 +1,4 @@
-package com.splanes.uoc.wishlify.presentation.feature.shared.feature.chat.components
+package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistChatMessage
+import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaChatMessage
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.image.RemoteImage
 import com.splanes.uoc.wishlify.presentation.common.utils.DateTimePattern
@@ -38,8 +38,9 @@ import java.util.Date
 
 @Composable
 fun ChatMessage(
-  message: SharedWishlistChatMessage,
-  modifier: Modifier = Modifier,
+  message: SecretSantaChatMessage,
+  isOtherUserVisible: Boolean,
+  modifier: Modifier = Modifier
 ) {
   val density = LocalDensity.current
 
@@ -62,7 +63,7 @@ fun ChatMessage(
           verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
           Text(
-            text = message.username(),
+            text = message.username(isOtherUserVisible),
             style = WishlifyTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
             color = WishlifyTheme.colorScheme.onPrimaryContainer
@@ -72,14 +73,14 @@ fun ChatMessage(
             modifier = Modifier.widthIn(minWidth),
             type = message.type(),
             text = message.text,
-            sentAt = message.createdAt
+            sentAt = message.sentAt
           )
         }
       }
 
       ChatImage(
-        photoUrl = (message as? SharedWishlistChatMessage.User)?.createdBy?.photoUrl,
-        isSystem = message is SharedWishlistChatMessage.System,
+        photoUrl = message.sender.photoUrl,
+        isAnonymous = false,
       )
     }
   } else {
@@ -88,8 +89,8 @@ fun ChatMessage(
       horizontalArrangement = Arrangement.Start,
     ) {
       ChatImage(
-        photoUrl = (message as? SharedWishlistChatMessage.User)?.createdBy?.photoUrl,
-        isSystem = message is SharedWishlistChatMessage.System,
+        photoUrl = message.sender.photoUrl,
+        isAnonymous = !isOtherUserVisible,
       )
 
       BoxWithConstraints(
@@ -105,17 +106,17 @@ fun ChatMessage(
           verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
           Text(
-            text = message.username(),
+            text = message.username(isOtherUserVisible),
             style = WishlifyTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
             color = WishlifyTheme.colorScheme.onPrimaryContainer
           )
 
           ChatText(
-            modifier = Modifier.widthIn(min = minWidth),
+            modifier = Modifier.widthIn(minWidth),
             type = message.type(),
             text = message.text,
-            sentAt = message.createdAt
+            sentAt = message.sentAt
           )
         }
       }
@@ -126,7 +127,7 @@ fun ChatMessage(
 @Composable
 private fun ChatImage(
   photoUrl: String?,
-  isSystem: Boolean,
+  isAnonymous: Boolean,
   modifier: Modifier = Modifier,
 ) {
   Box(
@@ -140,7 +141,7 @@ private fun ChatImage(
       )
   ) {
     val painter = when {
-      isSystem -> painterResource(R.drawable.app_logo)
+      isAnonymous -> painterResource(R.drawable.img_anonymous_chat)
       photoUrl.isNullOrBlank() -> painterResource(R.drawable.img_placeholder_avatar)
       else -> null
     }
@@ -178,7 +179,6 @@ private fun ChatText(
       WishlifyTheme.shapes.medium.copy(topStart = CornerSize(0.dp))
     },
     color = when (type) {
-      MessageType.System -> WishlifyTheme.colorScheme.infoContainer
       MessageType.CurrentUser -> WishlifyTheme.colorScheme.secondaryContainer
       MessageType.OtherUser -> WishlifyTheme.colorScheme.surfaceTint.copy(alpha = .16f)
     }
@@ -212,21 +212,19 @@ private fun ChatText(
   }
 }
 
-private fun SharedWishlistChatMessage.type() = when (this) {
-  is SharedWishlistChatMessage.System -> MessageType.System
-  is SharedWishlistChatMessage.User if isCurrentUserMessage -> MessageType.CurrentUser
+private fun SecretSantaChatMessage.type() = when {
+  isCurrentUserMessage -> MessageType.CurrentUser
   else -> MessageType.OtherUser
 }
 
 @Composable
-private fun SharedWishlistChatMessage.username() = when (this) {
-  is SharedWishlistChatMessage.System -> stringResource(R.string.chat_bot)
-  is SharedWishlistChatMessage.User if !isCurrentUserMessage -> createdBy.username
+private fun SecretSantaChatMessage.username(isOtherUserVisible: Boolean) = when {
+   !isCurrentUserMessage && !isOtherUserVisible -> stringResource(R.string.anonymous)
+  !isCurrentUserMessage -> sender.username
   else -> stringResource(R.string.you)
 }
 
 private enum class MessageType {
-  System,
   CurrentUser,
   OtherUser,
 }

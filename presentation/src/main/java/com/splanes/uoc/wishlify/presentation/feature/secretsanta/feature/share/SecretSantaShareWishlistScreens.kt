@@ -54,6 +54,7 @@ import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonShap
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonText
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
 import com.splanes.uoc.wishlify.presentation.common.utils.openBrowserLink
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share.components.SecretSantaShareWishlistBanner
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.WishlistItemCard
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.WishlistItemDetailBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.WishlistItemAction

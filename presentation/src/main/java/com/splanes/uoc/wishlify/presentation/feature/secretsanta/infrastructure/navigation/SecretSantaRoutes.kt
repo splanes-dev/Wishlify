@@ -19,4 +19,18 @@ data object SecretSanta {
 
   @Serializable
   data class ShareWishlist(val eventId: String)
+
+  @Serializable
+  data class Wishlist(
+    val eventId: String,
+    val wishlistOwnerId: String?,
+    val isOwnWishlist: Boolean,
+    )
+
+  @Serializable
+  data class AnonymousChat(
+    val eventId: String,
+    val type: String,
+    val otherUid: String,
+  )
 }

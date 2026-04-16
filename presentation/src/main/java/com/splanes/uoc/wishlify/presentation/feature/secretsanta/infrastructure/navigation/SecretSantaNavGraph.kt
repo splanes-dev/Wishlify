@@ -15,6 +15,8 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.feature.groups.infrastructure.navigation.Groups
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.SecretSantaChatRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.SecretSantaChatViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.SecretSantaDetailRoute
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.SecretSantaDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.SecretSantaListRoute
@@ -25,6 +27,8 @@ import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.ed
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.edition.SecretSantaUpdateEventViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share.SecretSantaShareWishlistRoute
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share.SecretSantaShareWishlistViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.wishlist.SecretSantaWishlistRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.wishlist.SecretSantaWishlistViewModel
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
@@ -176,19 +180,76 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
           }
         }
 
+        navController.NavResultHandler<Boolean>(key = NavResult.WISHLIST_SHARED_UPDATED) { updated ->
+          if (updated) {
+            viewModel.onEventUpdated()
+          }
+        }
+
         SecretSantaDetailRoute(
           viewModel = viewModel,
           onNavToEdit = { eventId ->
             val route = SecretSanta.UpdateEvent(eventId)
             navController.navigate(route)
           },
+          onNavToWishlist = { eventId, wishlistOwnerId, isOwn ->
+            val route = SecretSanta.Wishlist(
+              eventId = eventId,
+              wishlistOwnerId = wishlistOwnerId,
+              isOwnWishlist = isOwn
+            )
+            navController.navigate(route)
+          },
           onNavToShareWishlist = { eventId ->
             val route = SecretSanta.ShareWishlist(eventId)
+            navController.navigate(route)
+          },
+          onNavToChat = { eventId, chatType, otherUid ->
+            val route = SecretSanta.AnonymousChat(
+              eventId = eventId,
+              type = chatType,
+              otherUid = otherUid
+            )
             navController.navigate(route)
           },
           onNavBack = {
             navController.popBackStackWithResult(
               key = NavResult.UPDATED_FROM_DETAIL,
+              result = it
+            )
+          }
+        )
+      }
+
+      composable<SecretSanta.Wishlist>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) { backStackEntry ->
+        val route = backStackEntry.toRoute<SecretSanta.Wishlist>()
+
+        val viewModel = koinViewModel<SecretSantaWishlistViewModel> {
+          parametersOf(
+            route.eventId,
+            route.wishlistOwnerId,
+            route.isOwnWishlist,
+          )
+        }
+
+        navController.NavResultHandler<Boolean>(key = NavResult.WISHLIST_SHARED) { shared ->
+          if (shared) {
+            viewModel.onWishlistChanged()
+          }
+        }
+
+        SecretSantaWishlistRoute(
+          viewModel = viewModel,
+          onNavToShareWishlist = {
+            val route = SecretSanta.ShareWishlist(route.eventId)
+            navController.navigate(route)
+          },
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.WISHLIST_SHARED_UPDATED,
               result = it
             )
           }
@@ -215,6 +276,26 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
           }
         )
       }
+
+      composable<SecretSanta.AnonymousChat>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit,
+      ) { backStackEntry ->
+        val route = backStackEntry.toRoute<SecretSanta.AnonymousChat>()
+
+        val viewModel = koinViewModel<SecretSantaChatViewModel> {
+          parametersOf(
+            route.eventId,
+            route.type,
+            route.otherUid
+          )
+        }
+
+        SecretSantaChatRoute(
+          viewModel = viewModel,
+          onBack = { navController.popBackStack() }
+        )
+      }
     }
   }
 }
@@ -226,4 +307,5 @@ private object NavResult {
   const val SEARCH = "search-users"
   const val UPDATED_FROM_DETAIL = "updated-from-detail"
   const val WISHLIST_SHARED = "wishlist-shared"
+  const val WISHLIST_SHARED_UPDATED = "wishlist-shared-updated"
 }

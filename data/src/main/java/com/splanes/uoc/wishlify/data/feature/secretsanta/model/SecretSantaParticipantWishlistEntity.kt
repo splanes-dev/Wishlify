@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SecretSantaParticipantWishlistEntity(
-  @SerialName("wishlist") val wishlist: String = ""
+  @SerialName("wishlist") val wishlist: String = "",
+  @SerialName("title") val title: String = ""
 )

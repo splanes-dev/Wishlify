@@ -1,4 +1,4 @@
-package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share
+package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

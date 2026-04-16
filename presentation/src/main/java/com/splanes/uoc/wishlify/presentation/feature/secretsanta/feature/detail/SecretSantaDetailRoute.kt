@@ -9,7 +9,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun SecretSantaDetailRoute(
   viewModel: SecretSantaDetailViewModel,
   onNavToEdit: (eventId: String) -> Unit,
+  onNavToWishlist: (eventId: String, wishlistOwnerId: String?, isOwnWishlist: Boolean) -> Unit,
   onNavToShareWishlist: (eventId: String) -> Unit,
+  onNavToChat: (eventId: String, type: String, otherUid: String) -> Unit,
   onNavBack: (update: Boolean) -> Unit,
 ) {
 
@@ -18,8 +20,25 @@ fun SecretSantaDetailRoute(
   LaunchedEffect(Unit) {
     viewModel.uiSideEffect.collect { effect ->
       when (effect) {
-        is SecretSantaDetailUiSideEffect.NavToEdit -> onNavToEdit(effect.event)
-        is SecretSantaDetailUiSideEffect.NavToShareWishlist -> onNavToShareWishlist(effect.event)
+        is SecretSantaDetailUiSideEffect.NavToEdit ->
+          onNavToEdit(effect.event)
+
+        is SecretSantaDetailUiSideEffect.NavToShareWishlist ->
+          onNavToShareWishlist(effect.event)
+
+        is SecretSantaDetailUiSideEffect.NavToWishlist ->
+          onNavToWishlist(
+            effect.eventId,
+            effect.wishlistOwnerId,
+            effect.isOwnWishlist
+          )
+
+        is SecretSantaDetailUiSideEffect.NavToChat ->
+          onNavToChat(
+            effect.eventId,
+            effect.chatType,
+            effect.otherUid
+          )
       }
     }
   }

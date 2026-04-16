@@ -66,6 +66,7 @@ sealed class SecretSantaEventDetail(
     val receiverSharedHobbies: Boolean,
     val currentUserSharedWishlist: String?,
     val receiverChatNotificationCount: Int,
+    val giver: String,
     val giverChatNotificationCount: Int,
   ) : SecretSantaEventDetail(
     id = id,

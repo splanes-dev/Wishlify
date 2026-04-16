@@ -1,5 +1,7 @@
 package com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.di
 
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.SecretSantaChatViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.model.SecretSantaChatType
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.SecretSantaDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.SecretSantaListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.SecretSantaNewEventViewModel
@@ -7,6 +9,7 @@ import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.cr
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.mapper.SecretSantaNewEventFormMapper
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.edition.SecretSantaUpdateEventViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share.SecretSantaShareWishlistViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.wishlist.SecretSantaWishlistViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSantaNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import org.koin.core.module.dsl.singleOf
@@ -44,6 +47,17 @@ internal val SecretSantaPresentationModule = module {
       errorUiMapper = get(),
     )
   }
+  viewModel { (eventId: String, wishlistOwnerId: String?, isOwnWishlist: Boolean) ->
+    SecretSantaWishlistViewModel(
+      eventId = eventId,
+      wishlistOwnerId = wishlistOwnerId,
+      isOwnWishlist = isOwnWishlist,
+      fetchSecretSantaWishlistUseCase = get(),
+      fetchSecretSantaWishlistItemsUseCase = get(),
+      unshareWishlistSecretSantaUseCase = get(),
+      errorUiMapper = get()
+    )
+  }
   viewModel { (eventId: String) ->
     SecretSantaShareWishlistViewModel(
       eventId = eventId,
@@ -51,6 +65,17 @@ internal val SecretSantaPresentationModule = module {
       fetchWishlistItemsUseCase = get(),
       shareWishlistSecretSantaUseCase = get(),
       errorUiMapper = get()
+    )
+  }
+  viewModel { (eventId: String, type: String, otherUid: String) ->
+    SecretSantaChatViewModel(
+      eventId = eventId,
+      chatType = SecretSantaChatType.from(type),
+      otherUid = otherUid,
+      fetchUserByIdUseCase = get(),
+      subscribeSecretSantaChatUseCase = get(),
+      fetchSecretSantaChatMessagesUseCase = get(),
+      sendMessageSecretSantaChatUseCase = get()
     )
   }
 
