@@ -1,9 +1,7 @@
 package com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Group
@@ -23,14 +20,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.presentation.R
-import com.splanes.uoc.wishlify.presentation.common.components.image.RemoteImage
+import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonCustom
+import com.splanes.uoc.wishlify.presentation.common.components.image.ImageOrPlaceholder
 import com.splanes.uoc.wishlify.presentation.feature.groups.components.GroupStateLabel
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
@@ -54,29 +51,14 @@ fun GroupCard(
     onClick = onClick
   ) {
     Row(modifier = Modifier.fillMaxWidth()) {
-      when (val image = group.photoUrl) {
-        null -> {
-          Image(
-            modifier = Modifier
-              .width(135.dp)
-              .fillMaxHeight()
-              .background(color = WishlifyTheme.colorScheme.surfaceBright),
-            painter = painterResource(R.drawable.preset_group),
-            contentDescription = group.name,
-            contentScale = ContentScale.Crop
-          )
-        }
-
-        else -> {
-          RemoteImage(
-            modifier = Modifier
-              .width(135.dp)
-              .fillMaxHeight(),
-            url = image,
-            contentScale = ContentScale.Crop
-          )
-        }
-      }
+      ImageOrPlaceholder(
+        modifier = Modifier
+          .width(135.dp)
+          .fillMaxHeight()
+          .background(color = WishlifyTheme.colorScheme.surfaceBright),
+        url = group.photoUrl,
+        placeholder = painterResource(R.drawable.preset_group),
+      )
 
       Column(
         modifier = Modifier
@@ -94,13 +76,10 @@ fun GroupCard(
           )
 
           if (group.isInactive) {
-            Icon(
-              modifier = Modifier
-                .size(16.dp)
-                .clickable { onSettingsClick() },
+            IconButtonCustom(
               painter = painterResource(R.drawable.ic_item_settings),
-              tint = WishlifyTheme.colorScheme.onSurface,
-              contentDescription = null
+              contentColor = WishlifyTheme.colorScheme.onSurface,
+              onClick = onSettingsClick
             )
           }
         }

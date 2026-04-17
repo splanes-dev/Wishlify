@@ -77,10 +77,14 @@ class SecretSantaListViewModel(
 
       else ->
         SecretSantaListUiState.Events(
-          events = events,
+          events = events.sorted(),
           isLoading = isLoading,
           error = error?.let(errorUiMapper::map)
         )
     }
+
+    private fun List<SecretSantaEvent>.sorted() = sortedWith(
+      compareByDescending { it.deadline }
+    )
   }
 }

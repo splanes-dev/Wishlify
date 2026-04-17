@@ -25,9 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +43,12 @@ import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.components.SecretSantaEventCard
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.components.SecretSantaEventsFinishedHeader
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.components.SecretSantaEventsSettingsBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.components.SecretSantaSearchBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.model.SecretSantaEventsSettings
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -51,9 +58,16 @@ fun SecretSantaListScreen(
   onEventClick: (SecretSantaEvent) -> Unit,
   onDismissError: () -> Unit,
 ) {
-// TODO - impl settings modal
+  val coroutineScope = rememberCoroutineScope()
   var isSettingsModalOpen by remember { mutableStateOf(false) }
   val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isSearchModalOpen by remember { mutableStateOf(false) }
+  val searchSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  val existsEventsFinished by remember(uiState.events) {
+    derivedStateOf { uiState.events.any { e -> e.isFinished() } }
+  }
+  var areEventsFinishedVisible by remember { mutableStateOf(true) }
 
   Box(
     modifier = Modifier
@@ -104,7 +118,7 @@ fun SecretSantaListScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
       ) {
         items(
-          items = uiState.events,
+          items = uiState.events.filter { !it.isFinished() },
           key = { event -> event.id }
         ) { event ->
           SecretSantaEventCard(
@@ -115,8 +129,65 @@ fun SecretSantaListScreen(
             onClick = { onEventClick(event) }
           )
         }
+
+        if (existsEventsFinished) {
+          item(key = 1, contentType = "header") {
+            SecretSantaEventsFinishedHeader(
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+              isVisible = areEventsFinishedVisible,
+              onChangeVisibility = { areEventsFinishedVisible = !areEventsFinishedVisible }
+            )
+          }
+
+          if (areEventsFinishedVisible) {
+            items(
+              items = uiState.events.filter { it.isFinished() },
+              key = { item -> item.id }
+            ) { event ->
+              SecretSantaEventCard(
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .animateItem(),
+                event = event,
+                onClick = { onEventClick(event) }
+              )
+            }
+          }
+        }
       }
     }
+
+    SecretSantaEventsSettingsBottomSheet(
+      visible = isSettingsModalOpen,
+      sheetState = settingsSheetState,
+      onDismiss = { isSettingsModalOpen = false },
+      onSettingClick = { setting ->
+        when (setting) {
+          SecretSantaEventsSettings.Search -> isSearchModalOpen = true
+          SecretSantaEventsSettings.Filter -> {
+            // TODO
+          }
+        }
+        coroutineScope
+          .launch { settingsSheetState.hide() }
+          .invokeOnCompletion { isSettingsModalOpen = false }
+      }
+    )
+
+    SecretSantaSearchBottomSheet(
+      visible = isSearchModalOpen,
+      sheetState = searchSheetState,
+      events = uiState.events,
+      onDismiss = { isSearchModalOpen = false },
+      onClick = { event ->
+        onEventClick(event)
+        coroutineScope
+          .launch { searchSheetState.hide() }
+          .invokeOnCompletion { isSearchModalOpen = false }
+      },
+    )
 
     uiState.error?.let { error ->
       ErrorDialog(
@@ -139,10 +210,6 @@ fun SecretSantaListEmptyScreen(
   onDismissError: () -> Unit,
 ) {
 
-  // TODO - impl settings modal
-  var isSettingsModalOpen by remember { mutableStateOf(false) }
-  val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
   Box(
     modifier = Modifier
       .fillMaxSize()
@@ -153,17 +220,6 @@ fun SecretSantaListEmptyScreen(
       topBar = {
         TopAppBar(
           title = { Text(text = stringResource(R.string.secret_santa)) },
-          actions = {
-            IconButton(
-              shapes = IconButtonShape,
-              onClick = { isSettingsModalOpen = true }
-            ) {
-              Icon(
-                imageVector = Icons.Rounded.Tune,
-                contentDescription = stringResource(R.string.settings)
-              )
-            }
-          }
         )
       },
       floatingActionButton = {

@@ -24,8 +24,8 @@ fun GroupsNewGroupRoute(
   GroupsNewGroupScreen(
     uiState = uiState,
     onCreate = viewModel::onCreate,
+    onSaveCurrentForm = viewModel::onSaveCurrentForm,
     onSearchUsers = onNavToSearchUsers,
-    onRemoveSelectedMember = viewModel::onRemoveSelectedMember,
     onCancel = { onFinish(false) },
     onClearInputError = viewModel::onClearInputError,
     onDismissError = viewModel::onDismissError,

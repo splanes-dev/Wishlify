@@ -166,7 +166,7 @@ fun SharedWishlistsListScreen(
             SharedWishlistsFinishedHeader(
               modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 32.dp),
               isVisible = areWishlistsFinishedVisible,
               description = when (uiState.tabSelected) {
                 SharedWishlistsTab.Own -> R.string.shared_wishlists_finished_header_own_description

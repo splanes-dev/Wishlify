@@ -5,8 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,7 +52,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -68,7 +65,7 @@ import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonShape
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonText
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
-import com.splanes.uoc.wishlify.presentation.common.components.image.RemoteImage
+import com.splanes.uoc.wishlify.presentation.common.components.image.ImageOrPlaceholder
 import com.splanes.uoc.wishlify.presentation.common.utils.capitalize
 import com.splanes.uoc.wishlify.presentation.common.utils.formatted
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.WishlistItemAction
@@ -240,33 +237,14 @@ private fun ItemImage(
   url: String?
 ) {
   Box(modifier = modifier) {
-    when (url) {
-      null -> {
-        Image(
-          modifier = Modifier
-            .fillMaxSize()
-            .padding(4.dp)
-            .background(
-              color = WishlifyTheme.colorScheme.surfaceBright,
-              shape = WishlifyTheme.shapes.small
-            ),
-          painter = painterResource(R.drawable.item_placeholder),
-          contentDescription = null,
-          contentScale = ContentScale.Crop
-        )
-      }
-
-      else -> {
-        RemoteImage(
-          modifier = Modifier
-            .fillMaxSize()
-            .padding(4.dp)
-            .clip(WishlifyTheme.shapes.small),
-          url = url,
-          contentScale = ContentScale.Crop
-        )
-      }
-    }
+    ImageOrPlaceholder(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(4.dp)
+        .clip(WishlifyTheme.shapes.small),
+      url = url,
+      placeholder = painterResource(R.drawable.item_placeholder),
+    )
   }
 }
 

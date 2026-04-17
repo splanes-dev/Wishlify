@@ -18,4 +18,12 @@
     <string name="groups_new_group_members_input_empty_description">No has afegit cap participant.\nCerca usuaris per correu o per identificador.</string>
     <string name="groups_search_users_info_banner_title">No trobes l\'identificador d\'usuari?</string>
     <string name="groups_search_users_info_banner_description">L’identificador de cada usuari es pot veure a la secció del perfil. Sol·licita a les persones que desitges afegir que te’l facilitin.</string>
+    <string name="groups_member_code">Codi d\'usuari</string>
+    <string name="groups_member_code_clipboard_copied">Codi d\'usuari copiat al porta-retalls</string>
+    <string name="groups_see_group_shared_wishlists">Wishlists del grup</string>
+    <string name="groups_see_group_secret_santa_events">Amics invisible del grup</string>
+    <string name="groups_member_you">Tu (%s)</string>
+    <string name="groups_edit_group">Editar grup</string>
+    <string name="groups_leave_group">Sortir del grup</string>
+    <string name="groups_delete_group">Eliminar grup</string>
 </resources>

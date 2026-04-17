@@ -134,7 +134,7 @@ fun WishlistDetailScreen(
 
             IconButton(
               shapes = IconButtonShape,
-              onClick = {}
+              onClick = { /* TODO */ }
             ) {
               Icon(
                 imageVector = Icons.Rounded.Tune,

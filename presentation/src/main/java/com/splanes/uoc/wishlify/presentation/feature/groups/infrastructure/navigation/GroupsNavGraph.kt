@@ -13,17 +13,23 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.feature.groups.feature.detail.GroupDetailRoute
+import com.splanes.uoc.wishlify.presentation.feature.groups.feature.detail.GroupDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.GroupsListRoute
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.GroupsListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.creation.GroupsNewGroupRoute
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.creation.GroupsNewGroupViewModel
+import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.edition.GroupsEditGroupRoute
+import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.edition.GroupsEditGroupViewModel
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.search.GroupsSearchUsersRoute
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackStackWithResult
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 class GroupsNavGraph : FeatureHomeNavGraph {
 
@@ -67,8 +73,22 @@ class GroupsNavGraph : FeatureHomeNavGraph {
           viewModel.onCreateGroupResult(created)
         }
 
+        navController.NavResultHandler<Boolean>(key = NavResult.UPDATE_GROUP) { updated ->
+          if (updated) {
+            viewModel.onGroupUpdated()
+          }
+        }
+
         GroupsListRoute(
           viewModel = viewModel,
+          onNavToDetail = { groupId, name ->
+            val route = Groups.Detail(groupId, name)
+            navController.navigate(route)
+          },
+          onNavToEdit = { groupId, name ->
+            val route = Groups.EditGroup(groupId, name)
+            navController.navigate(route)
+          },
           onNavToNewGroup = {
             navController.navigate(Groups.NewGroup)
           }
@@ -101,6 +121,38 @@ class GroupsNavGraph : FeatureHomeNavGraph {
         )
       }
 
+      composable<Groups.EditGroup>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) { backStackEntry ->
+        val route = backStackEntry.toRoute<Groups.EditGroup>()
+        val viewModel = koinViewModel<GroupsEditGroupViewModel> {
+          parametersOf(
+            route.groupId,
+            route.groupName
+          )
+        }
+
+        navController.NavResultHandler<List<String>>(key = NavResult.SEARCH) { users ->
+          if (users.isNotEmpty()) {
+            viewModel.onUserSearchResult(users)
+          }
+        }
+
+        GroupsEditGroupRoute(
+          viewModel = viewModel,
+          onNavToSearchUsers = {
+            navController.navigate(Groups.SearchUsers)
+          },
+          onFinish = { result ->
+            navController.popBackStackWithResult(
+              key = NavResult.UPDATE_GROUP,
+              result = result
+            )
+          },
+        )
+      }
+
       composable<Groups.SearchUsers>(
         enterTransition = Transitions.SlideInHorizontal.enter,
         exitTransition = Transitions.SlideInHorizontal.exit,
@@ -115,11 +167,44 @@ class GroupsNavGraph : FeatureHomeNavGraph {
           },
         )
       }
+
+      composable<Groups.Detail>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit,
+      ) { backStackEntry ->
+
+        val route = backStackEntry.toRoute<Groups.Detail>()
+
+        val viewModel = koinViewModel<GroupDetailViewModel> {
+          parametersOf(route.groupId, route.groupName)
+        }
+
+        navController.NavResultHandler<Boolean>(key = NavResult.UPDATE_GROUP) { updated ->
+          if (updated) {
+            viewModel.onGroupUpdated()
+          }
+        }
+
+        GroupDetailRoute(
+          viewModel = viewModel,
+          onNavToEdit = { groupId, name ->
+            val route = Groups.EditGroup(groupId, name)
+            navController.navigate(route)
+          },
+          onFinish = { result ->
+            navController.popBackStackWithResult(
+              key = NavResult.UPDATE_GROUP,
+              result = result,
+            )
+          }
+        )
+      }
     }
   }
 }
 
 private object NavResult {
   const val NEW_GROUP = "new-group"
+  const val UPDATE_GROUP = "update-group"
   const val SEARCH = "search-users"
 }

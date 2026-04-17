@@ -22,26 +22,48 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.common.components.ConfirmationDialog
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
+import com.splanes.uoc.wishlify.presentation.feature.groups.feature.components.GroupSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.components.GroupCard
+import com.splanes.uoc.wishlify.presentation.feature.groups.feature.model.GroupSettings
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupsListScreen(
   uiState: GroupsListUiState.Groups,
+  onGroupClick: (Group) -> Unit,
   onNewGroup: () -> Unit,
+  onEditGroup: (Group) -> Unit,
+  onLeaveGroup: (Group) -> Unit,
   onDismissError: () -> Unit,
 ) {
+
+  val coroutineScope = rememberCoroutineScope()
+  val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isSettingsModalOpen by remember { mutableStateOf(false) }
+  var itemSelected: Group? by remember { mutableStateOf(null) }
+
+  var isConfirmModalOpen by remember { mutableStateOf(false) }
+
   Box(
     modifier = Modifier
       .fillMaxSize()
@@ -83,10 +105,49 @@ fun GroupsListScreen(
           GroupCard(
             modifier = Modifier.fillMaxWidth(),
             group = group,
-            onSettingsClick = {},
-            onClick = {}
+            onSettingsClick = {
+              itemSelected = group
+              isSettingsModalOpen = true
+            },
+            onClick = { onGroupClick(group) }
           )
         }
+      }
+    }
+
+    itemSelected?.let { group ->
+      GroupSettingsBottomSheet(
+        visible = isSettingsModalOpen,
+        sheetState = settingsSheetState,
+        onDismiss = {
+          isSettingsModalOpen = false
+          itemSelected = null
+        },
+        onSettingClick = { setting ->
+          coroutineScope
+            .launch { settingsSheetState.hide() }
+            .invokeOnCompletion { isSettingsModalOpen = false }
+
+          when (setting) {
+            GroupSettings.Edit -> {
+              onEditGroup(group)
+              itemSelected = null
+            }
+            GroupSettings.LeaveGroup -> {
+              isConfirmModalOpen = true
+            }
+          }
+        }
+      )
+
+      if (isConfirmModalOpen) {
+        ConfirmationDialog(
+          onDismiss = {
+            isConfirmModalOpen = false
+            itemSelected = null
+          },
+          onConfirm = { onLeaveGroup(group) }
+        )
       }
     }
 

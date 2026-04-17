@@ -7,6 +7,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun GroupsListRoute(
   viewModel: GroupsListViewModel,
+  onNavToDetail: (groupId: String, name: String) -> Unit,
+  onNavToEdit: (groupId: String, name: String) -> Unit,
   onNavToNewGroup: () -> Unit,
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -23,6 +25,9 @@ fun GroupsListRoute(
       GroupsListScreen(
         uiState = state,
         onNewGroup = onNavToNewGroup,
+        onGroupClick = { group -> onNavToDetail(group.id, group.name) },
+        onEditGroup = { group -> onNavToEdit(group.id, group.name) },
+        onLeaveGroup = viewModel::onLeaveGroup,
         onDismissError = viewModel::onDismissError
       )
 

@@ -1,4 +1,4 @@
-package com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.creation
+package com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.edition
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,9 +33,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
@@ -49,11 +51,11 @@ import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.compone
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.creation.model.GroupsNewGroupForm
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun GroupsNewGroupScreen(
-  uiState: GroupsNewGroupUiState,
-  onCreate: (form: GroupsNewGroupForm) -> Unit,
+fun GroupsEditGroupFormScreen(
+  uiState: GroupsEditGroupUiState.Form,
+  onEdit: (form: GroupsNewGroupForm) -> Unit,
   onSaveCurrentForm: (form: GroupsNewGroupForm) -> Unit,
   onSearchUsers: () -> Unit,
   onClearInputError: (GroupsNewGroupForm.Input) -> Unit,
@@ -87,7 +89,15 @@ fun GroupsNewGroupScreen(
       modifier = Modifier.fillMaxSize(),
       topBar = {
         TopAppBar(
-          title = { Text(text = stringResource(R.string.groups_new_group)) },
+          title = {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+              Text(text = stringResource(R.string.groups_edit_group))
+              Text(
+                text = uiState.group.name,
+                style = WishlifyTheme.typography.bodySmall
+              )
+            }
+          },
           actions = {
             IconButton(
               shapes = IconButtonShape,
@@ -191,10 +201,10 @@ fun GroupsNewGroupScreen(
               name = nameState.text,
               members = uiState.form.members
             )
-            onCreate(form)
+            onEdit(form)
           }
         ) {
-          ButtonText(text = stringResource(R.string.create))
+          ButtonText(text = stringResource(R.string.edit))
         }
       }
     }
@@ -208,6 +218,121 @@ fun GroupsNewGroupScreen(
 
     if (uiState.isLoading) {
       Loader(modifier = Modifier.fillMaxSize())
+    }
+  }
+}
+
+@Composable
+fun GroupsEditGroupErrorScreen(
+  uiState: GroupsEditGroupUiState.Error,
+  onCancel: () -> Unit,
+) {
+  Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+      modifier = Modifier.fillMaxSize(),
+      topBar = {
+        TopAppBar(
+          title = {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+              Text(text = stringResource(R.string.groups_edit_group))
+              Text(
+                text = uiState.groupName,
+                style = WishlifyTheme.typography.bodySmall
+              )
+            }
+          },
+          actions = {
+            IconButton(
+              shapes = IconButtonShape,
+              onClick = onCancel
+            ) {
+              Icon(
+                imageVector = Icons.Rounded.Close,
+                contentDescription = stringResource(R.string.cancel)
+              )
+            }
+          }
+        )
+      },
+    ) { paddings ->
+      Column(
+        modifier = Modifier
+          .fillMaxSize()
+          .verticalScroll(rememberScrollState())
+          .padding(paddings)
+          .padding(
+            horizontal = 16.dp,
+            vertical = 24.dp
+          ),
+      ) {
+        Spacer(Modifier.weight(.5f))
+
+        // Used as error component as well
+        EmptyState(
+          modifier = Modifier.fillMaxWidth(),
+          image = painterResource(R.drawable.generic_error),
+          title = stringResource(R.string.wishlists_detail_error_title),
+          description = stringResource(R.string.wishlists_detail_error_description)
+        )
+
+        Spacer(Modifier.weight(1f))
+      }
+    }
+  }
+}
+
+@Composable
+fun GroupsEditGroupLoadingScreen(
+  uiState: GroupsEditGroupUiState.Loading,
+  onCancel: () -> Unit
+) {
+  Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+      modifier = Modifier.fillMaxSize(),
+      topBar = {
+        TopAppBar(
+          title = {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+              Text(text = stringResource(R.string.groups_edit_group))
+              Text(
+                text = uiState.groupName,
+                style = WishlifyTheme.typography.bodySmall
+              )
+            }
+          },
+          actions = {
+            IconButton(
+              shapes = IconButtonShape,
+              onClick = onCancel
+            ) {
+              Icon(
+                imageVector = Icons.Rounded.Close,
+                contentDescription = stringResource(R.string.cancel)
+              )
+            }
+          }
+        )
+      },
+    ) { paddings ->
+      Column(
+        modifier = Modifier
+          .fillMaxSize()
+          .verticalScroll(rememberScrollState())
+          .padding(paddings)
+          .padding(
+            horizontal = 16.dp,
+            vertical = 24.dp
+          ),
+      ) {
+        Spacer(Modifier.weight(.5f))
+
+        Loader(
+          modifier = Modifier.fillMaxWidth(),
+          containerColor = Color.Transparent
+        )
+
+        Spacer(Modifier.weight(1f))
+      }
     }
   }
 }

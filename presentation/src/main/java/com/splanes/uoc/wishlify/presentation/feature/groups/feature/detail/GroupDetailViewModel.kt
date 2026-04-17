@@ -1,32 +1,35 @@
-package com.splanes.uoc.wishlify.presentation.feature.groups.feature.list
+package com.splanes.uoc.wishlify.presentation.feature.groups.feature.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaRequest
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.groups.model.UpdateGroupRequest
-import com.splanes.uoc.wishlify.domain.feature.groups.usecase.FetchGroupsUseCase
+import com.splanes.uoc.wishlify.domain.feature.groups.usecase.FetchGroupUseCase
 import com.splanes.uoc.wishlify.domain.feature.groups.usecase.UpdateGroupUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class GroupsListViewModel(
-  private val fetchGroupsUseCase: FetchGroupsUseCase,
+class GroupDetailViewModel(
+  private val groupId: String,
+  groupName: String,
+  private val fetchGroupUseCase: FetchGroupUseCase,
   private val updateGroupUseCase: UpdateGroupUseCase,
-  private val errorUiMapper: ErrorUiMapper
+  private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
-  private val viewModelState = MutableStateFlow(ViewModelState())
-
+  private val viewModelState = MutableStateFlow(ViewModelState(groupName))
   val uiState = viewModelState.asStateFlow()
-    .onStart { fetchGroups() }
+    .onStart { fetchGroup() }
     .map { state -> state.toUiState(errorUiMapper) }
     .stateIn(
       initialValue = viewModelState.value.toUiState(errorUiMapper),
@@ -34,17 +37,12 @@ class GroupsListViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
-  fun onCreateGroupResult(created: Boolean) {
-    if (created) {
-      viewModelScope.launch {
-        fetchGroups()
-      }
-    }
-  }
+  private val uiSideEffectChannel = Channel<GroupDetailUiSideEffect>()
+  val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
   fun onGroupUpdated() {
     viewModelScope.launch {
-      fetchGroups()
+      fetchGroup()
     }
   }
 
@@ -62,7 +60,7 @@ class GroupsListViewModel(
       updateGroupUseCase(request)
         .onSuccess {
           viewModelState.update { state -> state.copy(isLoading = false) }
-          fetchGroups()
+          uiSideEffectChannel.send(GroupDetailUiSideEffect.GroupUpdated)
         }
         .onFailure { error ->
           viewModelState.update { state ->
@@ -79,12 +77,12 @@ class GroupsListViewModel(
     viewModelState.update { state -> state.copy(error = null) }
   }
 
-  private suspend fun fetchGroups() {
+  private suspend fun fetchGroup() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
-    val result = fetchGroupsUseCase()
+    val result = fetchGroupUseCase(groupId)
     viewModelState.update { state ->
       state.copy(
-        groups = result.getOrDefault(emptyList()),
+        group = result.getOrNull(),
         isLoadingFullscreen = false,
         error = result.exceptionOrNull()
       )
@@ -92,30 +90,25 @@ class GroupsListViewModel(
   }
 
   private data class ViewModelState(
-    val groups: List<Group.Basic> = emptyList(),
+    val groupName: String,
+    val group: Group.Detail? = null,
     val isLoadingFullscreen: Boolean = true,
     val isLoading: Boolean = false,
-    val error: Throwable? = null,
+    val error: Throwable? = null
   ) {
-    fun toUiState(errorUiMapper: ErrorUiMapper) =
-      when {
-        isLoadingFullscreen ->
-          GroupsListUiState.Loading
+    fun toUiState(errorUiMapper: ErrorUiMapper) = when {
+      isLoadingFullscreen ->
+        GroupDetailUiState.Loading(groupName)
 
-        groups.isEmpty() ->
-          GroupsListUiState.Empty(
-            isLoading = isLoading,
-            error = error?.let(errorUiMapper::map)
-          )
+      group == null ->
+        GroupDetailUiState.Error(groupName)
 
-        else ->
-          GroupsListUiState.Groups(
-            groups = groups.sorted(),
-            isLoading = isLoading,
-            error = error?.let(errorUiMapper::map)
-          )
-      }
-
-    private fun List<Group.Basic>.sorted() = sortedByDescending { !it.isInactive }
+      else ->
+        GroupDetailUiState.Detail(
+          group = group,
+          isLoading = isLoading,
+          error = error?.let(errorUiMapper::map)
+        )
+    }
   }
 }

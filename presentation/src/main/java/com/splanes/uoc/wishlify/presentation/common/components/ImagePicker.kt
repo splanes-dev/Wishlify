@@ -75,7 +75,7 @@ fun ImagePicker(
   onSelectionChanged: (ImagePicker.Resource?) -> Unit,
 ) {
 
-  var selected by remember { mutableStateOf(initial) }
+  var selected by remember(initial) { mutableStateOf(initial) }
   var optionSelected: SourceOption? by remember { mutableStateOf(null) }
   var isOptionsModalOpen by remember { mutableStateOf(false) }
   var isPresetModalOpen by remember { mutableStateOf(false) }

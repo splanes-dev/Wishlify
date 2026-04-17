@@ -57,6 +57,20 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  suspend fun countSecretSantaEventsByGroup(groupId: String): Int =
+    try {
+      secretSanta
+        .whereEqualTo("group", groupId)
+        .get()
+        .await()
+        .count()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+
   suspend fun fetchSecretSantaEvent(eventId: String): SecretSantaEventEntity? =
     try {
       secretSanta

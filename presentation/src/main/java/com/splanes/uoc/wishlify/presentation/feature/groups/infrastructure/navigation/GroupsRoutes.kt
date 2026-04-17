@@ -12,5 +12,17 @@ data object Groups {
   data object NewGroup
 
   @Serializable
+  data class EditGroup(
+    val groupId: String,
+    val groupName: String,
+  )
+
+  @Serializable
   data object SearchUsers
+
+  @Serializable
+  data class Detail(
+    val groupId: String,
+    val groupName: String,
+  )
 }

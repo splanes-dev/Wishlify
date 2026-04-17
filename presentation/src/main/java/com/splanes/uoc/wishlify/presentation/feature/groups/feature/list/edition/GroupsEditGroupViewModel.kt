@@ -1,8 +1,10 @@
-package com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.creation
+package com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.edition
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.splanes.uoc.wishlify.domain.feature.groups.usecase.CreateGroupUseCase
+import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
+import com.splanes.uoc.wishlify.domain.feature.groups.usecase.FetchGroupUseCase
+import com.splanes.uoc.wishlify.domain.feature.groups.usecase.UpdateGroupUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.FetchUserByIdUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.creation.mapper.GroupsNewGroupFormErrorMapper
@@ -19,22 +21,27 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class GroupsNewGroupViewModel(
-  private val createGroupUseCase: CreateGroupUseCase,
+class GroupsEditGroupViewModel(
+  private val groupId: String,
+  groupName: String,
+  private val fetchGroupUseCase: FetchGroupUseCase,
   private val fetchUserByIdUseCase: FetchUserByIdUseCase,
+  private val updateGroupUseCase: UpdateGroupUseCase,
   private val formMapper: GroupsNewGroupFormMapper,
   private val formErrorsMapper: GroupsNewGroupFormErrorMapper,
   private val errorUiMapper: ErrorUiMapper
 ) : ViewModel() {
 
-  private val viewModelState = MutableStateFlow(ViewModelState())
+  private val viewModelState = MutableStateFlow(ViewModelState(groupName))
 
   val uiState = viewModelState.asStateFlow()
+    .onStart { fetchGroup() }
     .map { state ->
       state.toUiState(
         formErrorsMapper,
@@ -47,18 +54,18 @@ class GroupsNewGroupViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
-  private val uiSideEffectChannel = Channel<GroupsNewGroupUiSideEffect>()
+  private val uiSideEffectChannel = Channel<GroupsEditGroupUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
-  fun onCreate(form: GroupsNewGroupForm) {
+  fun onUpdateGroup(form: GroupsNewGroupForm) {
     if (validateForm(form)) {
       viewModelState.update { state -> state.copy(isLoading = true) }
       viewModelScope.launch {
-        val request = formMapper.requestOf(form)
-        createGroupUseCase(request)
+        val request = formMapper.requestOf(groupId, form, includeCurrentUser = true)
+        updateGroupUseCase(request)
           .onSuccess {
             viewModelState.update { state -> state.copy(isLoading = false) }
-            uiSideEffectChannel.send(GroupsNewGroupUiSideEffect.GroupCreated)
+            uiSideEffectChannel.send(GroupsEditGroupUiSideEffect.GroupUpdated)
           }
           .onFailure { error ->
             viewModelState.update { state ->
@@ -136,21 +143,45 @@ class GroupsNewGroupViewModel(
     return nameError == null && membersError == null
   }
 
+  private suspend fun fetchGroup() {
+    viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
+    val result = fetchGroupUseCase(groupId)
+    viewModelState.update { state ->
+      state.copy(
+        group = result.getOrNull(),
+        form = result.getOrNull()?.let(formMapper::autofill) ?: state.form,
+        isLoadingFullscreen = false,
+      )
+    }
+  }
+
   private data class ViewModelState(
+    val groupName: String,
+    val group: Group? = null,
     val form: GroupsNewGroupForm = GroupsNewGroupForm(),
     val formErrors: GroupsNewGroupFormErrors = GroupsNewGroupFormErrors(),
     val isLoading: Boolean = false,
+    val isLoadingFullscreen: Boolean = true,
     val error: Throwable? = null,
   ) {
     fun toUiState(
       formErrorsMapper: GroupsNewGroupFormErrorMapper,
       errorUiMapper: ErrorUiMapper
-    ) =
-      GroupsNewGroupUiState(
-        form = form,
-        formErrors = formErrorsMapper.map(formErrors),
-        isLoading = isLoading,
-        error = error?.let(errorUiMapper::map)
-      )
+    ) = when {
+      isLoadingFullscreen ->
+        GroupsEditGroupUiState.Loading(groupName)
+
+      group == null ->
+        GroupsEditGroupUiState.Error(groupName)
+
+      else ->
+        GroupsEditGroupUiState.Form(
+          group = group,
+          form = form,
+          formErrors = formErrorsMapper.map(formErrors),
+          isLoading = isLoading,
+          error = error?.let(errorUiMapper::map)
+        )
+    }
   }
 }
