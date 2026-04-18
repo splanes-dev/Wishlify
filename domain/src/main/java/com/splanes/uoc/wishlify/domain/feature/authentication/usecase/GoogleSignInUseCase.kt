@@ -9,7 +9,7 @@ class GoogleSignInUseCase(
   private val userRepository: UserRepository,
 ) : UseCase() {
 
-  suspend operator fun invoke() = execute {
+  suspend operator fun invoke() = execute(NoTimeout) {
     val socialCredentials = authRepository.googleSignIn()
     socialCredentials
       .mapCatching { credentials ->

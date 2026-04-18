@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistItemUseCase
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistUseCase
@@ -31,6 +32,7 @@ class WishlistDetailViewModel(
   private val fetchWishlistUseCase: FetchWishlistUseCase,
   private val fetchWishlistItemsUseCase: FetchWishlistItemsUseCase,
   private val fetchWishlistItemUseCase: FetchWishlistItemUseCase,
+  private val deleteWishlistUseCase: DeleteWishlistUseCase,
   private val deleteWishlistItemUseCase: DeleteWishlistItemUseCase,
   private val updateWishlistItemPurchaseUseCase: UpdateWishlistItemPurchaseUseCase,
   private val errorUiMapper: ErrorUiMapper,
@@ -55,6 +57,14 @@ class WishlistDetailViewModel(
 
   private val uiSideEffectChannel = Channel<WishlistDetailUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
+
+  fun onEditWishlistResult(updated: Boolean) {
+    if (updated) {
+      viewModelScope.launch {
+        fetchWishlistAndItems(wishlistId)
+      }
+    }
+  }
 
   fun onNewItemResult(created: Boolean) {
     if (created) {
@@ -88,6 +98,25 @@ class WishlistDetailViewModel(
       viewModelState.update { state ->
         state.copy(isItemDetailModalOpen = true)
       }
+    }
+  }
+
+  fun onDeleteWishlist(wishlist: Wishlist) {
+    viewModelState.update { state -> state.copy(isLoading = true) }
+    viewModelScope.launch {
+      deleteWishlistUseCase(wishlist)
+        .onSuccess {
+          viewModelState.update { state -> state.copy(isLoading = false) }
+          uiSideEffectChannel.send(WishlistDetailUiSideEffect.WishlistDeleted)
+        }
+        .onFailure { error ->
+          viewModelState.update { state ->
+            state.copy(
+              isLoading = false,
+              error = error
+            )
+          }
+        }
     }
   }
 
@@ -214,8 +243,7 @@ class WishlistDetailViewModel(
           viewModelState.update { state ->
             state.copy(
               items = (state.items - item) + itemUpdated,
-              isItemDetailModalOpen = true,
-              itemSelected = itemUpdated,
+              itemSelected = itemUpdated.takeIf { state.isItemDetailModalOpen },
               isItemDetailButtonLoading = false
             )
           }

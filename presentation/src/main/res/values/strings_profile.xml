@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile">Perfil d\'usuari</string>
+    <string name="profile_user_points">%d Punts</string>
+    <string name="profile_close_session">Tancar sessió</string>
+    <string name="profile_update_profile">Actualitzar perfil</string>
+    <string name="profile_change_password">Actualitzar contrasenya</string>
+    <string name="profile_admin_notifications">Administrar notificacions</string>
+    <string name="profile_admin_store">Administrar punts i botiga</string>
+    <string name="profile_admin_hobbies">Administrar interessos</string>
+    <string name="profile_avatar_input_supporting_text">Clica en la imatge per editar-la</string>
+    <string name="profile_update_email_banner_social_description">El compte s\'ha creat utilitzant el proveidor Google, no és possible canviar el correu</string>
+    <string name="profile_update_email_banner_description">
+        Si actualitzes el correu electrònic, s\'enviarà un correu de verificació a la nova direcció. Un cop verificada, podràs accedir amb el nou correu.\n\nA més, per motius de seguretat, es tancarà la sessió actual.
+    </string>
+    <string name="profile_hobbies_title">Interessos i aficions</string>
+    <string name="profile_hobbies_description">Permetre compartir els interessos i aficions amb altres usuaris amb la finalitat d’oferir suggerències</string>
+    <string name="profile_hobbies_section_title">Interessos i aficions</string>
+    <string name="profile_hobbies_add_hobby">Afegir interès o afició</string>
+    <string name="profile_hobbies_add_hobby_label">Nom interès o afició</string>
+    <string name="profile_update_password_confirm_do_not_match">Les contrasenyes no coincideixen</string>
+    <string name="profile_update_password_title">Actualitzar contrasenya</string>
+    <string name="profile_update_password_input_label">Contrasenya actual</string>
+    <string name="profile_update_password_new_input_label">Contrasenya nova</string>
+    <string name="profile_update_password_new_confirm_input_label">Confirmar contrasenya</string>
+    <string name="profile_update_password_description"><![CDATA[Actualitza la teva contrasenya d\'accés.<br/><b>Tingues en compte que en fer-ho la secció actual es tancarà i hauràs d\'iniciar sessió de nou.</b>]]></string>
+</resources>

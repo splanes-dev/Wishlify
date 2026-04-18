@@ -7,4 +7,13 @@ data object Profile {
 
   @Serializable
   data object Main
+
+  @Serializable
+  data object UpdateProfile
+
+  @Serializable
+  data object UpdatePassword
+
+  @Serializable
+  data object Hobbies
 }

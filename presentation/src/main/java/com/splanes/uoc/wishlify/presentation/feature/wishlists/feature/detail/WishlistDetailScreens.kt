@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.ConfirmationDialog
@@ -55,14 +56,19 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMen
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.NewItemFromLinkBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.WishlistItemCard
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.WishlistItemDetailBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.WishlistItemSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.WishlistItemAction
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.WishlistItemForm
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCardSettingsBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistCardSettings
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun WishlistDetailScreen(
   uiState: WishlistDetailUiState.Listing,
+  onEditWishlist: (Wishlist) -> Unit,
+  onDeleteWishlist: (Wishlist) -> Unit,
   onCreateItem: (link: String?) -> Unit,
   onItemAction: (WishlistItem, WishlistItemAction) -> Unit,
   onChangeItemByLinkModalVisibility: (visible: Boolean) -> Unit,
@@ -82,8 +88,16 @@ fun WishlistDetailScreen(
   var isNewItemByLinkModalOpen by remember { mutableStateOf(false) }
 
   var isDeleteItemDialogVisible by remember { mutableStateOf(false) }
+  var isDeleteWishlistDialogVisible by remember { mutableStateOf(false) }
 
   var isShareInfoDialogVisible by remember { mutableStateOf(false) }
+
+  val itemSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isItemSettingsModalOpen by remember { mutableStateOf(false) }
+  var itemSettingsSelected: WishlistItem? by remember { mutableStateOf(null) }
+
+  val wishlistSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isWishlistSettingsModalOpen by remember { mutableStateOf(false) }
 
   LaunchedEffect(uiState.isNewItemByLinkModalOpen) {
     if (uiState.isNewItemByLinkModalOpen) {
@@ -102,7 +116,7 @@ fun WishlistDetailScreen(
       modifier = Modifier.fillMaxSize(),
       topBar = {
         TopAppBar(
-          title = { Text(text = uiState.wishlistName) },
+          title = { Text(text = uiState.wishlist.title) },
           navigationIcon = {
             IconButton(
               shapes = IconButtonShape,
@@ -134,7 +148,7 @@ fun WishlistDetailScreen(
 
             IconButton(
               shapes = IconButtonShape,
-              onClick = { /* TODO */ }
+              onClick = { isWishlistSettingsModalOpen = true }
             ) {
               Icon(
                 imageVector = Icons.Rounded.Tune,
@@ -183,11 +197,76 @@ fun WishlistDetailScreen(
           WishlistItemCard(
             modifier = Modifier.animateItem(),
             item = item,
-            onSettingsClick = { /* TODO */ },
+            onSettingsClick = {
+              itemSettingsSelected = item
+              isItemSettingsModalOpen = true
+            },
             onClick = { onItemAction(item, WishlistItemAction.Open) }
           )
         }
       }
+    }
+
+    WishlistCardSettingsBottomSheet(
+      visible = isWishlistSettingsModalOpen,
+      sheetState = wishlistSettingsSheetState,
+      settings = listOf(
+        WishlistCardSettings.Edit,
+        WishlistCardSettings.Delete
+      ),
+      onDismiss = { isWishlistSettingsModalOpen = false },
+      onSettingClick = { setting ->
+        when (setting) {
+          WishlistCardSettings.Edit -> onEditWishlist(uiState.wishlist)
+          WishlistCardSettings.Delete -> isDeleteWishlistDialogVisible = true
+          else -> {
+            // Not allowed other settings
+          }
+        }
+        coroutineScope
+          .launch { wishlistSettingsSheetState.hide() }
+          .invokeOnCompletion { isWishlistSettingsModalOpen = false }
+      }
+    )
+
+    itemSettingsSelected?.let { item ->
+      WishlistItemSettingsBottomSheet(
+        visible = isItemSettingsModalOpen,
+        sheetState = itemSettingsSheetState,
+        settings = listOfNotNull(
+          WishlistItemAction.Edit,
+          WishlistItemAction.TogglePurchase,
+          WishlistItemAction.OpenLink.takeIf { item.link.isNotBlank() },
+          WishlistItemAction.Delete
+        ),
+        purchased = item.purchased != null,
+        onDismiss = {
+          isItemSettingsModalOpen = false
+          itemSettingsSelected = null
+        },
+        onSettingClick = { action ->
+          coroutineScope
+            .launch { itemSettingsSheetState.hide() }
+            .invokeOnCompletion { isItemSettingsModalOpen = false }
+          when (action) {
+            WishlistItemAction.Open -> {
+              // Action not allowed
+            }
+            WishlistItemAction.Delete -> {
+              isDeleteItemDialogVisible = true
+            }
+            WishlistItemAction.Edit,
+            WishlistItemAction.TogglePurchase -> {
+              onItemAction(item, action)
+              itemSettingsSelected = null
+            }
+            WishlistItemAction.OpenLink -> {
+              context.openBrowserLink(item.link)
+              itemSettingsSelected = null
+            }
+          }
+        }
+      )
     }
 
     NewItemFromLinkBottomSheet(
@@ -245,10 +324,19 @@ fun WishlistDetailScreen(
       ConfirmationDialog(
         onDismiss = { isDeleteItemDialogVisible = false },
         onConfirm = {
-          uiState.itemSelected?.let { item ->
+          val itemSelected = uiState.itemSelected ?: itemSettingsSelected
+          itemSelected?.let { item ->
             onItemAction(item, WishlistItemAction.Delete)
+            itemSettingsSelected = null
           }
         }
+      )
+    }
+
+    if (isDeleteWishlistDialogVisible) {
+      ConfirmationDialog(
+        onDismiss = { isDeleteWishlistDialogVisible = false },
+        onConfirm = { onDeleteWishlist(uiState.wishlist) }
       )
     }
 
@@ -269,14 +357,23 @@ fun WishlistDetailScreen(
 @Composable
 fun WishlistDetailEmptyScreen(
   uiState: WishlistDetailUiState.Empty,
+  onEditWishlist: (Wishlist) -> Unit,
+  onDeleteWishlist: (Wishlist) -> Unit,
   onCreateItem: (link: String?) -> Unit,
   onBack: () -> Unit,
   onChangeItemByLinkModalVisibility: (visible: Boolean) -> Unit,
   onClearInputError: (WishlistItemForm.Input) -> Unit,
   onDismissError: () -> Unit
 ) {
+  val coroutineScope = rememberCoroutineScope()
+
   val newItemByLinkSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
   var isNewItemByLinkModalOpen by remember { mutableStateOf(false) }
+
+  val wishlistSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isWishlistSettingsModalOpen by remember { mutableStateOf(false) }
+
+  var isDeleteWishlistDialogVisible by remember { mutableStateOf(false) }
 
   LaunchedEffect(uiState.isNewItemByLinkModalOpen) {
     if (uiState.isNewItemByLinkModalOpen) {
@@ -310,7 +407,7 @@ fun WishlistDetailEmptyScreen(
           actions = {
             IconButton(
               shapes = IconButtonShape,
-              onClick = {}
+              onClick = { isWishlistSettingsModalOpen = true }
             ) {
               Icon(
                 imageVector = Icons.Rounded.Tune,
@@ -368,6 +465,28 @@ fun WishlistDetailEmptyScreen(
       }
     }
 
+    WishlistCardSettingsBottomSheet(
+      visible = isWishlistSettingsModalOpen,
+      sheetState = wishlistSettingsSheetState,
+      settings = listOf(
+        WishlistCardSettings.Edit,
+        WishlistCardSettings.Delete
+      ),
+      onDismiss = { isWishlistSettingsModalOpen = false },
+      onSettingClick = { setting ->
+        when (setting) {
+          WishlistCardSettings.Edit -> onEditWishlist(uiState.wishlist)
+          WishlistCardSettings.Delete -> isDeleteWishlistDialogVisible = true
+          else -> {
+            // Not allowed other settings
+          }
+        }
+        coroutineScope
+          .launch { wishlistSettingsSheetState.hide() }
+          .invokeOnCompletion { isWishlistSettingsModalOpen = false }
+      }
+    )
+
     NewItemFromLinkBottomSheet(
       visible = isNewItemByLinkModalOpen,
       sheetState = newItemByLinkSheetState,
@@ -379,6 +498,13 @@ fun WishlistDetailEmptyScreen(
       },
       onDismiss = { onChangeItemByLinkModalVisibility(false) }
     )
+
+    if (isDeleteWishlistDialogVisible) {
+      ConfirmationDialog(
+        onDismiss = { isDeleteWishlistDialogVisible = false },
+        onConfirm = { onDeleteWishlist(uiState.wishlist) }
+      )
+    }
 
     uiState.error?.let { error ->
       ErrorDialog(

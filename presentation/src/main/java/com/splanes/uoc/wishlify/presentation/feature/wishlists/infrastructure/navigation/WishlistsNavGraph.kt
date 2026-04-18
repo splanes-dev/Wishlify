@@ -88,6 +88,12 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
           viewModel.onUpdateWishlistResult(updated = updated)
         }
 
+        // Result handler from update wishlist (from detail)
+        navController.NavResultHandler<Boolean>(key = NavResult.UPDATE_WISHLIST_FROM_DETAIL) {
+          // This should be done only when exists changes but... hard to detect.
+          viewModel.onUpdateWishlistResult(updated = true)
+        }
+
         WishlistsListRoute(
           viewModel = viewModel,
           onNavToNewWishlist = { isOwn ->
@@ -162,6 +168,10 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
           parametersOf(route.id, route.name)
         }
 
+        navController.NavResultHandler<Boolean>(key = NavResult.UPDATE_WISHLIST) { updated ->
+          viewModel.onEditWishlistResult(updated = updated)
+        }
+
         // Result handler from create item
         navController.NavResultHandler<Boolean>(key = NavResult.NEW_ITEM) { created ->
           viewModel.onNewItemResult(created = created)
@@ -182,6 +192,10 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
 
         WishlistDetailRoute(
           viewModel = viewModel,
+          onNavToEditWishlist = { id ->
+            val route = Wishlists.EditList(id)
+            navController.navigate(route)
+          },
           onNavToNewItem = { link ->
             val route = Wishlists.NewItem(wishlistId = route.id, link = link)
             navController.navigate(route)
@@ -194,7 +208,12 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
             val route = Wishlists.ShareList(wishlistId = route.id)
             navController.navigate(route)
           },
-          onBack = { navController.popBackStack() },
+          onBack = {
+            navController.popBackStackWithResult(
+              key = NavResult.UPDATE_WISHLIST_FROM_DETAIL,
+              result = true // Hardcoded, Unit can't be put as type on SavedState
+            )
+          },
         )
       }
 
@@ -254,6 +273,7 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
 private object NavResult {
   const val NEW_WISHLIST = "new-wishlist"
   const val UPDATE_WISHLIST = "update-wishlist"
+  const val UPDATE_WISHLIST_FROM_DETAIL = "update-wishlist-from-detail"
   const val NEW_ITEM = "new-item"
   const val UPDATE_ITEM = "update-item"
   const val SHARE_WISHLIST = "share-wishlist"

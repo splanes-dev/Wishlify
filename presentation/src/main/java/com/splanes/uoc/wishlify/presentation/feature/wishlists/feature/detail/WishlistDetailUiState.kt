@@ -42,5 +42,6 @@ sealed interface WishlistDetailUiState {
 
 
 sealed interface WishlistDetailUiSideEffect {
+  data object WishlistDeleted : WishlistDetailUiSideEffect
   data class NavToEdit(val itemId: String) : WishlistDetailUiSideEffect
 }

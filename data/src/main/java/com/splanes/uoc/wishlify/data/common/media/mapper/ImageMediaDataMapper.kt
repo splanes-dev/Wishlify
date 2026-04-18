@@ -40,6 +40,9 @@ class ImageMediaDataMapper {
 
       is ImageMediaPath.SecretSanta ->
         SECRET_SANTA_COVER.format(path.secretSantaId)
+
+      is ImageMediaPath.Profile ->
+        PROFILE_PHOTO.format(path.uid)
     }
 }
 
@@ -47,3 +50,4 @@ private const val WISHLIST_COVER = "wishlists/%s/cover"
 private const val WISHLIST_ITEM_PHOTO = "wishlists/%s/items/%s"
 private const val SECRET_SANTA_COVER = "secret-santa/%s/cover"
 private const val GROUP_PHOTO = "groups/%s"
+private const val PROFILE_PHOTO = "profile/%s"

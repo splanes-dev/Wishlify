@@ -23,6 +23,7 @@
     <string name="btn_continue">Continuar</string>
     <string name="settings">Configuració</string>
     <string name="close">Tancar</string>
+    <string name="attention">Atenció</string>
     <string name="finished">Finalitzada</string>
     <string name="event_finished">Finalitzat</string>
     <string name="save">Desar</string>

@@ -49,7 +49,7 @@ class UserRemoteDataSource(
     }
   }
 
-  suspend fun add(user: UserEntity) {
+  suspend fun upsertUser(user: UserEntity) {
     try {
       users
         .document(user.uid)

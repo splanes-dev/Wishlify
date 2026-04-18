@@ -73,6 +73,7 @@ fun ButtonText(
 fun IconButtonCustom(
   imageVector: ImageVector,
   modifier: Modifier = Modifier,
+  enabled: Boolean = true,
   containerColor: Color = Color.Transparent,
   contentColor: Color = contentColorFor(containerColor),
   contentSize: DpSize = DpSize(16.dp, 16.dp),
@@ -83,6 +84,7 @@ fun IconButtonCustom(
   IconButtonCustom(
     modifier = modifier,
     painter = rememberVectorPainter(imageVector),
+    enabled = enabled,
     containerColor = containerColor,
     contentColor = contentColor,
     contentSize = contentSize,
@@ -96,6 +98,7 @@ fun IconButtonCustom(
 fun IconButtonCustom(
   painter: Painter,
   modifier: Modifier = Modifier,
+  enabled: Boolean = true,
   shape: Shape = WishlifyTheme.shapes.extraSmall,
   containerColor: Color = Color.Transparent,
   contentColor: Color = contentColorFor(containerColor),
@@ -113,6 +116,7 @@ fun IconButtonCustom(
       .clip(shape)
       .background(containerColor)
       .clickable(
+        enabled = enabled,
         interactionSource = interactionSource,
         indication = ripple(),
         onClick = onClick

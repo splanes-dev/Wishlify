@@ -14,7 +14,16 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.splanes.uoc.wishlify.presentation.R
+import com.splanes.uoc.wishlify.presentation.feature.profile.feature.hobbies.ProfileHobbiesRoute
+import com.splanes.uoc.wishlify.presentation.feature.profile.feature.main.ProfileMainRoute
+import com.splanes.uoc.wishlify.presentation.feature.profile.feature.main.ProfileMainViewModel
+import com.splanes.uoc.wishlify.presentation.feature.profile.feature.password.ProfileUpdatePasswordRoute
+import com.splanes.uoc.wishlify.presentation.feature.profile.feature.update.ProfileUpdateRoute
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackStackWithResult
+import org.koin.androidx.compose.koinViewModel
 
 class ProfileNavGraph : FeatureHomeNavGraph {
 
@@ -53,7 +62,72 @@ class ProfileNavGraph : FeatureHomeNavGraph {
     navigation<Profile>(startDestination = Profile.Main) {
       composable<Profile.Main> {
 
+        val viewModel = koinViewModel<ProfileMainViewModel>()
+
+        navController.NavResultHandler<Boolean>(key = NavResult.PROFILE_UPDATED) { updated ->
+          if (updated) {
+            viewModel.onProfileUpdated()
+          }
+        }
+
+        ProfileMainRoute(
+          viewModel = viewModel,
+          onNavToUpdateProfile = {
+            navController.navigate(Profile.UpdateProfile)
+          },
+          onNavToChangePassword = {
+            navController.navigate(Profile.UpdatePassword)
+          },
+          onNavToAdminNotifications = {
+
+          },
+          onNavToStore = {
+
+          },
+          onNavToHobbies = {
+            navController.navigate(Profile.Hobbies)
+          }
+        )
+      }
+
+      composable<Profile.UpdateProfile>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit,
+      ) {
+        ProfileUpdateRoute(
+          viewModel = koinViewModel(),
+          onFinish = {
+            navController.popBackStackWithResult(
+              key = NavResult.PROFILE_UPDATED,
+              result = it
+            )
+          },
+        )
+      }
+
+      composable<Profile.UpdatePassword>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit,
+      ) {
+        ProfileUpdatePasswordRoute(
+          viewModel = koinViewModel(),
+          onBack = { navController.popBackStack() }
+        )
+      }
+
+      composable<Profile.Hobbies>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit,
+      ) {
+        ProfileHobbiesRoute(
+          viewModel = koinViewModel(),
+          onBack = { navController.popBackStack() }
+        )
       }
     }
   }
+}
+
+private object NavResult {
+  const val PROFILE_UPDATED = "updated-profile"
 }

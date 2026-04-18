@@ -201,7 +201,7 @@ class WishlistEditItemViewModel(
     val item: WishlistItem? = null,
     val form: WishlistItemForm = WishlistItemForm(),
     val formErrors: WishlistItemFormErrors = WishlistItemFormErrors(),
-    val isLoadingFullscreen: Boolean = false,
+    val isLoadingFullscreen: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {

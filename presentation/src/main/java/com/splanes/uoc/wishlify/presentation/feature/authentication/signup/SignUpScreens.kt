@@ -164,7 +164,7 @@ fun SignUpFormScreen(
         leadingIcon = Icons.Rounded.AlternateEmail,
         label = stringResource(R.string.auth_email),
         keyboardOptions = KeyboardOptions(
-          keyboardType = KeyboardType.Text,
+          keyboardType = KeyboardType.Email,
           imeAction = ImeAction.Next,
         ),
         keyboardActions = KeyboardActions(

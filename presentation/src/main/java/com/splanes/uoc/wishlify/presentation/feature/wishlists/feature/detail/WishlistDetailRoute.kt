@@ -8,6 +8,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun WishlistDetailRoute(
   viewModel: WishlistDetailViewModel,
+  onNavToEditWishlist: (wishlistId: String) -> Unit,
   onNavToNewItem: (link: String?) -> Unit,
   onNavToEditItem: (itemId: String) -> Unit,
   onNavToShare: () -> Unit,
@@ -21,6 +22,8 @@ fun WishlistDetailRoute(
         is WishlistDetailUiSideEffect.NavToEdit -> {
           onNavToEditItem(effect.itemId)
         }
+
+        WishlistDetailUiSideEffect.WishlistDeleted -> onBack()
       }
     }
   }
@@ -29,6 +32,8 @@ fun WishlistDetailRoute(
     is WishlistDetailUiState.Empty ->
       WishlistDetailEmptyScreen(
         uiState = state,
+        onEditWishlist = { w -> onNavToEditWishlist(w.id) },
+        onDeleteWishlist = viewModel::onDeleteWishlist,
         onCreateItem = onNavToNewItem,
         onBack = onBack,
         onChangeItemByLinkModalVisibility = viewModel::onChangeItemByLinkModalVisibility,
@@ -45,6 +50,8 @@ fun WishlistDetailRoute(
     is WishlistDetailUiState.Listing ->
       WishlistDetailScreen(
         uiState = state,
+        onEditWishlist = { w -> onNavToEditWishlist(w.id) },
+        onDeleteWishlist = viewModel::onDeleteWishlist,
         onCreateItem = onNavToNewItem,
         onShare = onNavToShare,
         onBack = onBack,

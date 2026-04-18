@@ -68,6 +68,7 @@
     <string name="wishlists_item_purchased_info_description1">Comprat el dia</string>
     <string name="wishlists_item_purchased_info_description2"> per l\'usuari:</string>
     <string name="wishlists_edit_item_title">Editar producte</string>
+    <string name="wishlists_open_link_item_title">Obrir enllaç del producte</string>
     <string name="wishlists_search">Cercar wishlist</string>
     <string name="wishlists_search_description">Masses llistats i no trobes el que estàs buscant? Fes ús del cercador per trobar la wishlist:</string>
     <string name="wishlists_filter">Filtrar wishlists</string>
@@ -93,5 +94,6 @@
     <string name="wishlists_item_edit">Editar wishlist</string>
     <string name="wishlists_item_share">Compartir wishlist</string>
     <string name="wishlists_item_delete">Eliminar wishlist</string>
+    <string name="wishlists_item_delete_item">Eliminar producte</string>
 
 </resources>

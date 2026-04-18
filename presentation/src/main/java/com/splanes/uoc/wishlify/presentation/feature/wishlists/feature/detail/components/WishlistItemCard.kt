@@ -2,7 +2,6 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.c
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +34,7 @@ import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.CardImage
+import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonCustom
 import com.splanes.uoc.wishlify.presentation.common.utils.capitalize
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.utils.color
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.utils.formatPrice
@@ -83,13 +83,10 @@ fun WishlistItemCard(
           )
 
           if (onSettingsClick != null) {
-            Icon(
-              modifier = Modifier
-                .size(16.dp)
-                .clickable { onSettingsClick() },
+            IconButtonCustom(
               painter = painterResource(R.drawable.ic_item_settings),
-              tint = WishlifyTheme.colorScheme.onSurface,
-              contentDescription = null
+              contentColor = WishlifyTheme.colorScheme.onSurface,
+              onClick = onSettingsClick
             )
           }
         }

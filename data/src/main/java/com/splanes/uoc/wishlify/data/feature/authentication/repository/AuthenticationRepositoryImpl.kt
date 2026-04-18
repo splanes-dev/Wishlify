@@ -4,6 +4,7 @@ import com.splanes.uoc.wishlify.data.feature.authentication.datasource.AuthLocal
 import com.splanes.uoc.wishlify.data.feature.authentication.datasource.AuthRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.authentication.datasource.GoogleAuthDataSource
 import com.splanes.uoc.wishlify.data.feature.authentication.mapper.AuthDataMapper
+import com.splanes.uoc.wishlify.domain.common.error.GenericError
 import com.splanes.uoc.wishlify.domain.feature.authentication.model.LocalCredentials
 import com.splanes.uoc.wishlify.domain.feature.authentication.model.SocialCredentials
 import com.splanes.uoc.wishlify.domain.feature.authentication.repository.AuthenticationRepository
@@ -55,4 +56,31 @@ class AuthenticationRepositoryImpl(
   override suspend fun cleanStoredCredentials() {
     localDataSource.cleanStoredCredentials()
   }
+
+  override suspend fun updateEmail(
+    credentials: LocalCredentials?,
+    email: String
+  ): Result<Unit> =
+    runCatching {
+      if (credentials != null) {
+        remoteDataSource.reauthenticate(credentials.email, credentials.password)
+        remoteDataSource.updateEmail(email)
+      } else {
+        throw GenericError.Unknown()
+      }
+    }
+
+  override suspend fun updatePassword(
+    credentials: LocalCredentials,
+    new: String
+  ): Result<Unit> =
+    runCatching {
+      remoteDataSource.reauthenticate(credentials.email, credentials.password)
+      remoteDataSource.updatePassword(new)
+  }
+
+  override suspend fun signOut(): Result<Unit> =
+    runCatching {
+      remoteDataSource.signOut()
+    }
 }

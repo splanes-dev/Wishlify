@@ -13,4 +13,7 @@ interface AuthenticationRepository {
   suspend fun storeCredentials(email: String, password: String)
   suspend fun fetchStoredCredentials(): LocalCredentials?
   suspend fun cleanStoredCredentials()
+  suspend fun updateEmail(credentials: LocalCredentials?, email: String): Result<Unit>
+  suspend fun updatePassword(credentials: LocalCredentials, new: String): Result<Unit>
+  suspend fun signOut(): Result<Unit>
 }

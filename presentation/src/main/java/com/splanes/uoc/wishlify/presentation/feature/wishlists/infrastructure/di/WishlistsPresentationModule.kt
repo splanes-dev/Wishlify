@@ -68,6 +68,7 @@ internal val WishlistsPresentationModule = module {
       fetchWishlistUseCase = get(),
       fetchWishlistItemsUseCase = get(),
       fetchWishlistItemUseCase = get(),
+      deleteWishlistUseCase = get(),
       deleteWishlistItemUseCase = get(),
       updateWishlistItemPurchaseUseCase = get(),
       errorUiMapper = get(),

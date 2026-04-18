@@ -5,4 +5,5 @@ sealed interface ImageMediaPath {
   data class WishlistItem(val wishlistId: String, val itemId: String): ImageMediaPath
   data class Group(val groupId: String): ImageMediaPath
   data class SecretSanta(val secretSantaId: String): ImageMediaPath
+  data class Profile(val uid: String): ImageMediaPath
 }
