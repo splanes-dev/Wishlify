@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaChatMessage
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaChatMessage
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.image.RemoteImage
 import com.splanes.uoc.wishlify.presentation.common.utils.DateTimePattern

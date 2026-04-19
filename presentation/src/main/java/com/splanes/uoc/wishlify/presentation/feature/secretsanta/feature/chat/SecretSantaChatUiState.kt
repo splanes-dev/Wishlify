@@ -1,6 +1,6 @@
 package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat
 
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaChatMessage
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaChatMessage
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.model.SecretSantaChatType
 

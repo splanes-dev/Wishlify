@@ -2,8 +2,8 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.FetchSecretSantaEventsUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaEventsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

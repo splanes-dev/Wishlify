@@ -27,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.CardImage
 import com.splanes.uoc.wishlify.presentation.common.utils.formatted

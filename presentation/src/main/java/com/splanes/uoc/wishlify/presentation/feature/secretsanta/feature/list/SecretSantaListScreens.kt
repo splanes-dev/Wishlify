@@ -36,7 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog

@@ -3,9 +3,9 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.c
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaRequest
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.common.utils.newUuid
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.CreateSecretSantaEventRequest
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEventDetail
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.UpdateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.CreateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEventDetail
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.UpdateSecretSantaEventRequest
 import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.model.SecretSantaNewEventForm
 import java.util.Date

@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.groups.usecase.FetchGroupsUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEventDetail
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.FetchSecretSantaDetailUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.UpdateSecretSantaEventUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.ValidateSecretSantaDrawUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEventDetail
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaDetailUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.UpdateSecretSantaEventUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.ValidateSecretSantaDrawUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.FetchUserByIdUseCase
 import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker

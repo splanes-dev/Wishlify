@@ -27,7 +27,7 @@ class CreateWishlistItemUseCase(
           )
         }
 
-        repository.addWishlistItem(uid, imageMedia, request)
+        repository.addWishlistItem(uid, imageMedia, request).getOrThrow()
       }
   }
 

@@ -8,11 +8,11 @@ import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.common.utils.newUuid
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.CreateSecretSantaEventRequest
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaChatMessage
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEventDetail
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.UpdateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.CreateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaChatMessage
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEventDetail
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.UpdateSecretSantaEventRequest
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import java.util.Date
 

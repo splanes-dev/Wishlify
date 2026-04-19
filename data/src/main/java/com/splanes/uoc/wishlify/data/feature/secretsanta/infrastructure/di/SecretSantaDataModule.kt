@@ -3,7 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.secretsanta.infrastructure.di
 import com.splanes.uoc.wishlify.data.feature.secretsanta.datasource.SecretSantaRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.secretsanta.mapper.SecretSantaDataMapper
 import com.splanes.uoc.wishlify.data.feature.secretsanta.repository.SecretSantaRepositoryImpl
-import com.splanes.uoc.wishlify.domain.feature.secresanta.repository.SecretSantaRepository
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.repository.SecretSantaRepository
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module

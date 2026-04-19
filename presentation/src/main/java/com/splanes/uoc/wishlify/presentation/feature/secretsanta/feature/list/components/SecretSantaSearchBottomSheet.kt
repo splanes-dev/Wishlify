@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.SearchBottomSheet
 import com.splanes.uoc.wishlify.presentation.common.components.image.ImageOrPlaceholder

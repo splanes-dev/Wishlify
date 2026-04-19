@@ -2,10 +2,10 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.wishli
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaWishlist
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.FetchSecretSantaWishlistItemsUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.FetchSecretSantaWishlistUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.UnshareWishlistSecretSantaUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaWishlist
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaWishlistItemsUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaWishlistUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.UnshareWishlistSecretSantaUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import kotlinx.coroutines.async

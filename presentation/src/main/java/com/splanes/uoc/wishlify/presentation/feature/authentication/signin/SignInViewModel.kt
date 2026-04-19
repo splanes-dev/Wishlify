@@ -1,6 +1,5 @@
 package com.splanes.uoc.wishlify.presentation.feature.authentication.signin
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.authentication.model.SignInRequest
@@ -27,7 +26,7 @@ class SignInViewModel(
   private val autoSignInUseCase: AutoSignInUseCase,
   private val signInUseCase: SignInUseCase,
   private val googleSignInUseCase: GoogleSignInUseCase,
-  private val signUpFormErrorMapper: SignInFormErrorMapper,
+  private val signInFormErrorMapper: SignInFormErrorMapper,
   private val errorUiMapper: SignInErrorMapper,
 ) : ViewModel() {
 
@@ -114,7 +113,7 @@ class SignInViewModel(
 
   private fun validateForm(form: SignInForm): Boolean {
     val emailError = when {
-      !form.email.matches(Patterns.EMAIL_ADDRESS.toRegex()) -> EmailSignInFormError.Invalid
+      !form.email.matches(EmailRegex) -> EmailSignInFormError.Invalid
       else -> null
     }
 
@@ -125,8 +124,8 @@ class SignInViewModel(
 
     viewModelState.update { state ->
       state.copy(
-        emailInputError = emailError?.let(signUpFormErrorMapper::map),
-        passwordInputError = passwordError?.let(signUpFormErrorMapper::map)
+        emailInputError = emailError?.let(signInFormErrorMapper::map),
+        passwordInputError = passwordError?.let(signInFormErrorMapper::map)
       )
     }
     return emailError == null && passwordError == null
@@ -153,3 +152,11 @@ class SignInViewModel(
     }
   }
 }
+
+private val EmailRegex = Regex("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+    "\\@" +
+    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+    "(" +
+    "\\." +
+    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+    ")+")

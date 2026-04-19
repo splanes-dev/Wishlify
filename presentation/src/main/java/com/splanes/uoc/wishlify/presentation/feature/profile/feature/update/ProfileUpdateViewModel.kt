@@ -1,6 +1,5 @@
 package com.splanes.uoc.wishlify.presentation.feature.profile.feature.update
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
@@ -112,12 +111,12 @@ class ProfileUpdateViewModel(
     val usernameError = when {
       form.username.isBlank() -> UserProfileUpdateFormNameError.Blank
       form.username.count() !in 3..20 -> UserProfileUpdateFormNameError.Length
-      form.username.matches(UsernameRegex) -> UserProfileUpdateFormNameError.InvalidChars
+      !form.username.matches(UsernameRegex) -> UserProfileUpdateFormNameError.InvalidChars
       else -> null
     }
 
     val emailError = when {
-      !form.email.matches(Patterns.EMAIL_ADDRESS.toRegex()) -> UserProfileUpdateFormEmailError.Invalid
+      !form.email.matches(EmailRegex) -> UserProfileUpdateFormEmailError.Invalid
       else -> null
     }
 
@@ -163,4 +162,11 @@ class ProfileUpdateViewModel(
   }
 }
 
-private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._]{1,18}[a-zA-Z0-9])?\\$")
+private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._]{1,18}[a-zA-Z0-9])?$")
+private val EmailRegex = Regex("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+    "\\@" +
+    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+    "(" +
+    "\\." +
+    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+    ")+")

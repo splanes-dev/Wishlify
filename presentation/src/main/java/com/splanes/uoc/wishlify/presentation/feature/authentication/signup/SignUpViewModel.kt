@@ -1,6 +1,5 @@
 package com.splanes.uoc.wishlify.presentation.feature.authentication.signup
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.authentication.model.SignUpRequest
@@ -103,12 +102,12 @@ class SignUpViewModel(
     val usernameError = when {
       form.username.isBlank() -> UsernameSignUpFormError.Blank
       form.username.count() !in 3..20 -> UsernameSignUpFormError.Length
-      form.username.matches(UsernameRegex) -> UsernameSignUpFormError.InvalidChars
+      !form.username.matches(UsernameRegex) -> UsernameSignUpFormError.InvalidChars
       else -> null
     }
 
     val emailError = when {
-      !form.email.matches(Patterns.EMAIL_ADDRESS.toRegex()) -> EmailSignUpFormError.Invalid
+      !form.email.matches(EmailRegex) -> EmailSignUpFormError.Invalid
       else -> null
     }
 
@@ -144,5 +143,12 @@ class SignUpViewModel(
   }
 }
 
-private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._]{1,18}[a-zA-Z0-9])?\\$")
+private val EmailRegex = Regex("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+    "\\@" +
+    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+    "(" +
+    "\\." +
+    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+    ")+")
+private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._]{1,18}[a-zA-Z0-9])?$")
 private val PasswordRegex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$")

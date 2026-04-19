@@ -1,6 +1,6 @@
 package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list
 
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 
 sealed interface SecretSantaListUiState {

@@ -34,7 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEventDetail
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEventDetail
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonShape
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonText

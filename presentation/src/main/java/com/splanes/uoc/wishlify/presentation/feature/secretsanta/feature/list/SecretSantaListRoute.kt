@@ -3,7 +3,7 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 
 @Composable
 fun SecretSantaListRoute(

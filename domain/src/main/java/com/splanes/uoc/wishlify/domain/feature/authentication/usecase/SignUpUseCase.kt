@@ -12,8 +12,8 @@ class SignUpUseCase(
 
   suspend operator fun invoke(request: SignUpRequest) = execute {
     authRepository.signUp(request.email, request.password)
-      .map { uid ->
-        userRepository.addUser(uid, request.username)
+      .mapCatching { uid ->
+        userRepository.addUser(uid, request.username).getOrThrow()
       }
       .onSuccess {
         authRepository.storeCredentials(request.email, request.password)

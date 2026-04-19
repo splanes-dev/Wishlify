@@ -2,7 +2,7 @@ package com.splanes.uoc.wishlify.domain.infrastructure.di
 
 import com.splanes.uoc.wishlify.domain.feature.authentication.infrastructure.di.AuthenticationDomainModule
 import com.splanes.uoc.wishlify.domain.feature.groups.infrastructure.di.GroupsDomainModule
-import com.splanes.uoc.wishlify.domain.feature.secresanta.infrastructure.di.SecretSantaDomainModule
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.infrastructure.di.SecretSantaDomainModule
 import com.splanes.uoc.wishlify.domain.feature.session.infrastructure.di.SessionDomainModule
 import com.splanes.uoc.wishlify.domain.feature.shared.infrastructure.di.SharedWishlistsDomainModule
 import com.splanes.uoc.wishlify.domain.feature.user.infrastructure.di.UserDomainModule

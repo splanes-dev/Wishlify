@@ -15,7 +15,7 @@ class GoogleSignInUseCase(
       .mapCatching { credentials ->
         val uid = authRepository.signIn(credentials.token).getOrThrow()
         if (!userRepository.existsUser(uid).getOrThrow()) {
-          userRepository.addUser(uid, credentials.username, credentials.photoUrl)
+          userRepository.addUser(uid, credentials.username, credentials.photoUrl).getOrThrow()
         }
       }
   }

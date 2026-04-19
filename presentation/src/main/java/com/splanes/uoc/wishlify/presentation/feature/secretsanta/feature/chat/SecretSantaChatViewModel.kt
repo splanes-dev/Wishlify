@@ -2,12 +2,12 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.GetSecretSantaChatRequest
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaChatMessage
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaSendMessageRequest
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.FetchSecretSantaChatMessagesUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.SendMessageSecretSantaChatUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.SubscribeSecretSantaChatUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.GetSecretSantaChatRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaChatMessage
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaSendMessageRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaChatMessagesUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.SendMessageSecretSantaChatUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.SubscribeSecretSantaChatUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.FetchUserByIdUseCase
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.model.SecretSantaChatType

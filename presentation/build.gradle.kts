@@ -48,4 +48,12 @@ dependencies {
   implementation(libs.androidx.compose.coil)
   // Logger
   implementation(libs.timber)
+
+  // Testing (unit test)
+  testImplementation(libs.junit)
+  testImplementation(libs.androidx.junit)
+  testImplementation(libs.mockito)
+  testImplementation(libs.truth)
+  testImplementation(libs.turbine)
+  testImplementation(libs.coroutines.test)
 }

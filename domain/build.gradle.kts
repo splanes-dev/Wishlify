@@ -25,4 +25,10 @@ dependencies {
   // Libs
   implementation(libs.koin.android)
   implementation(libs.timber)
+
+  // Testing (unit test)
+  testImplementation(libs.junit)
+  testImplementation(libs.mockito)
+  testImplementation(libs.truth)
+  testImplementation(libs.coroutines.test)
 }

@@ -2,9 +2,9 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.splanes.uoc.wishlify.domain.feature.secresanta.model.SecretSantaEventDetail
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.DoSecretSantaDrawUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.FetchSecretSantaDetailUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEventDetail
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.DoSecretSantaDrawUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaDetailUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.model.SecretSantaChatType
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.model.SecretSantaDetailAction

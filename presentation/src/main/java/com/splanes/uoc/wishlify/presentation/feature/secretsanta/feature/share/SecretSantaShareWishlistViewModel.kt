@@ -2,7 +2,7 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.ShareWishlistSecretSantaUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.ShareWishlistSecretSantaUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemsUseCase

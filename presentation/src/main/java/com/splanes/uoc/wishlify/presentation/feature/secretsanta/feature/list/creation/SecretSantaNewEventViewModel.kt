@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.groups.usecase.FetchGroupsUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.CreateSecretSantaEventUseCase
-import com.splanes.uoc.wishlify.domain.feature.secresanta.usecase.ValidateSecretSantaDrawUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.CreateSecretSantaEventUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.ValidateSecretSantaDrawUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.FetchUserByIdUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
