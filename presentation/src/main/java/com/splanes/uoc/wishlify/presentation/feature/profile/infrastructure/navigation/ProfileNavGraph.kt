@@ -17,6 +17,7 @@ import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.hobbies.ProfileHobbiesRoute
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.main.ProfileMainRoute
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.main.ProfileMainViewModel
+import com.splanes.uoc.wishlify.presentation.feature.profile.feature.notifications.ProfileNotificationsRoute
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.password.ProfileUpdatePasswordRoute
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.update.ProfileUpdateRoute
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
@@ -79,7 +80,7 @@ class ProfileNavGraph : FeatureHomeNavGraph {
             navController.navigate(Profile.UpdatePassword)
           },
           onNavToAdminNotifications = {
-
+            navController.navigate(Profile.Notifications)
           },
           onNavToStore = {
 
@@ -120,6 +121,16 @@ class ProfileNavGraph : FeatureHomeNavGraph {
         exitTransition = Transitions.SlideInHorizontal.exit,
       ) {
         ProfileHobbiesRoute(
+          viewModel = koinViewModel(),
+          onBack = { navController.popBackStack() }
+        )
+      }
+
+      composable<Profile.Notifications>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit,
+      ) {
+        ProfileNotificationsRoute(
           viewModel = koinViewModel(),
           onBack = { navController.popBackStack() }
         )

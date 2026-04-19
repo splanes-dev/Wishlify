@@ -46,4 +46,17 @@ sealed class User(
     code = code,
     photoUrl = photoUrl,
   )
+
+  data class NotificationsProfile(
+    override val uid: String,
+    override val username: String,
+    override val code: String,
+    override val photoUrl: String?,
+    val notificationPermissions: NotificationPermissions,
+  ) : User(
+    uid = uid,
+    username = username,
+    code = code,
+    photoUrl = photoUrl,
+  )
 }

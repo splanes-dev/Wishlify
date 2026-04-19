@@ -16,4 +16,7 @@ data object Profile {
 
   @Serializable
   data object Hobbies
+
+  @Serializable
+  data object Notifications
 }

@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.data.feature.user.model.UserBasic
 import com.splanes.uoc.wishlify.data.feature.user.model.UserEntity
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.user.model.Hobbies
+import com.splanes.uoc.wishlify.domain.feature.user.model.NotificationPermissions
 import com.splanes.uoc.wishlify.domain.feature.user.model.UpdateProfileRequest
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.domain.feature.user.utils.newUserCode
@@ -61,6 +62,16 @@ class UserDataMapper {
           values = request.values
         )
       )
+
+      is UpdateProfileRequest.Notifications -> base.copy(
+        notifications = base.notifications.copy(
+          sharedWishlistChat = request.sharedWishlistChat,
+          sharedWishlistUpdates = request.sharedWishlistUpdates,
+          sharedWishlistsDeadlineReminders = request.sharedWishlistsDeadlineReminders,
+          secretSantaChat = request.secretSantaChat,
+          secretSantaDeadlineReminders = request.secretSantaDeadlineReminders,
+        )
+      )
     }
 
   fun mapToBasic(entity: UserEntity): UserBasic =
@@ -105,5 +116,20 @@ class UserDataMapper {
         enabled = entity.hobbies.enabled,
         values = entity.hobbies.values
       )
+    )
+
+  fun mapToNotificationsProfile(entity: UserEntity): User.NotificationsProfile =
+    User.NotificationsProfile(
+      uid = entity.uid,
+      username = entity.username,
+      code = entity.code,
+      photoUrl = entity.photoUrl,
+      notificationPermissions = NotificationPermissions(
+        sharedWishlistChat = entity.notifications.sharedWishlistChat,
+        sharedWishlistUpdates = entity.notifications.sharedWishlistUpdates,
+        sharedWishlistsDeadlineReminders = entity.notifications.sharedWishlistsDeadlineReminders,
+        secretSantaChat = entity.notifications.secretSantaChat,
+        secretSantaDeadlineReminders = entity.notifications.secretSantaDeadlineReminders,
+      ),
     )
 }

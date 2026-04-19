@@ -54,6 +54,12 @@ class UserRepositoryImpl(
       mapper.mapToHobbiesProfile(entity)
     }
 
+  override suspend fun fetchNotificationsProfile(uid: String): Result<User.NotificationsProfile> =
+    runCatching {
+      val entity = remoteDataSource.fetchUserById(uid) ?: throw GenericError.Unknown()
+      mapper.mapToNotificationsProfile(entity)
+    }
+
   override suspend fun searchUsers(query: String): Result<List<User.Basic>> =
     runCatching {
       coroutineScope {

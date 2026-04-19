@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.presentation.feature.profile.infrastructure.di
 
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.hobbies.ProfileHobbiesViewModel
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.main.ProfileMainViewModel
+import com.splanes.uoc.wishlify.presentation.feature.profile.feature.notifications.ProfileNotificationsViewModel
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.password.ProfileUpdatePasswordViewModel
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.password.mapper.UserProfileUpdatePasswordFormErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.password.mapper.UserProfileUpdatePasswordFormMapper
@@ -24,6 +25,7 @@ internal val ProfilePresentationModule = module {
   viewModelOf(::ProfileUpdateViewModel)
   viewModelOf(::ProfileUpdatePasswordViewModel)
   viewModelOf(::ProfileHobbiesViewModel)
+  viewModelOf(::ProfileNotificationsViewModel)
 
   // Mappers
   singleOf(::UserProfileUpdateFormErrorUiMapper)

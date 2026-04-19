@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.domain.feature.user.infrastructure.di
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.FetchBasicUserProfileUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.FetchUserByIdUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.FetchUserHobbiesUseCase
+import com.splanes.uoc.wishlify.domain.feature.user.usecase.FetchUserNotificationsUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.SearchUserUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.UpdateUserPasswordUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.usecase.UpdateUserProfileUseCase
@@ -15,6 +16,7 @@ internal val UserDomainModule = module {
   singleOf(::FetchUserByIdUseCase)
   singleOf(::FetchBasicUserProfileUseCase)
   singleOf(::FetchUserHobbiesUseCase)
+  singleOf(::FetchUserNotificationsUseCase)
   singleOf(::UpdateUserPasswordUseCase)
   singleOf(::UpdateUserProfileUseCase)
 }

@@ -18,6 +18,15 @@ sealed class UpdateProfileRequest(open val user: User) {
     val values: List<String>
   ) : UpdateProfileRequest(user = user)
 
+  data class Notifications(
+    override val user: User.NotificationsProfile,
+    val sharedWishlistChat: Boolean,
+    val sharedWishlistUpdates: Boolean,
+    val sharedWishlistsDeadlineReminders: Boolean,
+    val secretSantaChat: Boolean,
+    val secretSantaDeadlineReminders: Boolean,
+  ) : UpdateProfileRequest(user = user)
+
   fun mediaOrNull() = when (this) {
     is BasicInfo -> media
     else -> null

@@ -23,5 +23,11 @@
     <string name="profile_update_password_input_label">Contrasenya actual</string>
     <string name="profile_update_password_new_input_label">Contrasenya nova</string>
     <string name="profile_update_password_new_confirm_input_label">Confirmar contrasenya</string>
-    <string name="profile_update_password_description"><![CDATA[Actualitza la teva contrasenya d\'accés.<br/><b>Tingues en compte que en fer-ho la secció actual es tancarà i hauràs d\'iniciar sessió de nou.</b>]]></string>
+    <string name="profile_update_password_description"><![CDATA[Actualitza la teva contrasenya d\'accés.<br/><b>Tingues en compte que en fer-ho la sessió actual es tancarà i hauràs d\'iniciar sessió de nou.</b>]]></string>
+    <string name="profile_notifications_title">Administrar notificacions</string>
+    <string name="profile_notifications_secret_santa_chat">Notificacions de xats</string>
+    <string name="profile_notifications_secret_santa_deadline">Recordatoris de data límit</string>
+    <string name="profile_notifications_shared_wishlists_chat">Notificacions de xats</string>
+    <string name="profile_notifications_shared_wishlists_updates">Notificacions d\'actualitzacions d\'estat</string>
+    <string name="profile_notifications_shared_wishlists_deadline">Recordatoris de data límit</string>
 </resources>
