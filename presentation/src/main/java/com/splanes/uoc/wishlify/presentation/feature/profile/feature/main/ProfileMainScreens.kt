@@ -17,6 +17,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
+import com.splanes.uoc.wishlify.presentation.common.components.SmokeFeatureDialog
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonShape
 import com.splanes.uoc.wishlify.presentation.common.components.button.ButtonText
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.main.components.ProfileHeader
@@ -44,6 +49,8 @@ fun ProfileMainScreen(
   onAdminStore: () -> Unit,
   onAdminHobbies: () -> Unit,
 ) {
+  var isSmokeFeatureDialogOpen by remember { mutableStateOf(false) }
+
   Box(
     modifier = Modifier
       .fillMaxSize()
@@ -87,7 +94,10 @@ fun ProfileMainScreen(
               ProfileOption.UpdateProfile -> onUpdateProfile()
               ProfileOption.ChangePassword -> onChangePassword()
               ProfileOption.AdminNotifications -> onAdminNotifications()
-              ProfileOption.Store -> onAdminStore()
+              ProfileOption.Store -> {
+                onAdminStore()
+                isSmokeFeatureDialogOpen = true
+              }
               ProfileOption.Hobbies -> onAdminHobbies()
             }
           }
@@ -109,6 +119,13 @@ fun ProfileMainScreen(
           ButtonText(text = stringResource(R.string.profile_close_session))
         }
       }
+    }
+
+    if (isSmokeFeatureDialogOpen) {
+      SmokeFeatureDialog(
+        onDismiss = { isSmokeFeatureDialogOpen = false },
+        onAnswer = { interested -> /* TODO: collect data */ }
+      )
     }
   }
 }

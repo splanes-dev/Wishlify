@@ -35,4 +35,8 @@ sealed interface SecretSantaDetailUiSideEffect {
     val chatType: String,
     val otherUid: String,
   ) : SecretSantaDetailUiSideEffect
+
+  data class NavToHobbies(
+    val targetUid: String
+  ) : SecretSantaDetailUiSideEffect
 }

@@ -119,7 +119,7 @@ private fun Hobby(
   Surface(
     shape = WishlifyTheme.shapes.small,
     color = if (enabled) {
-      WishlifyTheme.colorScheme.surfaceContainer
+      WishlifyTheme.colorScheme.surfaceContainerHigh
     } else {
       WishlifyTheme.colorScheme.surfaceContainer.copy(alpha = .33f)
     }

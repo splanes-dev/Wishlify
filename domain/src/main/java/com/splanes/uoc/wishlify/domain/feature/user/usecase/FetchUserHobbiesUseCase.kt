@@ -9,10 +9,10 @@ class FetchUserHobbiesUseCase(
   private val repository: UserRepository,
 ) : UseCase() {
 
-  suspend operator fun invoke() = execute {
+  suspend operator fun invoke(userUid: String? = null) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->
-        repository.fetchHobbiesProfile(uid).getOrThrow()
+        repository.fetchHobbiesProfile(userUid ?: uid).getOrThrow()
       }
   }
 }

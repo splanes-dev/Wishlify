@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun SecretSantaDetailRoute(
   viewModel: SecretSantaDetailViewModel,
   onNavToEdit: (eventId: String) -> Unit,
+  onNavToHobbies: (targetUid: String) -> Unit,
   onNavToWishlist: (eventId: String, wishlistOwnerId: String?, isOwnWishlist: Boolean) -> Unit,
   onNavToShareWishlist: (eventId: String) -> Unit,
   onNavToChat: (eventId: String, type: String, otherUid: String) -> Unit,
@@ -39,6 +40,9 @@ fun SecretSantaDetailRoute(
             effect.chatType,
             effect.otherUid
           )
+
+        is SecretSantaDetailUiSideEffect.NavToHobbies ->
+          onNavToHobbies(effect.targetUid)
       }
     }
   }

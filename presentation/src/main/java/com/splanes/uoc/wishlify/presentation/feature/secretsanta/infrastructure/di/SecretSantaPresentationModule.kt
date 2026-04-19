@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.SecretSantaChatViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.model.SecretSantaChatType
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.SecretSantaDetailViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.hobbies.SecretSantaHobbiesViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.SecretSantaListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.SecretSantaNewEventViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.mapper.SecretSantaNewEventFormErrorMapper
@@ -76,6 +77,13 @@ internal val SecretSantaPresentationModule = module {
       subscribeSecretSantaChatUseCase = get(),
       fetchSecretSantaChatMessagesUseCase = get(),
       sendMessageSecretSantaChatUseCase = get()
+    )
+  }
+  viewModel { (targetUid: String) ->
+    SecretSantaHobbiesViewModel(
+      targetUid = targetUid,
+      fetchUserHobbiesUseCase = get(),
+      errorUiMapper = get()
     )
   }
 

@@ -33,4 +33,9 @@ data object SecretSanta {
     val type: String,
     val otherUid: String,
   )
+
+  @Serializable
+  data class Hobbies(
+    val targetUid: String,
+  )
 }

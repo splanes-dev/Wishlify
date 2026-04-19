@@ -67,4 +67,10 @@
     <string name="you">Tu</string>
     <string name="chat_message_placeholder">Missatge</string>
     <string name="chat_load_more_btn">Carregar missatges anteriors</string>
+    <string name="feature_not_yet_available_title">En construcció!</string>
+    <string name="feature_not_yet_available_description"><![CDATA[
+        Sentim comunicar que la funcionalitat encara <b>no està disponible</b>, però estem treballant per tenir-la com més aviat millor.<br/><br/>Ens podries indicar si et sembla una funcionalitat interessant?
+     ]]></string>
+    <string name="feature_not_yet_available_positive_btn">Sí, i tant!</string>
+    <string name="feature_not_yet_available_negative_btn">Meh, no gaire</string>
 </resources>

@@ -56,7 +56,9 @@ class SecretSantaDetailViewModel(
       is SecretSantaDetailAction.SeeGiverWishlist ->
         onOpenSharedWishlist(event = event, isOwnWishlist = true)
 
-      SecretSantaDetailAction.SeeReceiverHobbies -> TODO()
+      SecretSantaDetailAction.SeeReceiverHobbies ->
+        onOpenReceiverHobbies(event)
+
       is SecretSantaDetailAction.SeeReceiverWishlist ->
         onOpenSharedWishlist(event = event, isOwnWishlist = false)
 
@@ -139,6 +141,14 @@ class SecretSantaDetailViewModel(
       }
     )
 
+    uiSideEffectChannel.trySend(effect)
+  }
+
+  private fun onOpenReceiverHobbies(event: SecretSantaEventDetail) {
+    val e = event as? SecretSantaEventDetail.DrawDone
+      ?: error("Tyring to open hobbies of secret santa event (${event.id}) but draw is not done...")
+
+    val effect = SecretSantaDetailUiSideEffect.NavToHobbies(e.receiver.uid)
     uiSideEffectChannel.trySend(effect)
   }
 

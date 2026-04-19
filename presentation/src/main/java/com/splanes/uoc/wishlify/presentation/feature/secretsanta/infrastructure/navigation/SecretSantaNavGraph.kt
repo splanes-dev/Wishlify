@@ -19,6 +19,8 @@ import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.Se
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.SecretSantaChatViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.SecretSantaDetailRoute
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.SecretSantaDetailViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.hobbies.SecretSantaHobbiesRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.hobbies.SecretSantaHobbiesViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.SecretSantaListRoute
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.SecretSantaListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.SecretSantaNewEventRoute
@@ -212,6 +214,10 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
             )
             navController.navigate(route)
           },
+          onNavToHobbies = { targetUid ->
+            val route = SecretSanta.Hobbies(targetUid)
+            navController.navigate(route)
+          },
           onNavBack = {
             navController.popBackStackWithResult(
               key = NavResult.UPDATED_FROM_DETAIL,
@@ -294,6 +300,19 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
         SecretSantaChatRoute(
           viewModel = viewModel,
           onBack = { navController.popBackStack() }
+        )
+      }
+
+      composable<SecretSanta.Hobbies>(
+        enterTransition = Transitions.SlideInFromBottom.enter,
+        exitTransition = Transitions.SlideInFromBottom.exit,
+      ) { backStackEntry ->
+
+        val route = backStackEntry.toRoute<SecretSanta.Hobbies>()
+        val viewModel = koinViewModel<SecretSantaHobbiesViewModel> { parametersOf(route.targetUid) }
+        SecretSantaHobbiesRoute(
+          viewModel = viewModel,
+          onCancel = { navController.popBackStack() }
         )
       }
     }
