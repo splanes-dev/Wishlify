@@ -25,6 +25,7 @@
     <string name="close">Tancar</string>
     <string name="attention">Atenció</string>
     <string name="finished">Finalitzada</string>
+    <string name="search">Cercar</string>
     <string name="event_finished">Finalitzat</string>
     <string name="save">Desar</string>
     <string name="share">Compartir</string>
@@ -73,4 +74,6 @@
      ]]></string>
     <string name="feature_not_yet_available_positive_btn">Sí, i tant!</string>
     <string name="feature_not_yet_available_negative_btn">Meh, no gaire</string>
+    <string name="filters">Filtres</string>
+    <string name="apply_filter">Aplicar filtres</string>
 </resources>

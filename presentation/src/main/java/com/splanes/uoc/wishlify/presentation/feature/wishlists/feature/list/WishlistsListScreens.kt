@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Sell
@@ -34,12 +33,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -53,17 +52,21 @@ import com.splanes.uoc.wishlify.presentation.common.components.ConfirmationDialo
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
-import com.splanes.uoc.wishlify.presentation.common.components.TabSelector
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
+import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistMoveToPrivateDialog
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistsFinishedHeader
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenu
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenuItem
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCard
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCardSettingsBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistFilterBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsFiltersBar
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsSearchBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistCardSettings
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsFilter
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsSettings
-import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsTab
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 import kotlinx.coroutines.launch
 
@@ -71,23 +74,21 @@ import kotlinx.coroutines.launch
 @Composable
 fun WishlistsListScreen(
   uiState: WishlistsListUiState.Listing,
-  onTabClick: (tab: WishlistsTab) -> Unit,
+  onUpdateFilters: (state: WishlistsFiltersState) -> Unit,
   onCreateWishlist: (isOwn: Boolean) -> Unit,
   onWishlistClick: (Wishlist) -> Unit,
   onEditWishlist: (Wishlist) -> Unit,
   onShareWishlist: (Wishlist) -> Unit,
   onDeleteWishlist: (Wishlist) -> Unit,
   onAdminCategories: () -> Unit,
+  onSharedBackToPrivate: (wishlist: Wishlist) -> Unit,
   onClearSharedWishlistFeedback: () -> Unit,
   onDismissError: () -> Unit,
 ) {
 
   val coroutineScope = rememberCoroutineScope()
 
-  val wishlists = when (uiState.tabSelected) {
-    WishlistsTab.Own -> uiState.wishlistsOwn
-    WishlistsTab.ThirdParty -> uiState.wishlistsThirdParty
-  }
+  val wishlists = uiState.wishlists
 
   var isSettingsModalOpen by remember { mutableStateOf(false) }
   val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -106,6 +107,18 @@ fun WishlistsListScreen(
 
   val resources = LocalResources.current
   val snackbarState = remember { SnackbarHostState() }
+
+  val filterSheetState = rememberModalBottomSheetState()
+  var filterOpened: WishlistsFilter? by remember { mutableStateOf(null) }
+
+  var isBackToPrivateDialogOpen by remember { mutableStateOf(false) }
+
+  var areWishlistsFinishedVisible by remember { mutableStateOf(false) }
+  val existsWishlistsFinished by remember(wishlists) {
+    derivedStateOf {
+      wishlists.any { w -> w.isFinished() }
+    }
+  }
 
   LaunchedEffect(uiState.sharedWishlistFeedback) {
     if (uiState.sharedWishlistFeedback != null) {
@@ -168,7 +181,7 @@ fun WishlistsListScreen(
             icon = painterResource(R.drawable.ic_wishlists),
             text = stringResource(R.string.wishlists_wishlist),
             onClick = {
-              onCreateWishlist(uiState.tabSelected == WishlistsTab.Own)
+              onCreateWishlist(true)
               collapse()
             }
           )
@@ -180,32 +193,22 @@ fun WishlistsListScreen(
         modifier = Modifier
           .fillMaxSize()
           .padding(paddings),
-        contentPadding = PaddingValues(vertical = 24.dp),
+        contentPadding = PaddingValues(bottom = 48.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
       ) {
         stickyHeader {
-          Box(
+          WishlistsFiltersBar(
             modifier = Modifier
               .fillMaxWidth()
-              .background(
-                color = WishlifyTheme.colorScheme.surface,
-                shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
-              )
-              .padding(bottom = 4.dp),
-            contentAlignment = Alignment.Center
-          ) {
-            TabSelector(
-              modifier = Modifier.fillMaxWidth(),
-              selected = uiState.tabSelected,
-              tabs = WishlistsTab.entries.toList(),
-              tabText = { tab -> tab.text() },
-              onClick = onTabClick
-            )
-          }
+              .background(color = WishlifyTheme.colorScheme.surface),
+            filtersState = uiState.filtersState,
+            onOpenFilter = { filter -> filterOpened = filter },
+            onUpdateState = onUpdateFilters
+          )
         }
 
         items(
-          items = wishlists,
+          items = wishlists.filter { !it.isFinished() },
           key = { item -> item.id }
         ) { wishlist ->
           WishlistCard(
@@ -221,6 +224,39 @@ fun WishlistsListScreen(
             onClick = { onWishlistClick(wishlist) }
           )
         }
+
+        if (existsWishlistsFinished) {
+          item(key = 1, contentType = "header") {
+            SharedWishlistsFinishedHeader(
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
+              isVisible = areWishlistsFinishedVisible,
+              description = htmlString(R.string.shared_wishlists_finished_header_own_description),
+              onChangeVisibility = { areWishlistsFinishedVisible = !areWishlistsFinishedVisible }
+            )
+          }
+
+          if (areWishlistsFinishedVisible) {
+            items(
+              items = wishlists.filter { it.isFinished() },
+              key = { item -> item.id }
+            ) { wishlist ->
+              WishlistCard(
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp)
+                  .animateItem(),
+                wishlist = wishlist,
+                onSettingsClick = {
+                  wishlistSelected = wishlist
+                  isWishlistSettingsModalOpen = true
+                },
+                onClick = { onWishlistClick(wishlist) }
+              )
+            }
+          }
+        }
       }
     }
 
@@ -234,10 +270,6 @@ fun WishlistsListScreen(
             isSearchModalOpen = true
           }
 
-          WishlistsSettings.Filter -> {
-            // TODO
-          }
-
           WishlistsSettings.AdminCategories -> onAdminCategories()
         }
       }
@@ -248,8 +280,17 @@ fun WishlistsListScreen(
         visible = isWishlistSettingsModalOpen,
         sheetState = wishlistSettingsSheetState,
         settings = buildList {
-          addAll(WishlistCardSettings.entries)
-          if (!wishlist.isShareable()) remove(WishlistCardSettings.Share)
+          if (wishlist !is Wishlist.Shared) {
+            add(WishlistCardSettings.Edit)
+            if (wishlist.isShareable()) {
+              add(WishlistCardSettings.Share)
+            }
+            add(WishlistCardSettings.Delete)
+          } else {
+            if (wishlist.event is Wishlist.SharedWishlistEvent && wishlist.isFinished()) {
+              add(WishlistCardSettings.BackToPrivate)
+            }
+          }
         },
         onDismiss = {
           coroutineScope
@@ -272,10 +313,18 @@ fun WishlistsListScreen(
             }
 
             WishlistCardSettings.Share -> {
-              isShareInfoDialogVisible = true
+              val isDialogVisible = wishlist.numOfNonPurchasedItems != wishlist.numOfItems
+              if (isDialogVisible) {
+                isShareInfoDialogVisible = true
+              } else {
+                onShareWishlist(wishlist)
+              }
               coroutineScope
                 .launch { wishlistSettingsSheetState.hide() }
-                .invokeOnCompletion { isWishlistSettingsModalOpen = false }
+                .invokeOnCompletion {
+                  isWishlistSettingsModalOpen = false
+                  if (!isDialogVisible) wishlistSelected = null
+                }
             }
 
             WishlistCardSettings.Delete -> {
@@ -284,7 +333,61 @@ fun WishlistsListScreen(
                 .launch { wishlistSettingsSheetState.hide() }
                 .invokeOnCompletion { isWishlistSettingsModalOpen = false }
             }
+
+            WishlistCardSettings.BackToPrivate -> {
+              isBackToPrivateDialogOpen = true
+              coroutineScope
+                .launch { wishlistSettingsSheetState.hide() }
+                .invokeOnCompletion { isWishlistSettingsModalOpen = false }
+            }
           }
+        }
+      )
+
+      if (isBackToPrivateDialogOpen) {
+        SharedWishlistMoveToPrivateDialog(
+          onDismiss = {
+            isBackToPrivateDialogOpen = false
+            wishlistSelected = null
+          },
+          onConfirm = { onSharedBackToPrivate(wishlist) }
+        )
+      }
+    }
+
+    filterOpened?.let { filter ->
+      WishlistFilterBottomSheet(
+        visible = true,
+        sheetState = filterSheetState,
+        filter = filter,
+        categories = uiState.categories,
+        onDismiss = { filterOpened = null },
+        onApplyFilters = { f ->
+          val filterState = uiState.filtersState
+          val filterStateUpdated = when (f) {
+            is WishlistsFilter.Availability ->
+              filterState.copy(availability = f.takeUnless { it is WishlistsFilter.AvailabilityUnselected })
+
+            is WishlistsFilter.Category ->
+              filterState.copy(category = f.takeUnless { it is WishlistsFilter.CategoryUnselected })
+
+            is WishlistsFilter.ShareStatus ->
+              filterState.copy(shareStatus = f.takeUnless { it is WishlistsFilter.ShareStatusUnselected })
+
+            is WishlistsFilter.Target ->
+              filterState.copy(target = f.takeUnless { it is WishlistsFilter.TargetUnselected })
+
+            else -> when (filter) {
+              is WishlistsFilter.Target -> filterState.copy(target = null)
+              is WishlistsFilter.Category -> filterState.copy(category = null)
+              is WishlistsFilter.ShareStatus -> filterState.copy(shareStatus = null)
+              is WishlistsFilter.Availability -> filterState.copy(availability = null)
+            }
+          }
+          onUpdateFilters(filterStateUpdated)
+          coroutineScope
+            .launch { filterSheetState.hide() }
+            .invokeOnCompletion { filterOpened = null }
         }
       )
     }
@@ -340,12 +443,16 @@ fun WishlistsListScreen(
 @Composable
 fun WishlistsListEmptyScreen(
   uiState: WishlistsListUiState.Empty,
-  onTabClick: (tab: WishlistsTab) -> Unit,
   onCreateWishlist: (isOwn: Boolean) -> Unit,
+  onUpdateFilters: (WishlistsFiltersState) -> Unit,
   onClearSharedWishlistFeedback: () -> Unit,
   onAdminCategories: () -> Unit,
   onDismissError: () -> Unit,
 ) {
+
+  val coroutineScope = rememberCoroutineScope()
+  val filterSheetState = rememberModalBottomSheetState()
+  var filterOpened: WishlistsFilter? by remember { mutableStateOf(null) }
 
   var isSettingsModalOpen by remember { mutableStateOf(false) }
   val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -415,7 +522,7 @@ fun WishlistsListEmptyScreen(
             icon = painterResource(R.drawable.ic_wishlists),
             text = stringResource(R.string.wishlists_wishlist),
             onClick = {
-              onCreateWishlist(uiState.tabSelected == WishlistsTab.Own)
+              onCreateWishlist(true)
               collapse()
             }
           )
@@ -428,19 +535,20 @@ fun WishlistsListEmptyScreen(
           .fillMaxSize()
           .verticalScroll(rememberScrollState())
           .padding(paddings)
-          .padding(
-            horizontal = 16.dp,
-            vertical = 24.dp
-          ),
+          .padding(horizontal = 16.dp)
+          .padding(bottom = 24.dp),
       ) {
 
-        TabSelector(
-          modifier = Modifier.fillMaxWidth(),
-          selected = uiState.tabSelected,
-          tabs = WishlistsTab.entries.toList(),
-          tabText = { tab -> tab.text() },
-          onClick = onTabClick
-        )
+        if (uiState.filtersState.hasFilters()) {
+          WishlistsFiltersBar(
+            modifier = Modifier
+              .fillMaxWidth()
+              .background(color = WishlifyTheme.colorScheme.surface),
+            filtersState = uiState.filtersState,
+            onOpenFilter = { filter -> filterOpened = filter },
+            onUpdateState = onUpdateFilters
+          )
+        }
 
         Spacer(modifier = Modifier.height(80.dp))
 
@@ -448,13 +556,49 @@ fun WishlistsListEmptyScreen(
           modifier = Modifier.fillMaxWidth(),
           image = painterResource(R.drawable.wishlists_list_empty_state),
           title = stringResource(R.string.wishlists_list_empty_state_title),
-          description = when (uiState.tabSelected) {
-            WishlistsTab.Own -> R.string.wishlists_list_own_empty_state_description
-            WishlistsTab.ThirdParty -> R.string.wishlists_list_others_empty_state_description
-          }.let { id -> stringResource(id) }
+          description = when {
+            uiState.filtersState.hasFilters() -> stringResource(R.string.wishlists_list_filters_empty_state_description)
+            else -> stringResource(R.string.wishlists_list_own_empty_state_description)
+          }
         )
-
       }
+    }
+
+    filterOpened?.let { filter ->
+      WishlistFilterBottomSheet(
+        visible = true,
+        sheetState = filterSheetState,
+        filter = filter,
+        categories = uiState.categories,
+        onDismiss = { filterOpened = null },
+        onApplyFilters = { f ->
+          val filterState = uiState.filtersState
+          val filterStateUpdated = when (f) {
+            is WishlistsFilter.Availability ->
+              filterState.copy(availability = f.takeUnless { it is WishlistsFilter.AvailabilityUnselected })
+
+            is WishlistsFilter.Category ->
+              filterState.copy(category = f.takeUnless { it is WishlistsFilter.CategoryUnselected })
+
+            is WishlistsFilter.ShareStatus ->
+              filterState.copy(shareStatus = f.takeUnless { it is WishlistsFilter.ShareStatusUnselected })
+
+            is WishlistsFilter.Target ->
+              filterState.copy(target = f.takeUnless { it is WishlistsFilter.TargetUnselected })
+
+            else -> when (filter) {
+              is WishlistsFilter.Target -> filterState.copy(target = null)
+              is WishlistsFilter.Category -> filterState.copy(category = null)
+              is WishlistsFilter.ShareStatus -> filterState.copy(shareStatus = null)
+              is WishlistsFilter.Availability -> filterState.copy(availability = null)
+            }
+          }
+          onUpdateFilters(filterStateUpdated)
+          coroutineScope
+            .launch { filterSheetState.hide() }
+            .invokeOnCompletion { filterOpened = null }
+        }
+      )
     }
 
     WishlistsSettingsBottomSheet(
@@ -480,10 +624,7 @@ fun WishlistsListEmptyScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun WishlistsListLoadingScreen(
-  uiState: WishlistsListUiState.Loading,
-  onTabClick: (tab: WishlistsTab) -> Unit,
-) {
+fun WishlistsListLoadingScreen() {
   Box(
     modifier = Modifier
       .fillMaxSize()
@@ -509,14 +650,6 @@ fun WishlistsListLoadingScreen(
         verticalArrangement = Arrangement.Center
       ) {
 
-        TabSelector(
-          modifier = Modifier.fillMaxWidth(),
-          selected = uiState.tabSelected,
-          tabs = WishlistsTab.entries.toList(),
-          tabText = { tab -> tab.text() },
-          onClick = onTabClick
-        )
-
         Loader(
           modifier = Modifier.weight(1f),
           containerColor = Color.Transparent
@@ -525,10 +658,3 @@ fun WishlistsListLoadingScreen(
     }
   }
 }
-
-@Composable
-private fun WishlistsTab.text(): String =
-  when (this) {
-    WishlistsTab.Own -> R.string.wishlists_list_tab_own
-    WishlistsTab.ThirdParty -> R.string.wishlists_list_tab_others
-  }.let { id -> stringResource(id) }

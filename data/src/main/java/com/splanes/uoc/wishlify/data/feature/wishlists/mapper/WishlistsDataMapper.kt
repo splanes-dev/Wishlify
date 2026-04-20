@@ -2,6 +2,8 @@ package com.splanes.uoc.wishlify.data.feature.wishlists.mapper
 
 import com.splanes.uoc.wishlify.data.common.media.mapper.ImageMediaDataMapper
 import com.splanes.uoc.wishlify.data.common.utils.nowInMillis
+import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaEventEntity
+import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistEntity
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.user.model.UserBasic
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.CategoryEntity
@@ -45,77 +47,126 @@ class WishlistsDataMapper(
     category: CategoryEntity?,
     numOfItemsMap: Map<String, Int>,
     numOfNonPurchasedItemsMap: Map<String, Int>,
+    sharedWishlists: Map<String, SharedWishlistEntity>,
+    secretSantaEvents: Map<String, SecretSantaEventEntity>,
     users: List<UserBasic>,
   ): Wishlist =
-    when (entity.type) {
-      WishlistEntity.Type.Own ->
-        Wishlist.Own(
-          id = entity.id,
-          title = entity.title,
-          description = entity.description,
-          photo = imageMediaMapper.map(entity.photo),
-          category = category?.let {
-            Wishlist.WishlistCategory(
-              category = mapCategory(entity = category),
-              owner = entity.category?.owner.orEmpty(),
-              isOwn = entity.category?.owner.orEmpty() == uid
-            )
-          },
-          editorInviteLink = InviteLink(
-            token = entity.editorInviteLink,
-            origin = InviteLink.WishlistsEditor
-          ),
-          editors = users
-            .filter { u -> u.uid in entity.editors }
-            .map(userDataMapper::map),
-          numOfItems = numOfItemsMap[entity.id] ?: 0,
-          numOfNonPurchasedItems = numOfNonPurchasedItemsMap[entity.id] ?: 0,
-          createdBy = users
-            .first { u -> u.uid == entity.createdBy }
-            .let(userDataMapper::map),
-          createdAt = Date(entity.createdAt),
-          lastUpdate = Wishlist.UpdateMetadata(
-            updatedBy = users
-              .first { u -> u.uid == entity.lastUpdate.updatedBy }
-              .let(userDataMapper::map),
-            updatedAt = Date(entity.lastUpdate.updatedAt)
-          ),
-        )
+    // Shared
+    if (sharedWishlists.containsKey(entity.id) || secretSantaEvents.containsKey(entity.id)) {
+      val deadline =
+        (sharedWishlists[entity.id]?.deadline ?: secretSantaEvents[entity.id]?.deadline)
+          ?: error("No shared wishlist or secret santa event found")
 
-      WishlistEntity.Type.ThirdParty ->
-        Wishlist.ThirdParty(
-          id = entity.id,
-          title = entity.title,
-          description = entity.description,
-          photo = imageMediaMapper.map(entity.photo),
-          category = category?.let {
-            Wishlist.WishlistCategory(
-              category = mapCategory(entity = category),
-              owner = entity.category?.owner.orEmpty(),
-              isOwn = entity.category?.owner.orEmpty() == uid
-            )
-          },
-          editorInviteLink = InviteLink(
-            token = entity.editorInviteLink,
-            origin = InviteLink.WishlistsEditor
-          ),
-          editors = users
-            .filter { u -> u.uid in entity.editors }
-            .map(userDataMapper::map),
-          numOfItems = numOfItemsMap[entity.id] ?: 0,
-          numOfNonPurchasedItems = numOfNonPurchasedItemsMap[entity.id] ?: 0,
-          createdBy = users
-            .first { u -> u.uid == entity.createdBy }
+      Wishlist.Shared(
+        id = entity.id,
+        title = entity.title,
+        description = entity.description,
+        photo = imageMediaMapper.map(entity.photo),
+        category = category?.let {
+          Wishlist.WishlistCategory(
+            category = mapCategory(entity = category),
+            owner = entity.category?.owner.orEmpty(),
+            isOwn = entity.category?.owner.orEmpty() == uid
+          )
+        },
+        editorInviteLink = InviteLink(
+          token = entity.editorInviteLink,
+          origin = InviteLink.WishlistsEditor
+        ),
+        editors = users
+          .filter { u -> u.uid in entity.editors }
+          .map(userDataMapper::map),
+        numOfItems = numOfItemsMap[entity.id] ?: 0,
+        numOfNonPurchasedItems = numOfNonPurchasedItemsMap[entity.id] ?: 0,
+        createdBy = users
+          .first { u -> u.uid == entity.createdBy }
+          .let(userDataMapper::map),
+        target = entity.target,
+        deadline = Date(deadline),
+        event = if (sharedWishlists.containsKey(entity.id)) {
+          Wishlist.SharedWishlistEvent(sharedWishlists[entity.id]?.id ?: error("No sharedWishlistId found"))
+        } else {
+          Wishlist.SecretSantaEvent(secretSantaEvents[entity.id]?.id ?: error("No secret santa event found"))
+        },
+        createdAt = Date(entity.createdAt),
+        lastUpdate = Wishlist.UpdateMetadata(
+          updatedBy = users
+            .first { u -> u.uid == entity.lastUpdate.updatedBy }
             .let(userDataMapper::map),
-          target = entity.target ?: error("No 'target' specified but 'type' is ThirdParty"),
-          createdAt = Date(entity.createdAt),
-          lastUpdate = Wishlist.UpdateMetadata(
-            updatedBy = users
-              .first { u -> u.uid == entity.lastUpdate.updatedBy }
+          updatedAt = Date(entity.lastUpdate.updatedAt)
+        ),
+      )
+    } else { // Pure private
+      when (entity.type) {
+        WishlistEntity.Type.Own ->
+          Wishlist.Own(
+            id = entity.id,
+            title = entity.title,
+            description = entity.description,
+            photo = imageMediaMapper.map(entity.photo),
+            category = category?.let {
+              Wishlist.WishlistCategory(
+                category = mapCategory(entity = category),
+                owner = entity.category?.owner.orEmpty(),
+                isOwn = entity.category?.owner.orEmpty() == uid
+              )
+            },
+            editorInviteLink = InviteLink(
+              token = entity.editorInviteLink,
+              origin = InviteLink.WishlistsEditor
+            ),
+            editors = users
+              .filter { u -> u.uid in entity.editors }
+              .map(userDataMapper::map),
+            numOfItems = numOfItemsMap[entity.id] ?: 0,
+            numOfNonPurchasedItems = numOfNonPurchasedItemsMap[entity.id] ?: 0,
+            createdBy = users
+              .first { u -> u.uid == entity.createdBy }
               .let(userDataMapper::map),
-            updatedAt = Date(entity.lastUpdate.updatedAt)
-          ),
-        )
+            createdAt = Date(entity.createdAt),
+            lastUpdate = Wishlist.UpdateMetadata(
+              updatedBy = users
+                .first { u -> u.uid == entity.lastUpdate.updatedBy }
+                .let(userDataMapper::map),
+              updatedAt = Date(entity.lastUpdate.updatedAt)
+            ),
+          )
+
+        WishlistEntity.Type.ThirdParty ->
+          Wishlist.ThirdParty(
+            id = entity.id,
+            title = entity.title,
+            description = entity.description,
+            photo = imageMediaMapper.map(entity.photo),
+            category = category?.let {
+              Wishlist.WishlistCategory(
+                category = mapCategory(entity = category),
+                owner = entity.category?.owner.orEmpty(),
+                isOwn = entity.category?.owner.orEmpty() == uid
+              )
+            },
+            editorInviteLink = InviteLink(
+              token = entity.editorInviteLink,
+              origin = InviteLink.WishlistsEditor
+            ),
+            editors = users
+              .filter { u -> u.uid in entity.editors }
+              .map(userDataMapper::map),
+            numOfItems = numOfItemsMap[entity.id] ?: 0,
+            numOfNonPurchasedItems = numOfNonPurchasedItemsMap[entity.id] ?: 0,
+            createdBy = users
+              .first { u -> u.uid == entity.createdBy }
+              .let(userDataMapper::map),
+            target = entity.target ?: error("No 'target' specified but 'type' is ThirdParty"),
+            createdAt = Date(entity.createdAt),
+            lastUpdate = Wishlist.UpdateMetadata(
+              updatedBy = users
+                .first { u -> u.uid == entity.lastUpdate.updatedBy }
+                .let(userDataMapper::map),
+              updatedAt = Date(entity.lastUpdate.updatedAt)
+            ),
+          )
+      }
     }
 
   fun wishlistFromRequest(

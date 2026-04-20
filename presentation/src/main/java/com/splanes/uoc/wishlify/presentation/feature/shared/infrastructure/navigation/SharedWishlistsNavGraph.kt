@@ -17,14 +17,11 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.chat.SharedWishlistThirdPartyChatRoute
-import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.own.SharedWishlistOwnDetailRoute
-import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.thirdparty.SharedWishlistThirdPartyDetailRoute
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.SharedWishlistThirdPartyDetailRoute
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.SharedWishlistsListRoute
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.SharedWishlistsListViewModel
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
-import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
-import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackStackWithResult
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -72,20 +69,8 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
 
         val viewModel = koinViewModel<SharedWishlistsListViewModel>()
 
-        navController.NavResultHandler<Boolean>(key = NavResult.WISHLIST_DETAIL) { reload ->
-          if (reload) viewModel.onReloadWishlists()
-        }
-
         SharedWishlistsListRoute(
           viewModel = viewModel,
-          onNavToOwnSharedWishlistDetail = { wishlist ->
-            val route = SharedWishlists.OwnDetail(
-              sharedWishlistId = wishlist.id,
-              sharedWishlistName = wishlist.linkedWishlist.name,
-              target = wishlist.linkedWishlist.target.orEmpty()
-            )
-            navController.navigate(route)
-          },
           onNavToThirdPartySharedWishlistDetail = { wishlist ->
             val route = SharedWishlists.ThirdPartyDetail(
               sharedWishlistId = wishlist.id,
@@ -124,25 +109,6 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
         )
       }
 
-      composable<SharedWishlists.OwnDetail>(
-        enterTransition = Transitions.SlideInHorizontal.enter,
-        exitTransition = Transitions.SlideInHorizontal.exit
-      ) { backStackEntry ->
-
-        val route = backStackEntry.toRoute<SharedWishlists.OwnDetail>()
-
-        SharedWishlistOwnDetailRoute(
-          viewModel = koinViewModel {
-            parametersOf(
-              route.sharedWishlistId,
-              route.sharedWishlistName,
-              route.target
-            )
-          },
-          onBack = { reload -> navController.popBackStackWithResult(key = NavResult.WISHLIST_DETAIL, reload) }
-        )
-      }
-
       composable<SharedWishlists.ThirdPartyChat>(
         enterTransition = Transitions.SlideInHorizontal.enter,
         exitTransition = Transitions.SlideInHorizontal.exit
@@ -162,8 +128,4 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
       }
     }
   }
-}
-
-private object NavResult {
-  const val WISHLIST_DETAIL = "shared-wishlist-detail"
 }

@@ -11,18 +11,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
@@ -30,6 +34,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.CardImage
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonCustom
+import com.splanes.uoc.wishlify.presentation.common.utils.formatted
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
 @Composable
@@ -40,7 +45,9 @@ fun WishlistCard(
   onClick: () -> Unit,
 ) {
   Card(
-    modifier = modifier.height(120.dp),
+    modifier = modifier
+      .height(120.dp)
+      .alpha(if (wishlist.isFinished()) .7f else 1f),
     shape = WishlifyTheme.shapes.small,
     border = BorderStroke(
       width = 1.dp,
@@ -52,7 +59,10 @@ fun WishlistCard(
     onClick = onClick
   ) {
     Row(modifier = Modifier.fillMaxWidth()) {
-      CardImage(media = wishlist.photo)
+      CardImage(
+        media = wishlist.photo,
+        enabled = !wishlist.isFinished()
+      )
 
       Column(
         modifier = Modifier
@@ -69,20 +79,25 @@ fun WishlistCard(
             overflow = TextOverflow.Ellipsis
           )
 
-          if (onSettingsClick != null) {
-            IconButtonCustom(
-              painter = painterResource(R.drawable.ic_item_settings),
-              contentColor = WishlifyTheme.colorScheme.onSurface,
-              onClick = onSettingsClick
-            )
+          when {
+            onSettingsClick != null && wishlist.hasSettings() -> {
+              IconButtonCustom(
+                painter = painterResource(R.drawable.ic_item_settings),
+                contentColor = WishlifyTheme.colorScheme.onSurface,
+                onClick = onSettingsClick
+              )
+            }
+            wishlist is Wishlist.Shared && !wishlist.isFinished() -> {
+              SharedLabel()
+            }
           }
         }
 
-        (wishlist as? Wishlist.ThirdParty)?.let { w ->
+        wishlist.targetOrNull()?.let { target ->
           Spacer(Modifier.height(4.dp))
 
           Text(
-            text = w.target,
+            text = target,
             style = WishlifyTheme.typography.bodyMedium,
             color = WishlifyTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
@@ -115,6 +130,11 @@ fun WishlistCard(
         Spacer(Modifier.weight(1f))
 
         Row {
+
+          if (wishlist is Wishlist.Shared) {
+            DateInfo(wishlist)
+          }
+
           Spacer(Modifier.weight(1f))
           wishlist.category?.let { wishlistCategory ->
             Text(
@@ -165,6 +185,58 @@ private fun CardInfo(
 }
 
 @Composable
+private fun DateInfo(
+  wishlist: Wishlist.Shared
+) {
+  if (wishlist.isFinished()) {
+    Surface(
+      shape = WishlifyTheme.shapes.extraSmall,
+      color = Color.Transparent,
+      border = BorderStroke(width = 1.dp, color = WishlifyTheme.colorScheme.outline)
+    ) {
+      Text(
+        modifier = Modifier.padding(4.dp),
+        text = stringResource(R.string.finished),
+        style = WishlifyTheme.typography.labelSmall,
+        color = WishlifyTheme.colorScheme.onSurface
+      )
+    }
+  } else {
+    Icon(
+      modifier = Modifier.size(16.dp),
+      imageVector = Icons.Filled.Event,
+      contentDescription = wishlist.deadline.formatted(),
+      tint = WishlifyTheme.colorScheme.outline
+    )
+
+    Spacer(modifier = Modifier.width(4.dp))
+
+    Text(
+      text = wishlist.deadline.formatted(),
+      style = WishlifyTheme.typography.labelSmall,
+      color = WishlifyTheme.colorScheme.outline,
+    )
+  }
+}
+
+
+@Composable
+fun SharedLabel() {
+  Surface(
+    shape = WishlifyTheme.shapes.extraSmall,
+    color = Color.Transparent,
+    border = BorderStroke(width = 1.dp, color = WishlifyTheme.colorScheme.outline)
+  ) {
+    Text(
+      modifier = Modifier.padding(4.dp),
+      text = stringResource(R.string.wishlist_shared),
+      style = WishlifyTheme.typography.labelSmall,
+      color = WishlifyTheme.colorScheme.onSurface
+    )
+  }
+}
+
+@Composable
 private fun Category.CategoryColor.color() = when (this) {
   Category.CategoryColor.Purple -> Color(0xFF7C4DFF)
   Category.CategoryColor.Blue -> Color(0xFF448AFF)
@@ -174,3 +246,6 @@ private fun Category.CategoryColor.color() = when (this) {
   Category.CategoryColor.Pink -> Color(0xFFE91E63)
   Category.CategoryColor.Orange -> Color(0xFFFF9800)
 }
+
+private fun Wishlist.hasSettings() =
+  this !is Wishlist.Shared || isFinished()

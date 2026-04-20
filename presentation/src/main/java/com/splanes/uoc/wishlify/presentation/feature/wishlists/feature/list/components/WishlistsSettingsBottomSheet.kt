@@ -2,7 +2,6 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.com
 
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.Sell
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,13 +43,11 @@ fun WishlistsSettingsBottomSheet(
 
 private fun WishlistsSettings.icon() = when (this) {
   WishlistsSettings.Search -> Icons.Rounded.Search
-  WishlistsSettings.Filter -> Icons.Outlined.FilterAlt
   WishlistsSettings.AdminCategories -> Icons.Outlined.Sell
 }
 
 @Composable
 private fun WishlistsSettings.text() = when (this) {
   WishlistsSettings.Search -> R.string.wishlists_search
-  WishlistsSettings.Filter -> R.string.wishlists_filter
   WishlistsSettings.AdminCategories -> R.string.wishlists_admin_categories
 }.let { id -> stringResource(id) }

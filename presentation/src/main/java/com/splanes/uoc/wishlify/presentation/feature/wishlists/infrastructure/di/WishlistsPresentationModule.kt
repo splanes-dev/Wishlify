@@ -8,6 +8,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.ma
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.WishlistShareViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.mapper.WishlistShareFormUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.mapper.WishlistShareUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.shared.SharedWishlistOwnDetailViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListViewModel
@@ -103,6 +104,17 @@ internal val WishlistsPresentationModule = module {
       shareWishlistUseCase = get(),
       formUiMapper = get(),
       wishlistShareUiMapper = get(),
+      errorUiMapper = get(),
+    )
+  }
+  viewModel { (wishlistId: String, wishlistName: String, target: String?) ->
+    SharedWishlistOwnDetailViewModel(
+      wishlistId = wishlistId,
+      wishlistName = wishlistName,
+      target = target,
+      fetchWishlistUseCase = get(),
+      fetchWishlistItemsUseCase = get(),
+      unshareWishlistUseCase = get(),
       errorUiMapper = get(),
     )
   }

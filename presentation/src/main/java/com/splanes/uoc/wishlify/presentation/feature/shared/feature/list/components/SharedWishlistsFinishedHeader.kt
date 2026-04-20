@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
@@ -106,7 +105,6 @@ fun SharedWishlistsFinishedHeader(
         text = description,
         style = WishlifyTheme.typography.bodySmall,
         color = WishlifyTheme.colorScheme.onError,
-        textAlign = TextAlign.Justify
       )
     }
   }

@@ -50,7 +50,9 @@ class SharedWishlistsRepositoryImpl(
       val entities = sharedWishlistsRemoteDataSource.fetchSharedWishlists(
         uid = uid,
         groups = groupsId
-      )
+      ).filter { wishlists ->
+        uid !in wishlists.editors || wishlists.editorsCanSeeUpdates
+      }
 
       val groupsToFetch = entities
         .mapNotNull { entity -> entity.group }
@@ -187,17 +189,18 @@ class SharedWishlistsRepositoryImpl(
     }
 
   override suspend fun unshareSharedWishlist(
-    sharedWishlistId: String,
-    linkedWishlistId: String
+    wishlistId: String
   ): Result<Unit> =
     runCatching {
       coroutineScope {
+        val wishlist = wishlistsRemoteDataSource.fetchWishlist(wishlistId)
+        val sharedWishlistId = wishlist.sharedWishlistId ?: error("Wishlist not shared....")
         val sharedItemsDeferred = async {
           sharedWishlistsRemoteDataSource.fetchSharedWishlistItems(sharedWishlistId)
         }
 
         val baseWishlistDeferred = async {
-          wishlistsRemoteDataSource.fetchWishlist(linkedWishlistId)
+          wishlistsRemoteDataSource.fetchWishlist(wishlistId)
         }
 
         val sharedItems = sharedItemsDeferred.await()
@@ -217,12 +220,12 @@ class SharedWishlistsRepositoryImpl(
         wishlistsRemoteDataSource.upsertWishlist(updatedWishlist)
 
         // Batch delete of purchased items & shared-wishlist (+ items + chat)
-        wishlistsRemoteDataSource.removeWishlistItems(linkedWishlistId, baseItemsToDelete)
+        wishlistsRemoteDataSource.removeWishlistItems(wishlistId, baseItemsToDelete)
         sharedWishlistsRemoteDataSource.removeWishlist(sharedWishlistId, sharedItemsToDelete)
 
         launch {
           baseItemsToDelete
-            .map { item -> ImageMediaPath.WishlistItem(linkedWishlistId, item) }
+            .map { item -> ImageMediaPath.WishlistItem(wishlistId, item) }
             .map { path -> mediaDataMapper.pathOf(path) }
             .forEach { path -> mediaRemoteDataSource.delete(path) }
         }

@@ -21,6 +21,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.cr
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.edition.WishlistEditItemRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.WishlistShareRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.WishlistShareViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.shared.SharedWishlistOwnDetailRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.WishlistsListViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesRoute
@@ -101,6 +102,14 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
           },
           onNavToWishlistDetail = { wishlist ->
             val route = Wishlists.Detail(wishlist.id, name = wishlist.title)
+            navController.navigate(route)
+          },
+          onNavToWishlistSharedDetail = { wishlist ->
+            val route = Wishlists.DetailShared(
+              wishlist.id,
+              wishlist.title,
+              wishlist.targetOrNull()
+            )
             navController.navigate(route)
           },
           onNavToEditWishlist = { wishlist ->
@@ -214,6 +223,25 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
               result = true // Hardcoded, Unit can't be put as type on SavedState
             )
           },
+        )
+      }
+
+      composable<Wishlists.DetailShared>(
+        enterTransition = Transitions.SlideInHorizontal.enter,
+        exitTransition = Transitions.SlideInHorizontal.exit
+      ) { backStackEntry ->
+
+        val route = backStackEntry.toRoute<Wishlists.DetailShared>()
+
+        SharedWishlistOwnDetailRoute(
+          viewModel = koinViewModel {
+            parametersOf(
+              route.id,
+              route.name,
+              route.target
+            )
+          },
+          onBack = { reload -> navController.popBackStackWithResult(key = NavResult.UPDATE_WISHLIST_FROM_DETAIL, reload) }
         )
       }
 

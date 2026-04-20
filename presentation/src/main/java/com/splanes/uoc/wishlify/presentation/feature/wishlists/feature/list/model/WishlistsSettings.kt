@@ -2,6 +2,5 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.mod
 
 enum class WishlistsSettings {
   Search,
-  Filter,
   AdminCategories
 }

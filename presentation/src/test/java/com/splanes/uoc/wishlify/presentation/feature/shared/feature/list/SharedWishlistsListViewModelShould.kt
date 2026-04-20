@@ -13,7 +13,6 @@ import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UnshareWishlistUse
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.presentation.common.UnitTest
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
-import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.model.SharedWishlistsTab
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

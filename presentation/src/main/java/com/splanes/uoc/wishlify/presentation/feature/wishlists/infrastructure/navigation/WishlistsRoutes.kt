@@ -24,6 +24,9 @@ data object Wishlists {
   data class Detail(val id: String, val name: String)
 
   @Serializable
+  data class DetailShared(val id: String, val name: String, val target: String?)
+
+  @Serializable
   data class NewItem(val wishlistId: String, val link: String?)
 
   @Serializable

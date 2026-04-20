@@ -45,14 +45,14 @@ class FetchWishlistsUseCaseShould {
     val error = RuntimeException()
 
     whenever(getCurrentUserIdUseCase()).thenReturn(Result.success(uid))
-    whenever(repository.fetchWishlists(WishlistType.Own, uid))
+    whenever(repository.fetchWishlists(uid))
       .thenReturn(Result.failure(error))
 
     val result = useCase(WishlistType.Own)
 
     assertThat(result.isFailure).isTrue()
     assertThat(result.exceptionOrNull()).isInstanceOf(RuntimeException::class.java)
-    verify(repository).fetchWishlists(WishlistType.Own, uid)
+    verify(repository).fetchWishlists(uid)
   }
 
   @Test
@@ -61,14 +61,14 @@ class FetchWishlistsUseCaseShould {
     val wishlists = listOf(mock<Wishlist>())
 
     whenever(getCurrentUserIdUseCase()).thenReturn(Result.success(uid))
-    whenever(repository.fetchWishlists(WishlistType.Own, uid))
+    whenever(repository.fetchWishlists(uid))
       .thenReturn(Result.success(wishlists))
 
     val result = useCase(WishlistType.Own)
 
     assertThat(result.isSuccess).isTrue()
     assertThat(result.getOrNull()).isEqualTo(wishlists)
-    verify(repository).fetchWishlists(WishlistType.Own, uid)
+    verify(repository).fetchWishlists(uid)
   }
 
   @Test
@@ -77,13 +77,13 @@ class FetchWishlistsUseCaseShould {
     val wishlists = listOf(mock<Wishlist>())
 
     whenever(getCurrentUserIdUseCase()).thenReturn(Result.success(uid))
-    whenever(repository.fetchWishlists(WishlistType.All, uid))
+    whenever(repository.fetchWishlists(uid))
       .thenReturn(Result.success(wishlists))
 
     val result = useCase()
 
     assertThat(result.isSuccess).isTrue()
     assertThat(result.getOrNull()).isEqualTo(wishlists)
-    verify(repository).fetchWishlists(WishlistType.All, uid)
+    verify(repository).fetchWishlists(uid)
   }
 }

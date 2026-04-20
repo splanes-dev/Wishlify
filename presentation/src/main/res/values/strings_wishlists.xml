@@ -4,6 +4,7 @@
     <string name="wishlists_wishlist">Wishlist</string>
     <string name="wishlists_category">Categoria</string>
     <string name="wishlists_list_empty_state_title">Oooh…</string>
+    <string name="wishlists_list_filters_empty_state_description">No hi ha resultats amb els filtres aplicats, prova de canviar-los per actualitzar el llistat.</string>
     <string name="wishlists_list_own_empty_state_description">Encara no tens cap llista disponible.\nNo dubtis més i comença a gestionar els teus desitjos.</string>
     <string name="wishlists_list_others_empty_state_description">No tens llistes creades pels altres.\nNo esperis a l\'últim moment i comença a guardar desitjos pels teus amics i familiars.</string>
     <string name="wishlists_list_tab_own">Meves</string>
@@ -95,5 +96,28 @@
     <string name="wishlists_item_share">Compartir wishlist</string>
     <string name="wishlists_item_delete">Eliminar wishlist</string>
     <string name="wishlists_item_delete_item">Eliminar producte</string>
+    <string name="wishlists_filters_target_title">Filtrar per destinatari</string>
+    <string name="wishlists_filters_target_description">Escull una de les següents opcions de destinataris:</string>
+    <string name="wishlists_filters_target_unselected">Destinatari</string>
+    <string name="wishlists_filters_target_own">Meves</string>
+    <string name="wishlists_filters_target_third_party">Pels altres</string>
+    <string name="wishlists_filters_category_title">Filtrar per categories</string>
+    <string name="wishlists_filters_category_description">Escull una o més categories:</string>
+    <string name="wishlists_filters_category_unselected">Categoria</string>
+    <string name="wishlists_filters_category_selected">Categoria (%d)</string>
+    <string name="wishlists_filters_share_status_title">Filtrar per estat</string>
+    <string name="wishlists_filters_share_status_description">Escull una de les següents opcions d\'estat de compartir:</string>
+    <string name="wishlists_filters_share_status_unselected">Estat</string>
+    <string name="wishlists_filters_share_status_private">Privades</string>
+    <string name="wishlists_filters_share_status_shared_wishlists">Compartides (meves)</string>
+    <string name="wishlists_filters_share_status_secret_santa">Amic invisible</string>
+    <string name="wishlists_filters_availability_title">Filtrar per disponibilitat</string>
+    <string name="wishlists_filters_availability_description">Escull una de les opcions de disponibilitat dels ítems del llistat:</string>
+    <string name="wishlists_filters_availability_unselected">Disponibilitat</string>
+    <string name="wishlists_filters_availability_with_items">Articles disponibles</string>
+    <string name="wishlists_filters_availability_without_items">Sense articles disponibles</string>
+    <string name="wishlist_shared">Compartida</string>
+    <string name="wishlist_shared_event">Llistat compartit</string>
+    <string name="wishlist_shared_secret_santa_info_banner"><![CDATA[Has compartit aquest llistat en un esdeveniment d\'amic invisible.<br/><b>La llista estarà bloquejada per no afectar altres usuaris.</b>]]></string>
 
 </resources>

@@ -3,15 +3,11 @@ package com.splanes.uoc.wishlify.presentation.feature.shared.feature.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
-import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistType
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
-import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UnshareWishlistUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
-import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.model.SharedWishlistsTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -20,14 +16,13 @@ import kotlinx.coroutines.launch
 
 class SharedWishlistsListViewModel(
   private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase,
-  private val unshareWishlistUseCase: UnshareWishlistUseCase,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
   private val viewModelState = MutableStateFlow(ViewModelState())
 
   val uiState = viewModelState.asStateFlow()
-    .onStart { fetchSharedWishlists(tab = SharedWishlistsTab.Own) }
+    .onStart { fetchSharedWishlists() }
     .map { state -> state.toUiState(errorUiMapper) }
     .stateIn(
       initialValue = viewModelState.value.toUiState(errorUiMapper),
@@ -35,62 +30,21 @@ class SharedWishlistsListViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
-  fun onTabClick(tab: SharedWishlistsTab) {
-    val currentState = viewModelState.getAndUpdate { state ->
-      if (state.tabSelected == tab) {
-        state
-      } else {
-        state.copy(tabSelected = tab)
-      }
-    }
-    if (currentState.tabSelected != tab) {
-      fetchSharedWishlists(tab)
-    }
-  }
-
   fun onReloadWishlists() {
-    val tab = viewModelState.value.tabSelected
-    fetchSharedWishlists(tab)
-  }
-
-  fun onSharedBackToPrivate(wishlist: SharedWishlist) {
-    viewModelState.update { state -> state.copy(isLoading = true) }
-    viewModelScope.launch {
-      unshareWishlistUseCase(wishlist)
-        .onSuccess {
-          viewModelState.update { state ->
-            state.copy(
-              isLoading = false,
-              wishlists = state.wishlists - wishlist,
-            )
-          }
-        }
-        .onFailure { error ->
-          viewModelState.update { state ->
-            state.copy(
-              isLoading = false,
-              error = error
-            )
-          }
-        }
-    }
+    fetchSharedWishlists()
   }
 
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
-  private fun fetchSharedWishlists(tab: SharedWishlistsTab) {
+  private fun fetchSharedWishlists() {
     viewModelState.update { state ->
       state.copy(isLoadingFullscreen = true)
     }
     viewModelScope.launch {
-      val type = when (tab) {
-        SharedWishlistsTab.Own -> SharedWishlistType.Own
-        SharedWishlistsTab.ThirdParty -> SharedWishlistType.ThirdParty
-      }
 
-      fetchSharedWishlistsUseCase(type = type)
+      fetchSharedWishlistsUseCase()
         .onSuccess { wishlists ->
           viewModelState.update { state ->
             state.copy(
@@ -111,7 +65,6 @@ class SharedWishlistsListViewModel(
   }
 
   private data class ViewModelState(
-    val tabSelected: SharedWishlistsTab = SharedWishlistsTab.Own,
     val wishlists: List<SharedWishlist> = emptyList(),
     val isLoadingFullscreen: Boolean = true,
     val isLoading: Boolean = false,
@@ -121,20 +74,14 @@ class SharedWishlistsListViewModel(
     fun toUiState(errorUiMapper: ErrorUiMapper): SharedWishlistsListUiState =
       when {
         isLoadingFullscreen ->
-          SharedWishlistsListUiState.Loading(tabSelected)
+          SharedWishlistsListUiState.Loading
 
-        wishlists.isEmptyState(tabSelected) ->
-          SharedWishlistsListUiState.Empty(
-            tabSelected = tabSelected,
-            isLoading = isLoading,
-            error = error?.let(errorUiMapper::map)
-          )
+        wishlists.isEmpty() ->
+          SharedWishlistsListUiState.Empty
 
         else ->
           SharedWishlistsListUiState.Listing(
-            tabSelected = tabSelected,
-            wishlistsOwn = wishlists.sorted().filterIsInstance<SharedWishlist.Own>(),
-            wishlistsThirdParty = wishlists.sorted().filterIsInstance<SharedWishlist.ThirdParty>(),
+            wishlists = wishlists.sorted(),
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )
@@ -144,13 +91,5 @@ class SharedWishlistsListViewModel(
       compareByDescending { it.deadline }
     )
 
-    private fun List<SharedWishlist>.isEmptyState(tab: SharedWishlistsTab) =
-      isEmpty() ||
-          (tab == SharedWishlistsTab.Own && own().isEmpty()) ||
-          (tab == SharedWishlistsTab.ThirdParty && thirdParty().isEmpty())
   }
 }
-
-
-private fun List<SharedWishlist>.own() = filterIsInstance<SharedWishlist.Own>()
-private fun List<SharedWishlist>.thirdParty() = filterIsInstance<SharedWishlist.ThirdParty>()

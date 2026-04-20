@@ -1,7 +1,6 @@
 package com.splanes.uoc.wishlify.data.feature.wishlists.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.users
@@ -13,7 +12,6 @@ import com.splanes.uoc.wishlify.data.feature.wishlists.model.CategoryEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistItemEntity
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
-import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistType
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.net.UnknownHostException
@@ -24,12 +22,10 @@ class WishlistsRemoteDataSource(
 
   private val wishlists by lazy { db.wishlists }
 
-  suspend fun fetchWishlists(uid: String, type: WishlistType): List<WishlistEntity> =
+  suspend fun fetchWishlists(uid: String): List<WishlistEntity> =
     try {
       wishlists
         .whereArrayContains("editors", uid)
-        .whereEqualTo("shareStatus", WishlistEntity.ShareStatus.Private.name)
-        .applySearchFilter(type)
         .get()
         .await()
         .readAll()
@@ -247,13 +243,4 @@ class WishlistsRemoteDataSource(
 
   private fun wishlistItemsOf(id: String) =
     db.wishlists.document(id).wishlistItems
-
-  private fun Query.applySearchFilter(type: WishlistType): Query {
-    val typeValue = when (type) {
-      WishlistType.Own -> WishlistEntity.Type.Own.name
-      WishlistType.ThirdParty -> WishlistEntity.Type.ThirdParty.name
-      else -> null
-    }
-    return typeValue?.let { whereEqualTo("type", typeValue) } ?: this
-  }
 }

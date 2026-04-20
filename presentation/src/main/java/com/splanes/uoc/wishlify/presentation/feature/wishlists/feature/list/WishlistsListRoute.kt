@@ -12,6 +12,7 @@ fun WishlistsListRoute(
   onNavToEditWishlist: (wishlist: Wishlist) -> Unit,
   onNavToShareWishlist: (wishlist: Wishlist) -> Unit,
   onNavToWishlistDetail: (wishlist: Wishlist) -> Unit,
+  onNavToWishlistSharedDetail: (wishlist: Wishlist) -> Unit,
   onNavToAdminCategories: () -> Unit,
 ) {
 
@@ -19,16 +20,13 @@ fun WishlistsListRoute(
 
   when (val state = uiState) {
     is WishlistsListUiState.Loading ->
-      WishlistsListLoadingScreen(
-        uiState = state,
-        onTabClick = viewModel::onTabClick,
-      )
+      WishlistsListLoadingScreen()
 
     is WishlistsListUiState.Empty ->
       WishlistsListEmptyScreen(
         uiState = state,
-        onTabClick = viewModel::onTabClick,
         onCreateWishlist = { onNavToNewWishlist(it) },
+        onUpdateFilters = viewModel::onUpdateFilters,
         onAdminCategories = onNavToAdminCategories,
         onClearSharedWishlistFeedback = viewModel::onClearSharedWishlistFeedback,
         onDismissError = viewModel::onDismissError
@@ -37,14 +35,21 @@ fun WishlistsListRoute(
     is WishlistsListUiState.Listing ->
       WishlistsListScreen(
         uiState = state,
-        onTabClick = viewModel::onTabClick,
+        onUpdateFilters = viewModel::onUpdateFilters,
         onCreateWishlist = { onNavToNewWishlist(it) },
-        onWishlistClick = onNavToWishlistDetail,
+        onWishlistClick = { wishlist ->
+          when (wishlist) {
+            is Wishlist.Own,
+            is Wishlist.ThirdParty -> onNavToWishlistDetail(wishlist)
+            is Wishlist.Shared -> onNavToWishlistSharedDetail(wishlist)
+          }
+        },
         onEditWishlist = onNavToEditWishlist,
         onShareWishlist = onNavToShareWishlist,
         onDeleteWishlist = viewModel::onDeleteWishlist,
         onClearSharedWishlistFeedback = viewModel::onClearSharedWishlistFeedback,
         onAdminCategories = onNavToAdminCategories,
+        onSharedBackToPrivate = viewModel::onSharedBackToPrivate,
         onDismissError = viewModel::onDismissError
       )
   }

@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
@@ -103,7 +102,6 @@ fun SecretSantaEventsFinishedHeader(
         text = htmlString(R.string.secret_santa_event_finished_banner_description),
         style = WishlifyTheme.typography.bodySmall,
         color = WishlifyTheme.colorScheme.onError,
-        textAlign = TextAlign.Justify
       )
     }
   }

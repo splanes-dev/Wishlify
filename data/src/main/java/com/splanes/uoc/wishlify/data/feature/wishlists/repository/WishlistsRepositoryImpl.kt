@@ -1,16 +1,18 @@
 package com.splanes.uoc.wishlify.data.feature.wishlists.repository
 
+import com.splanes.uoc.wishlify.data.feature.groups.datasource.GroupsRemoteDataSource
+import com.splanes.uoc.wishlify.data.feature.secretsanta.datasource.SecretSantaRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.shared.datasource.SharedWishlistsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.shared.mapper.SharedWishlistsDataMapper
 import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.wishlists.mapper.WishlistsDataMapper
+import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
-import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistType
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistItemRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.ShareWishlistRequest
@@ -24,7 +26,9 @@ import kotlinx.coroutines.coroutineScope
 class WishlistsRepositoryImpl(
   private val wishlistsRemoteDataSource: WishlistsRemoteDataSource,
   private val userRemoteDataSource: UserRemoteDataSource,
+  private val groupsRemoteDataSource: GroupsRemoteDataSource,
   private val sharedWishlistsRemoteDataSource: SharedWishlistsRemoteDataSource,
+  private val secretSantaRemoteDataSource: SecretSantaRemoteDataSource,
   private val userMapper: UserDataMapper,
   private val wishlistsMapper: WishlistsDataMapper,
   private val sharedWishlistsMapper: SharedWishlistsDataMapper,
@@ -43,10 +47,15 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertCategory(uid, entity)
     }
 
-  override suspend fun fetchWishlists(type: WishlistType, uid: String): Result<List<Wishlist>> =
+  override suspend fun fetchWishlists(uid: String): Result<List<Wishlist>> =
     runCatching {
       coroutineScope {
-        val wishlists = wishlistsRemoteDataSource.fetchWishlists(uid, type)
+        val wishlists = wishlistsRemoteDataSource.fetchWishlists(uid)
+
+        val sharedWishlistsToFetch = wishlists
+          .filter { wishlist -> wishlist.shareStatus == WishlistEntity.ShareStatus.Shared }
+          .mapNotNull { wishlist -> wishlist.sharedWishlistId }
+          .distinct()
 
         val usersToFetch = wishlists
           .flatMap { wishlist ->
@@ -60,6 +69,32 @@ class WishlistsRepositoryImpl(
         val categoriesToFetch = wishlists
           .mapNotNull { wishlist -> wishlist.category }
           .distinctBy { category -> category.id }
+
+        // SharedWishlists fetch
+        val sharedWishlistsDeferred = async {
+          sharedWishlistsToFetch
+            .map { id -> async { sharedWishlistsRemoteDataSource.fetchSharedWishlistById(id) } }
+            .awaitAll()
+            .filterNotNull()
+            .filter { w -> !w.editorsCanSeeUpdates }
+            .associateBy { shared -> shared.wishlist }
+        }
+
+        // SecretSantaEvents fetch
+        val secretSantaEventsDeferred = async {
+          val groups = groupsRemoteDataSource.fetchGroups(uid)
+          secretSantaRemoteDataSource
+            .fetchSecretSantaEvents(uid, groups.map { it.id })
+            .map { event ->
+              async {
+                val w = secretSantaRemoteDataSource.fetchParticipantWishlist(event.id, uid)
+                w?.let { w.wishlist to event }
+              }
+            }
+            .awaitAll()
+            .filterNotNull()
+            .toMap()
+        }
 
         // Users fetch
         val usersByUidDeferred = async {
@@ -97,12 +132,16 @@ class WishlistsRepositoryImpl(
             .toMap()
         }
 
+        val sharedWishlistById = sharedWishlistsDeferred.await()
+        val secretSantaEventsById = secretSantaEventsDeferred.await()
         val usersByUid = usersByUidDeferred.await()
         val categoriesById = categoriesByIdDeferred.await()
         val itemsCountById = itemsCountByIdDeferred.await()
         val itemsNonPurchasedCountById = itemsNonPurchasedCountByIdDeferred.await()
 
-        wishlists.map { wishlist ->
+        wishlists
+          .filter { w -> w.shareStatus == WishlistEntity.ShareStatus.Private || sharedWishlistById.containsKey(w.id) }
+          .map { wishlist ->
           val category = wishlist.category?.id?.let(categoriesById::get)
 
           val relatedUsers = buildList {
@@ -119,6 +158,8 @@ class WishlistsRepositoryImpl(
             category = category,
             numOfItemsMap = itemsCountById,
             numOfNonPurchasedItemsMap = itemsNonPurchasedCountById,
+            sharedWishlists = sharedWishlistById,
+            secretSantaEvents = secretSantaEventsById,
             users = relatedUsers.map(userMapper::mapToBasic)
           )
         }
@@ -151,6 +192,30 @@ class WishlistsRepositoryImpl(
           }
         }
 
+        // SharedWishlists fetch
+        val sharedWishlistDeferred = wishlist.sharedWishlistId?.let { shared ->
+          async {
+            val w = sharedWishlistsRemoteDataSource.fetchSharedWishlistById(shared)
+            w?.let { wishlist.id to w }
+          }
+        }
+
+        // SecretSantaEvents fetch
+        val secretSantaEventsDeferred = async {
+          val groups = groupsRemoteDataSource.fetchGroups(uid)
+          secretSantaRemoteDataSource
+            .fetchSecretSantaEvents(uid, groups.map { it.id })
+            .map { event ->
+              async {
+                val w = secretSantaRemoteDataSource.fetchParticipantWishlist(event.id, uid)
+                w?.let { w.wishlist to event }
+              }
+            }
+            .awaitAll()
+            .filterNotNull()
+            .toMap()
+        }
+
         // Items count fetch
         val itemsCountByIdDeferred = async {
           wishlist.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(wishlist.id)
@@ -161,6 +226,8 @@ class WishlistsRepositoryImpl(
           wishlist.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(wishlist.id, excludePurchased = true)
         }
 
+        val sharedWishlist = sharedWishlistDeferred?.await()
+        val secretSantaEventsById = secretSantaEventsDeferred.await()
         val users = usersDeferred.await()
         val category = categoryDeferred?.await()
         val itemsCountById = itemsCountByIdDeferred.await()
@@ -172,6 +239,8 @@ class WishlistsRepositoryImpl(
           category = category,
           numOfItemsMap = mapOf(itemsCountById),
           numOfNonPurchasedItemsMap = mapOf(itemsNonPurchasedCountById),
+          sharedWishlists = sharedWishlist?.let(::mapOf) ?: emptyMap(),
+          secretSantaEvents = secretSantaEventsById,
           users = users.map(userMapper::mapToBasic)
         )
       }

@@ -52,9 +52,9 @@
         <![CDATA[<b>La llista està bloquejada fins a la data límit.</b><br/>No serà possible afegir, editar o eliminar productes ja que podria afectar als altres usuaris.]]>
     </string>
     <string name="shared_wishlists_wishlist_settings_back_to_privates">Retornar a llistes privades</string>
-    <string name="shared_wishlists_finished">Wishlists Finalitzades</string>
+    <string name="shared_wishlists_finished">Finalitzades</string>
     <string name="shared_wishlists_finished_header_own_description">
-        <![CDATA[Pots retornar-les a les teves llistes privades; en cas contrari, <b>s’eliminaran automàticament al cap de 30 dies</b>.]]>
+        <![CDATA[Pots retornar-les a les teves llistes privades.<br/>En cas contrari, <b>s’eliminaran automàticament al cap de 30 dies</b>.]]>
     </string>
     <string name="shared_wishlists_finished_header_third_party_description">
         <![CDATA[<b>S’eliminaran automàticament al cap de 30 dies des de la seva expiració</b>.]]>

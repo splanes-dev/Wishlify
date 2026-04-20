@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface SharedWishlistsRepository {
   suspend fun fetchSharedWishlists(uid: String): Result<List<SharedWishlist>>
   suspend fun fetchSharedWishlist(uid: String, sharedWishlistId: String): Result<SharedWishlist>
-  suspend fun unshareSharedWishlist(sharedWishlistId: String, linkedWishlistId: String): Result<Unit>
+  suspend fun unshareSharedWishlist(wishlistId: String): Result<Unit>
   suspend fun fetchSharedWishlistItems(
     uid: String,
     sharedWishlistId: String

@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.CardImage
-import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonCustom
 import com.splanes.uoc.wishlify.presentation.common.utils.formatted
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
@@ -44,7 +43,6 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 fun SharedWishlistCard(
   sharedWishlist: SharedWishlist,
   modifier: Modifier = Modifier,
-  onSettingsClick: () -> Unit,
   onClick: () -> Unit,
 ) {
   Card(
@@ -83,14 +81,6 @@ fun SharedWishlistCard(
           )
 
           when (sharedWishlist) {
-            is SharedWishlist.Own if sharedWishlist.isFinished() -> {
-              IconButtonCustom(
-                painter = painterResource(R.drawable.ic_item_settings),
-                contentColor = WishlifyTheme.colorScheme.onSurface,
-                onClick = onSettingsClick
-              )
-            }
-
             is SharedWishlist.ThirdParty if sharedWishlist.pendingNotificationsCount != 0 -> {
               val count = sharedWishlist.pendingNotificationsCount
               Box(

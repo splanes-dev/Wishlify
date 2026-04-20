@@ -8,7 +8,6 @@ import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 @Composable
 fun SharedWishlistsListRoute(
   viewModel: SharedWishlistsListViewModel,
-  onNavToOwnSharedWishlistDetail: (wishlist: SharedWishlist) -> Unit,
   onNavToThirdPartySharedWishlistDetail: (wishlist: SharedWishlist) -> Unit,
 ) {
 
@@ -16,31 +15,15 @@ fun SharedWishlistsListRoute(
 
   when (val state = uiState) {
     is SharedWishlistsListUiState.Empty ->
-      SharedWishlistsListEmptyScreen(
-        uiState = state,
-        onTabClick = viewModel::onTabClick
-      )
+      SharedWishlistsListEmptyScreen()
 
     is SharedWishlistsListUiState.Listing ->
       SharedWishlistsListScreen(
         uiState = state,
-        onWishlistClick = { wishlist ->
-          when (wishlist) {
-            is SharedWishlist.Own ->
-              onNavToOwnSharedWishlistDetail(wishlist)
-
-            is SharedWishlist.ThirdParty ->
-              onNavToThirdPartySharedWishlistDetail(wishlist)
-          }
-        },
-        onTabClick = viewModel::onTabClick,
-        onSharedBackToPrivate = viewModel::onSharedBackToPrivate
+        onWishlistClick = onNavToThirdPartySharedWishlistDetail
       )
 
     is SharedWishlistsListUiState.Loading ->
-      SharedWishlistsListLoadingScreen(
-        uiState = state,
-        onTabClick = viewModel::onTabClick
-      )
+      SharedWishlistsListLoadingScreen()
   }
 }
