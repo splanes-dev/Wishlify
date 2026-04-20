@@ -33,7 +33,7 @@ class UnshareWishlistUseCaseShould {
       repository.unshareSharedWishlist(shared.linkedWishlist.id)
     ).thenReturn(Result.success(Unit))
 
-    val result = useCase(shared)
+    val result = useCase(shared.id)
 
     assertThat(result.isSuccess).isTrue()
     verify(repository).unshareSharedWishlist(
@@ -50,7 +50,7 @@ class UnshareWishlistUseCaseShould {
       repository.unshareSharedWishlist(shared.linkedWishlist.id)
     ).thenReturn(Result.failure(error))
 
-    val result = useCase(shared)
+    val result = useCase(shared.id)
 
     assertThat(result.isFailure).isTrue()
     assertThat(result.exceptionOrNull()).isInstanceOf(RuntimeException::class.java)

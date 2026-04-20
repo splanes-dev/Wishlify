@@ -3,7 +3,6 @@ package com.splanes.uoc.wishlify.domain.feature.shared.usecase
 import com.google.common.truth.Truth.assertThat
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
-import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistType
 import com.splanes.uoc.wishlify.domain.feature.shared.repository.SharedWishlistsRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -33,7 +32,7 @@ class FetchSharedWishlistsUseCaseShould {
 
     whenever(getCurrentUserIdUseCase()).thenReturn(Result.failure(error))
 
-    val result = useCase(SharedWishlistType.Own)
+    val result = useCase()
 
     assertThat(result.isFailure).isTrue()
     assertThat(result.exceptionOrNull()).isInstanceOf(RuntimeException::class.java)
@@ -48,7 +47,7 @@ class FetchSharedWishlistsUseCaseShould {
     whenever(repository.fetchSharedWishlists(uid))
       .thenReturn(Result.failure(error))
 
-    val result = useCase(SharedWishlistType.Own)
+    val result = useCase()
 
     assertThat(result.isFailure).isTrue()
     assertThat(result.exceptionOrNull()).isInstanceOf(RuntimeException::class.java)
@@ -64,7 +63,7 @@ class FetchSharedWishlistsUseCaseShould {
     whenever(repository.fetchSharedWishlists(uid))
       .thenReturn(Result.success(wishlists))
 
-    val result = useCase(SharedWishlistType.Own)
+    val result = useCase()
 
     assertThat(result.isSuccess).isTrue()
     assertThat(result.getOrNull()).isEqualTo(wishlists)

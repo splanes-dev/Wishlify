@@ -3,7 +3,6 @@ package com.splanes.uoc.wishlify.domain.feature.wishlists.usecase
 import com.google.common.truth.Truth.assertThat
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
-import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistType
 import com.splanes.uoc.wishlify.domain.feature.wishlists.repository.WishlistsRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -33,7 +32,7 @@ class FetchWishlistsUseCaseShould {
 
     whenever(getCurrentUserIdUseCase()).thenReturn(Result.failure(error))
 
-    val result = useCase(WishlistType.Own)
+    val result = useCase()
 
     assertThat(result.isFailure).isTrue()
     assertThat(result.exceptionOrNull()).isInstanceOf(RuntimeException::class.java)
@@ -48,7 +47,7 @@ class FetchWishlistsUseCaseShould {
     whenever(repository.fetchWishlists(uid))
       .thenReturn(Result.failure(error))
 
-    val result = useCase(WishlistType.Own)
+    val result = useCase()
 
     assertThat(result.isFailure).isTrue()
     assertThat(result.exceptionOrNull()).isInstanceOf(RuntimeException::class.java)
@@ -64,7 +63,7 @@ class FetchWishlistsUseCaseShould {
     whenever(repository.fetchWishlists(uid))
       .thenReturn(Result.success(wishlists))
 
-    val result = useCase(WishlistType.Own)
+    val result = useCase()
 
     assertThat(result.isSuccess).isTrue()
     assertThat(result.getOrNull()).isEqualTo(wishlists)
