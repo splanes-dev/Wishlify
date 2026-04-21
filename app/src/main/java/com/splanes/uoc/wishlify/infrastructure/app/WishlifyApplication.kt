@@ -1,6 +1,8 @@
 package com.splanes.uoc.wishlify.infrastructure.app
 
 import android.app.Application
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.splanes.uoc.wishlify.BuildConfig
 import com.splanes.uoc.wishlify.data.infrastructure.di.DataModules
 import com.splanes.uoc.wishlify.domain.infrastructure.di.DomainModules
@@ -18,6 +20,10 @@ class WishlifyApplication : Application() {
     if (BuildConfig.DEBUG) {
       Timber.plant(Timber.DebugTree())
     }
+
+    FirebaseAppCheck
+      .getInstance()
+      .installAppCheckProviderFactory(DebugAppCheckProviderFactory.getInstance())
 
     startKoin {
       androidLogger()

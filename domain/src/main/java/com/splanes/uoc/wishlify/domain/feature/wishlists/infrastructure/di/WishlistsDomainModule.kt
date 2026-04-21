@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateWishlistU
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteCategoryUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistUseCase
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchAllLinkDataUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchCategoriesUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemsUseCase
@@ -37,4 +38,5 @@ internal val WishlistsDomainModule = module {
   singleOf(::UpdateWishlistItemPurchaseUseCase)
   singleOf(::UpdateCategoryUseCase)
   singleOf(::ShareWishlistUseCase)
+  singleOf(::FetchAllLinkDataUseCase)
 }

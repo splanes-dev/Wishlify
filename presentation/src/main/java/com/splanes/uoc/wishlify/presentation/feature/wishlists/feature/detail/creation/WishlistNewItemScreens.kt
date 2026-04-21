@@ -113,7 +113,7 @@ fun WishlistNewItemScreen(
 
   var imageSelected: ImagePicker.Resource? by remember { mutableStateOf(null) }
 
-  val isButtonEnabled by remember {
+  val isButtonEnabled by remember(uiState.form) {
     derivedStateOf {
       nameState.text.isNotBlank() &&
           priceState.text.isNotBlank() &&

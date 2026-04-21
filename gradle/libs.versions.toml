@@ -87,6 +87,9 @@ google-firebase-analytics = { group = "com.google.firebase", name = "firebase-an
 google-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 google-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 google-firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
+google-firebase-functions = { group = "com.google.firebase", name = "firebase-functions" }
+google-firebase-appcheck = { group = "com.google.firebase", name = "firebase-appcheck" }
+google-firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug" }
 
 # Logger
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }

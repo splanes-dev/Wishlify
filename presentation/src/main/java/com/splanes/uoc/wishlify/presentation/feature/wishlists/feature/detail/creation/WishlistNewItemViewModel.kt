@@ -4,6 +4,8 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateWishlistItemUseCase
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchAllLinkDataUseCase
+import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormUiMapper
@@ -30,13 +32,15 @@ import kotlinx.coroutines.launch
 class WishlistNewItemViewModel(
   wishlistId: String,
   private val link: String?,
+  private val fetchAllLinkDataUseCase: FetchAllLinkDataUseCase,
   private val createWishlistItemUseCase: CreateWishlistItemUseCase,
   private val formErrorMapper: WishlistItemFormErrorMapper,
   private val formUiMapper: WishlistItemFormUiMapper,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
-  private val viewModelState = MutableStateFlow(ViewModelState(wishlistId))
+  private val viewModelState =
+    MutableStateFlow(ViewModelState(wishlistId, isLoading = !link.isNullOrBlank()))
 
   val uiState = viewModelState.asStateFlow()
     .onStart { tryAutofillByLink(link) }
@@ -118,7 +122,21 @@ class WishlistNewItemViewModel(
   }
 
   private suspend fun tryAutofillByLink(link: String?) {
-
+    viewModelState.update { state -> state.copy(isLoading = true) }
+    val data = link?.let { fetchAllLinkDataUseCase(it).getOrNull() }
+    viewModelState.update { state ->
+      state.copy(
+        isLoading = false,
+        form = state.form.copy(
+          photo = data?.imageUrl?.let(ImagePicker::Url),
+          name = data?.product.orEmpty(),
+          description = data?.description.orEmpty(),
+          store = data?.store.orEmpty(),
+          unitPrice = data?.price?.toFloat() ?: 0f,
+          link = data?.link.orEmpty()
+        )
+      )
+    }
   }
 
   private fun validateForm(form: WishlistItemForm): Boolean = with(form) {

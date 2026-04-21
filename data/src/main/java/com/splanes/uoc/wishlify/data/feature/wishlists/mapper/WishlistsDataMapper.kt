@@ -9,6 +9,7 @@ import com.splanes.uoc.wishlify.data.feature.user.model.UserBasic
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.CategoryEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistItemEntity
+import com.splanes.uoc.wishlify.data.feature.wishlists.util.UrlMetadata
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
@@ -16,10 +17,13 @@ import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItemUrlData
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistItemRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistItemRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistRequest
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.Date
 
 class WishlistsDataMapper(
@@ -391,4 +395,59 @@ class WishlistsDataMapper(
       },
       link = entity.link.orEmpty(),
     )
+
+  fun mapUrlDataResult(data: Map<*, *>?): WishlistItemUrlData {
+    val obj = JSONObject(data?.toMutableMap() ?: mutableMapOf<Any, Any>())
+    return WishlistItemUrlData(
+      imageUrl = obj.optJSONObject("imageUrl")?.optString("value")?.takeUnless { it == "null" },
+      product = obj.optJSONObject("product")?.optString("value")?.takeUnless { it == "null" },
+      store = obj.optJSONObject("store")?.optString("value")?.takeUnless { it == "null" },
+      price = obj.optJSONObject("price")?.optDouble("value")?.takeUnless { it.isNaN() },
+      link = obj.optString("link").orEmpty(),
+      description = obj.optJSONObject("description")?.optString("value")?.takeUnless { it == "null" },
+    )
+  }
+
+  fun mergeUrlDataResults(data: WishlistItemUrlData, metadata: UrlMetadata): WishlistItemUrlData =
+    data.copy(
+      product = data.product ?: metadata.title?.takeUnless { it == "null" },
+      imageUrl = data.imageUrl ?: metadata.image?.takeUnless { it == "null" },
+      store = data.store ?: metadata.siteName?.takeUnless { it == "null" },
+      description = data.description ?: metadata.description?.takeUnless { it == "null" },
+      price = data.price ?: extractPriceFromJsonLd(metadata.jsonLd)?.takeUnless { it.isNaN() }
+    )
+
+  private fun extractPriceFromJsonLd(jsonLd: List<Any>?): Double? {
+
+    jsonLd?.forEach { item ->
+      if (item is JSONObject) {
+        val isProduct = when (val type = item.opt("@type")) {
+          is String -> type.equals("Product", ignoreCase = true)
+          is JSONArray -> (0 until type.length()).any {
+            type.optString(it).equals("Product", ignoreCase = true)
+          }
+          else -> false
+        }
+
+        if (!isProduct) return@forEach
+        val offerList = when (val offers = item.opt("offers")) {
+          is JSONArray -> (0 until offers.length()).mapNotNull { offers.optJSONObject(it) }
+          is JSONObject -> listOf(offers)
+          else -> emptyList()
+        }
+
+        offerList.forEach { offer ->
+
+          val price = offer.opt("price")
+
+          val parsed = (price as? Number)?.toDouble()
+            ?: price?.toString()?.replace(",", ".")?.toDoubleOrNull()
+
+          if (parsed != null) return parsed
+        }
+      }
+    }
+
+    return null
+  }
 }

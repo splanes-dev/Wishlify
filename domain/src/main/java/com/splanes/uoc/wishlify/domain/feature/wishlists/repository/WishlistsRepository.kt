@@ -4,6 +4,7 @@ import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItemUrlData
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistItemRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.ShareWishlistRequest
@@ -57,4 +58,8 @@ interface WishlistsRepository {
   suspend fun updateCategory(uid: String, category: Category): Result<Unit>
 
   suspend fun deleteCategory(uid: String, category: String): Result<Unit>
+
+  suspend fun extractUrlData(url: String): Result<WishlistItemUrlData>
+
+  suspend fun extractUrlDataLocally(data: WishlistItemUrlData, url: String): Result<WishlistItemUrlData>
 }

@@ -51,4 +51,4 @@ fun rememberTextInputState(
   initialValue: String = "",
   supportingText: String = "",
   onClearError: () -> Unit = {}
-)  = remember { TextInputState(initialValue, supportingText, onClearError) }
+)  = remember(initialValue) { TextInputState(initialValue, supportingText, onClearError) }

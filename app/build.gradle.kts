@@ -74,6 +74,8 @@ dependencies {
   // Firebase analytics
   implementation(platform(libs.google.firebase.bom))
   implementation(libs.google.firebase.analytics)
+  implementation(libs.google.firebase.appcheck)
+  implementation(libs.google.firebase.appcheck.debug)
   // Koin
   implementation(libs.koin.android)
   implementation(libs.koin.android.compose)

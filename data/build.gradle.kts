@@ -39,6 +39,7 @@ dependencies {
   implementation(libs.google.firebase.auth)
   implementation(libs.google.firebase.firestore)
   implementation(libs.google.firebase.storage)
+  implementation(libs.google.firebase.functions)
   // Timber
   implementation(libs.timber)
 }

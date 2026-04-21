@@ -1,9 +1,6 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions/v1";
 
-const db = admin.firestore();
-const bucket = admin.storage().bucket();
-
 type WishlistItem = {
   id?: string;
   photoUrl?: string | null;
@@ -19,6 +16,9 @@ export const cleanupWishlistOnDelete = functions
   .firestore
   .document("wishlists/{wishlistId}")
   .onDelete(async (_snap, context) => {
+    const db = admin.firestore();
+    const bucket = admin.storage().bucket();
+
     const wishlistId = context.params.wishlistId as string;
     const itemsRef = db.collection(`wishlists/${wishlistId}/items`);
 

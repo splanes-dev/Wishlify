@@ -9,10 +9,12 @@ import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.wishlists.mapper.WishlistsDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
+import com.splanes.uoc.wishlify.data.feature.wishlists.util.UrlDataExtractor
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItemUrlData
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistItemRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.CreateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.ShareWishlistRequest
@@ -32,6 +34,7 @@ class WishlistsRepositoryImpl(
   private val userMapper: UserDataMapper,
   private val wishlistsMapper: WishlistsDataMapper,
   private val sharedWishlistsMapper: SharedWishlistsDataMapper,
+  private val urlDataExtractor: UrlDataExtractor,
 ) : WishlistsRepository {
 
   override suspend fun fetchCategories(uid: String): Result<List<Category>> =
@@ -127,7 +130,14 @@ class WishlistsRepositoryImpl(
         // Non purchased items count fetch
         val itemsNonPurchasedCountByIdDeferred = async {
           wishlists
-            .map { w -> async { w.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(w.id, excludePurchased = true) } }
+            .map { w ->
+              async {
+                w.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(
+                  w.id,
+                  excludePurchased = true
+                )
+              }
+            }
             .awaitAll()
             .toMap()
         }
@@ -140,29 +150,33 @@ class WishlistsRepositoryImpl(
         val itemsNonPurchasedCountById = itemsNonPurchasedCountByIdDeferred.await()
 
         wishlists
-          .filter { w -> w.shareStatus == WishlistEntity.ShareStatus.Private || sharedWishlistById.containsKey(w.id) }
+          .filter { w ->
+            w.shareStatus == WishlistEntity.ShareStatus.Private || sharedWishlistById.containsKey(
+              w.id
+            )
+          }
           .map { wishlist ->
-          val category = wishlist.category?.id?.let(categoriesById::get)
+            val category = wishlist.category?.id?.let(categoriesById::get)
 
-          val relatedUsers = buildList {
-            wishlist.editors.forEach { userId ->
-              usersByUid[userId]?.let(::add)
-            }
-            usersByUid[wishlist.createdBy]?.let(::add)
-            usersByUid[wishlist.lastUpdate.updatedBy]?.let(::add)
-          }.distinctBy { it.uid }
+            val relatedUsers = buildList {
+              wishlist.editors.forEach { userId ->
+                usersByUid[userId]?.let(::add)
+              }
+              usersByUid[wishlist.createdBy]?.let(::add)
+              usersByUid[wishlist.lastUpdate.updatedBy]?.let(::add)
+            }.distinctBy { it.uid }
 
-          wishlistsMapper.mapWishlist(
-            uid = uid,
-            entity = wishlist,
-            category = category,
-            numOfItemsMap = itemsCountById,
-            numOfNonPurchasedItemsMap = itemsNonPurchasedCountById,
-            sharedWishlists = sharedWishlistById,
-            secretSantaEvents = secretSantaEventsById,
-            users = relatedUsers.map(userMapper::mapToBasic)
-          )
-        }
+            wishlistsMapper.mapWishlist(
+              uid = uid,
+              entity = wishlist,
+              category = category,
+              numOfItemsMap = itemsCountById,
+              numOfNonPurchasedItemsMap = itemsNonPurchasedCountById,
+              sharedWishlists = sharedWishlistById,
+              secretSantaEvents = secretSantaEventsById,
+              users = relatedUsers.map(userMapper::mapToBasic)
+            )
+          }
       }
     }
 
@@ -223,7 +237,10 @@ class WishlistsRepositoryImpl(
 
         // Non purchased items count fetch
         val itemsNonPurchasedCountByIdDeferred = async {
-          wishlist.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(wishlist.id, excludePurchased = true)
+          wishlist.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(
+            wishlist.id,
+            excludePurchased = true
+          )
         }
 
         val sharedWishlist = sharedWishlistDeferred?.await()
@@ -402,5 +419,17 @@ class WishlistsRepositoryImpl(
   ): Result<Unit> =
     runCatching {
       wishlistsRemoteDataSource.removeCategory(uid, category)
+    }
+
+  override suspend fun extractUrlData(url: String): Result<WishlistItemUrlData> =
+    runCatching {
+      val result = wishlistsRemoteDataSource.extractUrlData(url)
+      wishlistsMapper.mapUrlDataResult(result)
+    }
+
+  override suspend fun extractUrlDataLocally(data: WishlistItemUrlData, url: String): Result<WishlistItemUrlData> =
+    runCatching {
+      val result = urlDataExtractor.extract(url)
+      result?.let { wishlistsMapper.mergeUrlDataResults(data, result) } ?: data
     }
 }

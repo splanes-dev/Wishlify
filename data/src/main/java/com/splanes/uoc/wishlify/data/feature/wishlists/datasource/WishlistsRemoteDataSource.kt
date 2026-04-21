@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.data.feature.wishlists.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.functions.FirebaseFunctions
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.users
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlistCategories
@@ -17,7 +18,8 @@ import timber.log.Timber
 import java.net.UnknownHostException
 
 class WishlistsRemoteDataSource(
-  private val db: FirebaseFirestore
+  private val db: FirebaseFirestore,
+  private val functions: FirebaseFunctions
 ) {
 
   private val wishlists by lazy { db.wishlists }
@@ -230,6 +232,23 @@ class WishlistsRemoteDataSource(
           batch.update(doc.reference, "category", null)
         }
       }
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
+  suspend fun extractUrlData(link: String): Map<*, *>? {
+    try {
+      val result = functions
+        .getHttpsCallable("extractLinkMetadata")
+        .call(mapOf("url" to link))
+        .await()
+
+      return result.data as? Map<*, *>
+
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
     } catch (e: Throwable) {

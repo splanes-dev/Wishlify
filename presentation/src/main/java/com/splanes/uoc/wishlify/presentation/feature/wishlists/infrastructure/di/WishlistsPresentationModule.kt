@@ -80,6 +80,7 @@ internal val WishlistsPresentationModule = module {
       wishlistId = wishlistId,
       link = link,
       createWishlistItemUseCase = get(),
+      fetchAllLinkDataUseCase = get(),
       formErrorMapper = get(),
       formUiMapper = get(),
       errorUiMapper = get(),
