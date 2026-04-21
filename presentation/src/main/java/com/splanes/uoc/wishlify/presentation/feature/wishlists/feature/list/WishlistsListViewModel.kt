@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UnshareWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.AddWishlistEditorFromLinkUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchCategoriesUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistsUseCase
@@ -24,6 +25,7 @@ class WishlistsListViewModel(
   private val deleteWishlistUseCase: DeleteWishlistUseCase,
   private val fetchCategoriesUseCase: FetchCategoriesUseCase,
   private val unshareWishlistUseCase: UnshareWishlistUseCase,
+  private val addWishlistEditorFromLinkUseCase: AddWishlistEditorFromLinkUseCase,
   private val errorUiMapper: ErrorUiMapper
 ) : ViewModel() {
 
@@ -39,6 +41,15 @@ class WishlistsListViewModel(
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(5_000)
     )
+
+  fun onDeeplinkOpened(token: String) {
+    viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
+    viewModelScope.launch {
+      addWishlistEditorFromLinkUseCase(token)
+        .onSuccess { fetchWishlists() }
+        .onFailure { viewModelState.update { state -> state.copy(isLoadingFullscreen = false) } }
+    }
+  }
 
   fun onUpdateFilters(filtersState: WishlistsFiltersState) {
     viewModelState.update { state -> state.copy(filtersState = filtersState) }

@@ -8,6 +8,8 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
@@ -30,13 +32,16 @@ class ProfileNavGraph : FeatureHomeNavGraph {
 
   override val position: Int = 4
 
-  override fun isNavigationBarVisible(selected: String): Boolean =
-    selected == Profile.Main::class.qualifiedName
+  override fun isNavigationBarVisible(destination: NavDestination?): Boolean =
+    destination?.hasRoute(Profile.Main::class) == true
 
   @Composable
-  override fun RowScope.NavigationBarItem(selected: String, navController: NavHostController) {
+  override fun RowScope.NavigationBarItem(
+    current: NavDestination?,
+    navController: NavHostController
+  ) {
     NavigationBarItem(
-      selected = selected == Profile.Main::class.qualifiedName,
+      selected = current?.hasRoute(Profile.Main::class) == true,
       onClick = {
         navController.navigate(Profile) {
           launchSingleTop = true

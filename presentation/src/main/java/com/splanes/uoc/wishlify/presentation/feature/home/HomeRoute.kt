@@ -29,8 +29,14 @@ import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.home.infrastructure.navigation.Home
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSanta
+import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlists
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.Wishlists
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.HomeNavStartRoute
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.actions.CreateNewWishlistItem
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.actions.ExternalActionHandler
+import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.actions.OpenDeeplink
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.launcher.AuthLauncher
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.currentKoinScope
@@ -40,13 +46,24 @@ import org.koin.core.qualifier.named
 
 @Composable
 fun HomeRoute(mainNavController: NavHostController) {
+
   val viewModel = koinViewModel<HomeViewModel>()
   val startDestination = koinInject<Any>(named(HomeNavStartRoute))
   val authLauncher = koinInject<AuthLauncher> { parametersOf(mainNavController) }
   val navController = rememberNavController()
   val navGraphs = currentKoinScope().getAll<FeatureHomeNavGraph>()
+  val externalActionHandler = koinInject<ExternalActionHandler>()
   val current by navController.currentBackStackEntryAsState()
   var isSignedOut by remember { mutableStateOf(false) }
+
+  LaunchedEffect(navController) {
+    externalActionHandler.consume { action ->
+      when (action) {
+        is CreateNewWishlistItem -> viewModel.onCreateWishlistItemByShare(action)
+        is OpenDeeplink -> viewModel.onOpenDeeplink(action.deeplink)
+      }
+    }
+  }
 
   LifecycleStartEffect(Unit) {
     viewModel.observeSessionState()
@@ -58,6 +75,18 @@ fun HomeRoute(mainNavController: NavHostController) {
     viewModel.uiSideEffect.collect { effect ->
       when (effect) {
         HomeUiSideEffect.NoSession -> isSignedOut = true
+        is HomeUiSideEffect.NavToSecretSanta ->
+          navController.navigate(SecretSanta.List(effect.deeplink.token))
+
+        is HomeUiSideEffect.NavToSharedWishlist ->
+          navController.navigate(SharedWishlists.List(effect.deeplink.token))
+
+        is HomeUiSideEffect.NavToWishlist ->
+          navController.navigate(Wishlists.List(joinToEditorsTokenDeeplink = effect.deeplink.token))
+
+        is HomeUiSideEffect.NavToWishlistNewItem -> {
+          // navController.navigate()
+        }
       }
     }
   }
@@ -87,7 +116,7 @@ fun HomeRoute(mainNavController: NavHostController) {
         navGraphs
           .sortedBy { navGraph -> navGraph.position }
           .forEach { navGraph ->
-            navGraph.run { NavigationBarItem(current.routeOrEmpty, navController) }
+            navGraph.run { NavigationBarItem(current?.destination, navController) }
           }
       }
     }
@@ -109,8 +138,5 @@ fun HomeRoute(mainNavController: NavHostController) {
   }
 }
 
-private val NavBackStackEntry?.routeOrEmpty
-  get() = this?.destination?.route.orEmpty()
-
 private fun NavBackStackEntry?.isNavigationBarVisible(graphs: List<FeatureHomeNavGraph>): Boolean =
-  graphs.any { graph -> graph.isNavigationBarVisible(routeOrEmpty) }
+  graphs.any { graph -> graph.isNavigationBarVisible(this?.destination) }

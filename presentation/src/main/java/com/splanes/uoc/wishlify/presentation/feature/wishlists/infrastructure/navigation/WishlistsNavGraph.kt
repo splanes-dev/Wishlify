@@ -5,8 +5,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
@@ -38,13 +41,16 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
 
   override val position: Int = 0
 
-  override fun isNavigationBarVisible(selected: String): Boolean =
-    selected == Wishlists.List::class.qualifiedName
+  override fun isNavigationBarVisible(destination: NavDestination?): Boolean =
+    destination?.hasRoute(Wishlists.List::class) == true
 
   @Composable
-  override fun RowScope.NavigationBarItem(selected: String, navController: NavHostController) {
+  override fun RowScope.NavigationBarItem(
+    current: NavDestination?,
+    navController: NavHostController
+  ) {
     NavigationBarItem(
-      selected = selected == Wishlists.List::class.qualifiedName,
+      selected = current?.hasRoute(Wishlists.List::class) == true,
       onClick = {
         navController.navigate(Wishlists) {
           launchSingleTop = true
@@ -68,9 +74,28 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
   ) {
-    navigation<Wishlists>(startDestination = Wishlists.List) {
-      composable<Wishlists.List> {
+    navigation<Wishlists>(startDestination = Wishlists.List()) {
+      composable<Wishlists.List> { backStackEntry ->
+        val route = backStackEntry.toRoute<Wishlists.List>()
+
         val viewModel = koinViewModel<WishlistsListViewModel>()
+
+        LaunchedEffect(
+          route.joinToEditorsTokenDeeplink,
+          route.uriToCreateNewItem,
+          route.urlToCreateNewItem
+        ) {
+          when {
+            route.joinToEditorsTokenDeeplink != null ->
+              viewModel.onDeeplinkOpened(route.joinToEditorsTokenDeeplink)
+
+            route.urlToCreateNewItem != null ->
+              TODO()
+
+            route.uriToCreateNewItem != null ->
+              TODO()
+          }
+        }
 
         // Result handler from create wishlist
         navController.NavResultHandler<Boolean>(key = NavResult.NEW_WISHLIST) { created ->

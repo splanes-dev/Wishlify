@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
@@ -28,13 +30,16 @@ import org.koin.core.parameter.parametersOf
 class SharedWishlistsNavGraph : FeatureHomeNavGraph {
   override val position: Int = 1
 
-  override fun isNavigationBarVisible(selected: String): Boolean =
-    selected == SharedWishlists.List::class.qualifiedName
+  override fun isNavigationBarVisible(destination: NavDestination?): Boolean =
+    destination?.hasRoute(SharedWishlists.List::class) == true
 
   @Composable
-  override fun RowScope.NavigationBarItem(selected: String, navController: NavHostController) {
+  override fun RowScope.NavigationBarItem(
+    current: NavDestination?,
+    navController: NavHostController
+  ) {
     NavigationBarItem(
-      selected = selected == SharedWishlists.List::class.qualifiedName,
+      selected = current?.hasRoute(SharedWishlists.List::class) == true,
       onClick = {
         navController.navigate(SharedWishlists) {
           launchSingleTop = true
@@ -64,7 +69,7 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
   ) {
-    navigation<SharedWishlists>(startDestination = SharedWishlists.List) {
+    navigation<SharedWishlists>(startDestination = SharedWishlists.List(null)) {
       composable<SharedWishlists.List> {
 
         val viewModel = koinViewModel<SharedWishlistsListViewModel>()

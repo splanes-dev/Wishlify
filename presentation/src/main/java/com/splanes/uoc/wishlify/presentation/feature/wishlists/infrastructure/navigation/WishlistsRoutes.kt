@@ -6,7 +6,11 @@ import kotlinx.serialization.Serializable
 data object Wishlists {
 
   @Serializable
-  data object List
+  data class List(
+    val joinToEditorsTokenDeeplink: String? = null,
+    val uriToCreateNewItem: String? = null,
+    val urlToCreateNewItem: String? = null,
+  )
 
   @Serializable
   data object Categories

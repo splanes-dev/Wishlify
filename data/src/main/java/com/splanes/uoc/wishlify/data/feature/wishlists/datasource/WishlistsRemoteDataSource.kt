@@ -52,6 +52,22 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  suspend fun fetchWishlistByToken(token: String): WishlistEntity? =
+    try {
+      wishlists
+        .whereEqualTo("editorInviteLink", token)
+        .limit(1)
+        .get()
+        .await()
+        .firstOrNull()
+        ?.toObject<WishlistEntity>()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+
   suspend fun fetchWishlistItemsCount(id: String, excludePurchased: Boolean = false): Int =
     try {
       wishlistItemsOf(id)

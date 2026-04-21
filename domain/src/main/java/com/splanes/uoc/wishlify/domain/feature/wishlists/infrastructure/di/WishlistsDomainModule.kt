@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.domain.feature.wishlists.infrastructure.di
 
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.AddWishlistEditorFromLinkUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateCategoryUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateWishlistUseCase
@@ -39,4 +40,5 @@ internal val WishlistsDomainModule = module {
   singleOf(::UpdateCategoryUseCase)
   singleOf(::ShareWishlistUseCase)
   singleOf(::FetchAllLinkDataUseCase)
+  singleOf(::AddWishlistEditorFromLinkUseCase)
 }

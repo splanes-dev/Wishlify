@@ -24,3 +24,4 @@ functions/.runtimeconfig.json
 *.pem
 *.p12
 serviceAccountKey.json
+/scripts

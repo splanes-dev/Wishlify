@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
@@ -42,13 +44,16 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
 
   override val position: Int = 2
 
-  override fun isNavigationBarVisible(selected: String): Boolean =
-    selected == SecretSanta.List::class.qualifiedName
+  override fun isNavigationBarVisible(destination: NavDestination?): Boolean =
+    destination?.hasRoute(SecretSanta.List::class) == true
 
   @Composable
-  override fun RowScope.NavigationBarItem(selected: String, navController: NavHostController) {
+  override fun RowScope.NavigationBarItem(
+    current: NavDestination?,
+    navController: NavHostController
+  ) {
     NavigationBarItem(
-      selected = selected == SecretSanta.List::class.qualifiedName,
+      selected = current?.hasRoute(SecretSanta.List::class) == true,
       onClick = {
         navController.navigate(SecretSanta) {
           launchSingleTop = true
@@ -72,7 +77,7 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
   ) {
-    navigation<SecretSanta>(startDestination = SecretSanta.List) {
+    navigation<SecretSanta>(startDestination = SecretSanta.List(null)) {
       composable<SecretSanta.List> {
         val viewModel = koinViewModel<SecretSantaListViewModel>()
 

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data object SecretSanta {
 
   @Serializable
-  data object List
+  data class List(val deeplinkToken: String?)
 
   @Serializable
   data object NewEvent

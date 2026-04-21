@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.presentation.infrastructure.navigation
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptionsBuilder
@@ -16,7 +17,7 @@ interface FeatureHomeNavGraph : FeatureNavGraph {
 
   val position: Int
 
-  fun isNavigationBarVisible(selected: String): Boolean
+  fun isNavigationBarVisible(destination: NavDestination?): Boolean
 
   fun NavGraphBuilder.buildNavGraph(
     navController: NavHostController,
@@ -24,5 +25,5 @@ interface FeatureHomeNavGraph : FeatureNavGraph {
   )
 
   @Composable
-  fun RowScope.NavigationBarItem(selected: String, navController: NavHostController)
+  fun RowScope.NavigationBarItem(current: NavDestination?, navController: NavHostController)
 }
