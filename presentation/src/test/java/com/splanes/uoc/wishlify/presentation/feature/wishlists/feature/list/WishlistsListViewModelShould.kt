@@ -41,6 +41,7 @@ class WishlistsListViewModelShould : UnitTest() {
       deleteWishlistUseCase,
       fetchCategoriesUseCase,
       unshareWishlistUseCase,
+      mock(),
       errorUiMapper
     )
   }

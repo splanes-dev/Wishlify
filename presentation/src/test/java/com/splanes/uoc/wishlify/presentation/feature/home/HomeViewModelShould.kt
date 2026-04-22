@@ -27,6 +27,7 @@ class HomeViewModelShould : UnitTest() {
   fun setup() {
     viewModel = HomeViewModel(
       getSessionStateFlowUseCase = getSessionStateFlowUseCase,
+      deeplinkMapper = mock()
     )
   }
 

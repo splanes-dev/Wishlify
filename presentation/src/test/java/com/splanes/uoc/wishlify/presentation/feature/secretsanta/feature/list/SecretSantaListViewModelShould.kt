@@ -26,6 +26,7 @@ class SecretSantaListViewModelShould : UnitTest() {
   fun setup() {
     viewModel = SecretSantaListViewModel(
       fetchSecretSantaEventsUseCase = fetchSecretSantaEventsUseCase,
+      addEventParticipantFromLinkUseCase = mock(),
       errorUiMapper = errorUiMapper,
     )
   }

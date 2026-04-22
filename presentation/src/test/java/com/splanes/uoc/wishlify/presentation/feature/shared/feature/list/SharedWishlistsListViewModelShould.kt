@@ -31,6 +31,7 @@ class SharedWishlistsListViewModelShould : UnitTest() {
   fun setup() {
     viewModel = SharedWishlistsListViewModel(
       fetchSharedWishlistsUseCase = fetchSharedWishlistsUseCase,
+      addSharedWishlistParticipantByTokenUseCase = mock(),
       errorUiMapper = errorUiMapper,
     )
   }
