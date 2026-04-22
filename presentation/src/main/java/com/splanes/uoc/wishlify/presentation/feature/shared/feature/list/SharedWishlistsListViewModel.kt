@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.presentation.feature.shared.feature.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.AddSharedWishlistParticipantByTokenUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 class SharedWishlistsListViewModel(
   private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase,
+  private val addSharedWishlistParticipantByTokenUseCase: AddSharedWishlistParticipantByTokenUseCase,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
@@ -29,6 +31,14 @@ class SharedWishlistsListViewModel(
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(5_000)
     )
+
+  fun onJoinToParticipantsByToken(token: String) {
+    viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
+    viewModelScope.launch {
+      addSharedWishlistParticipantByTokenUseCase(token)
+      onReloadWishlists()
+    }
+  }
 
   fun onReloadWishlists() {
     fetchSharedWishlists()

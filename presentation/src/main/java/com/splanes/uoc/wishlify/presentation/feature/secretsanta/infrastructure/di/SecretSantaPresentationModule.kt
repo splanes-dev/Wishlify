@@ -11,6 +11,7 @@ import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.cr
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.edition.SecretSantaUpdateEventViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.share.SecretSantaShareWishlistViewModel
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.wishlist.SecretSantaWishlistViewModel
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSantaExternalActionHandler
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSantaNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import org.koin.core.module.dsl.singleOf
@@ -22,6 +23,7 @@ import org.koin.dsl.module
 internal val SecretSantaPresentationModule = module {
   // Navigation
   singleOf(::SecretSantaNavGraph) bind FeatureHomeNavGraph::class
+  singleOf(::SecretSantaExternalActionHandler)
 
   // ViewModels
   viewModelOf(::SecretSantaListViewModel)

@@ -388,4 +388,9 @@ class SecretSantaRepositoryImpl(
         entity = entity
       )
     }
+
+  override suspend fun addEventParticipantByToken(token: String): Result<Unit> =
+    runCatching {
+      secretSantaRemoteDataSource.addEventParticipantByToken(token)
+    }
 }

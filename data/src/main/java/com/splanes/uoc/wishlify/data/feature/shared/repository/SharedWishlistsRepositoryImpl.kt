@@ -424,4 +424,9 @@ class SharedWishlistsRepositoryImpl(
       sharedWishlistsRemoteDataSource
         .upsertSharedWishlistMessage(request.wishlist, entity)
     }
+
+  override suspend fun addParticipantByToken(token: String): Result<Unit> =
+    runCatching {
+      sharedWishlistsRemoteDataSource.addParticipantByToken(token)
+    }
 }

@@ -30,7 +30,13 @@ import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.home.infrastructure.navigation.Home
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSanta
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSantaExternalAction
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSantaExternalActionHandler
+import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistExternalAction
+import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistExternalActionHandler
 import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlists
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.WishlistExternalAction
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.WishlistExternalActionHandler
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.Wishlists
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.HomeNavStartRoute
@@ -53,6 +59,9 @@ fun HomeRoute(mainNavController: NavHostController) {
   val navController = rememberNavController()
   val navGraphs = currentKoinScope().getAll<FeatureHomeNavGraph>()
   val externalActionHandler = koinInject<ExternalActionHandler>()
+  val wishlistExternalActionHandler = koinInject<WishlistExternalActionHandler>()
+  val sharedWishlistExternalActionHandler = koinInject<SharedWishlistExternalActionHandler>()
+  val secretSantaExternalActionHandler = koinInject<SecretSantaExternalActionHandler>()
   val current by navController.currentBackStackEntryAsState()
   var isSignedOut by remember { mutableStateOf(false) }
 
@@ -62,6 +71,7 @@ fun HomeRoute(mainNavController: NavHostController) {
         is CreateNewWishlistItem -> viewModel.onCreateWishlistItemByShare(action)
         is OpenDeeplink -> viewModel.onOpenDeeplink(action.deeplink)
       }
+      externalActionHandler.clear()
     }
   }
 
@@ -75,17 +85,44 @@ fun HomeRoute(mainNavController: NavHostController) {
     viewModel.uiSideEffect.collect { effect ->
       when (effect) {
         HomeUiSideEffect.NoSession -> isSignedOut = true
-        is HomeUiSideEffect.NavToSecretSanta ->
-          navController.navigate(SecretSanta.List(effect.deeplink.token))
+        is HomeUiSideEffect.NavToSecretSanta -> {
+          val action = SecretSantaExternalAction.JoinToParticipantsByToken(effect.deeplink.token)
+          secretSantaExternalActionHandler.dispatch(action)
+          navController.navigate(SecretSanta.List) {
+            launchSingleTop = true
+          }
+        }
 
-        is HomeUiSideEffect.NavToSharedWishlist ->
-          navController.navigate(SharedWishlists.List(effect.deeplink.token))
+        is HomeUiSideEffect.NavToSharedWishlist -> {
+          val action = SharedWishlistExternalAction.JoinToParticipantsByToken(effect.deeplink.token)
+          sharedWishlistExternalActionHandler.dispatch(action)
+          navController.navigate(SharedWishlists.List) {
+            launchSingleTop = true
+          }
+        }
 
-        is HomeUiSideEffect.NavToWishlist ->
-          navController.navigate(Wishlists.List(joinToEditorsTokenDeeplink = effect.deeplink.token))
+        is HomeUiSideEffect.NavToWishlist -> {
+          val action = WishlistExternalAction.JoinToEditorByToken(effect.deeplink.token)
+          wishlistExternalActionHandler.dispatch(action)
+          navController.navigate(Wishlists.List) {
+            launchSingleTop = true
+          }
+        }
 
-        is HomeUiSideEffect.NavToWishlistNewItem -> {
-          // navController.navigate()
+        is HomeUiSideEffect.NavToWishlistNewItemByUrl -> {
+          val action = WishlistExternalAction.NewItemByUrl(effect.url)
+          wishlistExternalActionHandler.dispatch(action)
+          navController.navigate(Wishlists.List) {
+            launchSingleTop = true
+          }
+        }
+
+        is HomeUiSideEffect.NavToWishlistNewItemByUri -> {
+          val action = WishlistExternalAction.NewItemByUri(effect.uri)
+          wishlistExternalActionHandler.dispatch(action)
+          navController.navigate(Wishlists.List) {
+            launchSingleTop = true
+          }
         }
       }
     }

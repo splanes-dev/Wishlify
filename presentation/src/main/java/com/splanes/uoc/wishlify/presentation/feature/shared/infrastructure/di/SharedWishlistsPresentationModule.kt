@@ -5,6 +5,7 @@ import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.Share
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.mapper.SharedWishlistItemStateErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.mapper.SharedWishlistItemUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.SharedWishlistsListViewModel
+import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistExternalActionHandler
 import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistsNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import org.koin.core.module.dsl.singleOf
@@ -16,6 +17,7 @@ import org.koin.dsl.module
 internal val SharedWishlistsPresentationModule = module {
   // Navigation
   singleOf(::SharedWishlistsNavGraph) bind FeatureHomeNavGraph::class
+  singleOf(::SharedWishlistExternalActionHandler)
 
   // ViewModels
   viewModelOf(::SharedWishlistsListViewModel)

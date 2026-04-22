@@ -38,6 +38,7 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResult
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackStackWithResult
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 class SecretSantaNavGraph : FeatureHomeNavGraph {
@@ -77,8 +78,10 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
   ) {
-    navigation<SecretSanta>(startDestination = SecretSanta.List(null)) {
+    navigation<SecretSanta>(startDestination = SecretSanta.List) {
       composable<SecretSanta.List> {
+
+        val externalActionHandler = koinInject<SecretSantaExternalActionHandler>()
         val viewModel = koinViewModel<SecretSantaListViewModel>()
 
         navController.NavResultHandler<Boolean>(key = NavResult.NEW_EVENT) { created ->
@@ -89,6 +92,7 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
 
         SecretSantaListRoute(
           viewModel = viewModel,
+          externalActionHandler = externalActionHandler,
           onNavToNewEvent = { navController.navigate(SecretSanta.NewEvent) },
           onNavToDetail = { event ->
             val route = SecretSanta.Detail(eventId = event.id, name = event.name)

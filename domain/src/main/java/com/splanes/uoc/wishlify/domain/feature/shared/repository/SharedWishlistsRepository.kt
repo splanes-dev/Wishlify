@@ -42,4 +42,6 @@ interface SharedWishlistsRepository {
   ): Result<ChatPage<SharedWishlistChatMessage>>
 
   suspend fun sendMessageToChat(uid: String, request: SharedWishlistSendMessageRequest): Result<Unit>
+
+  suspend fun addParticipantByToken(token: String): Result<Unit>
 }

@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.domain.feature.secretsanta.infrastructure.di
 
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.helper.SecretSantaChatIdBuilder
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.helper.SecretSantaDrawExecutor
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.AddEventParticipantFromLinkUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.CreateSecretSantaEventUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.DoSecretSantaDrawUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaChatMessagesUseCase
@@ -36,4 +37,5 @@ internal val SecretSantaDomainModule = module {
   singleOf(::FetchSecretSantaChatMessagesUseCase)
   singleOf(::SubscribeSecretSantaChatUseCase)
   singleOf(::SendMessageSecretSantaChatUseCase)
+  singleOf(::AddEventParticipantFromLinkUseCase)
 }

@@ -1,6 +1,7 @@
 package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.creation
 
 import android.util.Patterns
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateWishlistItemUseCase
@@ -32,6 +33,7 @@ import kotlinx.coroutines.launch
 class WishlistNewItemViewModel(
   wishlistId: String,
   private val link: String?,
+  imageUri: String?,
   private val fetchAllLinkDataUseCase: FetchAllLinkDataUseCase,
   private val createWishlistItemUseCase: CreateWishlistItemUseCase,
   private val formErrorMapper: WishlistItemFormErrorMapper,
@@ -40,10 +42,19 @@ class WishlistNewItemViewModel(
 ) : ViewModel() {
 
   private val viewModelState =
-    MutableStateFlow(ViewModelState(wishlistId, isLoading = !link.isNullOrBlank()))
+    MutableStateFlow(
+      ViewModelState(
+        wishlistId = wishlistId,
+        isLoading = !link.isNullOrBlank(),
+        form = WishlistItemForm(
+          photo = imageUri?.toUri()?.let(ImagePicker::Device),
+          link = link.orEmpty()
+        )
+      )
+    )
 
   val uiState = viewModelState.asStateFlow()
-    .onStart { tryAutofillByLink(link) }
+    .onStart { link?.let { tryAutofillByLink(link) } }
     .map { state ->
       state.toUiState(
         formErrorMapper = formErrorMapper,
@@ -121,9 +132,9 @@ class WishlistNewItemViewModel(
     viewModelState.update { state -> state.copy(error = null) }
   }
 
-  private suspend fun tryAutofillByLink(link: String?) {
+  private suspend fun tryAutofillByLink(link: String) {
     viewModelState.update { state -> state.copy(isLoading = true) }
-    val data = link?.let { fetchAllLinkDataUseCase(it).getOrNull() }
+    val data = fetchAllLinkDataUseCase(link).getOrNull()
     viewModelState.update { state ->
       state.copy(
         isLoading = false,

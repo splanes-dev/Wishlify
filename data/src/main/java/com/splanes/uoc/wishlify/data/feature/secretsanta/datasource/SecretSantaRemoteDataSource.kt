@@ -4,6 +4,7 @@ import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
+import com.google.firebase.functions.FirebaseFunctions
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.secretSanta
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.secretSantaAssignments
@@ -12,6 +13,8 @@ import com.splanes.uoc.wishlify.data.common.firebase.utils.db.secretSantaChats
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.secretSantaParticipantsWishlist
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.secretSantaParticipantsWishlistItems
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.withBatch
+import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.JoinByInvitationLinkType
+import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.joinByInvitationLink
 import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaAssignmentEntity
 import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaChatEntity
 import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaChatMessageEntity
@@ -28,7 +31,8 @@ import timber.log.Timber
 import java.net.UnknownHostException
 
 class SecretSantaRemoteDataSource(
-  private val db: FirebaseFirestore
+  private val db: FirebaseFirestore,
+  private val functions: FirebaseFunctions,
 ) {
 
   private val secretSanta by lazy { db.secretSanta }
@@ -321,6 +325,19 @@ class SecretSantaRemoteDataSource(
       chatMessagesOf(eventId, chatId)
         .document(entity.id)
         .set(entity)
+        .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
+  suspend fun addEventParticipantByToken(token: String) {
+    try {
+      functions
+        .joinByInvitationLink(token, JoinByInvitationLinkType.SecretSanta)
         .await()
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()

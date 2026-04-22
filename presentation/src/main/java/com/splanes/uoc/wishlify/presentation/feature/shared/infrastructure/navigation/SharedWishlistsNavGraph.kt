@@ -25,6 +25,7 @@ import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.SharedW
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 class SharedWishlistsNavGraph : FeatureHomeNavGraph {
@@ -69,13 +70,15 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
   ) {
-    navigation<SharedWishlists>(startDestination = SharedWishlists.List(null)) {
+    navigation<SharedWishlists>(startDestination = SharedWishlists.List) {
       composable<SharedWishlists.List> {
 
         val viewModel = koinViewModel<SharedWishlistsListViewModel>()
+        val externalActionHandler = koinInject<SharedWishlistExternalActionHandler>()
 
         SharedWishlistsListRoute(
           viewModel = viewModel,
+          externalActionHandler = externalActionHandler,
           onNavToThirdPartySharedWishlistDetail = { wishlist ->
             val route = SharedWishlists.ThirdPartyDetail(
               sharedWishlistId = wishlist.id,

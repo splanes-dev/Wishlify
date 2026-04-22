@@ -63,5 +63,5 @@ interface WishlistsRepository {
 
   suspend fun extractUrlDataLocally(data: WishlistItemUrlData, url: String): Result<WishlistItemUrlData>
 
-  suspend fun addWishlistEditor(uid: String, token: String): Result<Unit>
+  suspend fun addWishlistEditor(token: String): Result<Unit>
 }

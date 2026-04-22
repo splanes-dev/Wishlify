@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistNewItemByShare
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsFilter
 
 sealed interface WishlistsListUiState {
@@ -22,6 +23,8 @@ sealed interface WishlistsListUiState {
     val filtersState: WishlistsFiltersState,
     val categories: List<Category>,
     val sharedWishlistFeedback: String?,
+    val isWishlistSelectionModalOpen: Boolean,
+    val wishlistNewItemByShare: WishlistNewItemByShare?,
     val isLoading: Boolean,
     val error: ErrorUiModel?,
   ): WishlistsListUiState

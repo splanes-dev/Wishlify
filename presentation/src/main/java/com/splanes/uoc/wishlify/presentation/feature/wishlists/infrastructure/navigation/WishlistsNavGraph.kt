@@ -5,7 +5,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
@@ -30,11 +29,13 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.Wish
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.categories.WishlistsCategoriesRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.WishlistsNewListRoute
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.edition.WishlistsEditListRoute
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistNewItemByShare
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackStackWithResult
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 class WishlistsNavGraph : FeatureHomeNavGraph {
@@ -74,28 +75,11 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
   ) {
-    navigation<Wishlists>(startDestination = Wishlists.List()) {
-      composable<Wishlists.List> { backStackEntry ->
-        val route = backStackEntry.toRoute<Wishlists.List>()
+    navigation<Wishlists>(startDestination = Wishlists.List) {
+      composable<Wishlists.List> {
 
+        val externalActionHandler = koinInject<WishlistExternalActionHandler>()
         val viewModel = koinViewModel<WishlistsListViewModel>()
-
-        LaunchedEffect(
-          route.joinToEditorsTokenDeeplink,
-          route.uriToCreateNewItem,
-          route.urlToCreateNewItem
-        ) {
-          when {
-            route.joinToEditorsTokenDeeplink != null ->
-              viewModel.onDeeplinkOpened(route.joinToEditorsTokenDeeplink)
-
-            route.urlToCreateNewItem != null ->
-              TODO()
-
-            route.uriToCreateNewItem != null ->
-              TODO()
-          }
-        }
 
         // Result handler from create wishlist
         navController.NavResultHandler<Boolean>(key = NavResult.NEW_WISHLIST) { created ->
@@ -122,11 +106,12 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
 
         WishlistsListRoute(
           viewModel = viewModel,
+          externalActionHandler = externalActionHandler,
           onNavToNewWishlist = { isOwn ->
             navController.navigate(Wishlists.NewList(isOwn))
           },
           onNavToWishlistDetail = { wishlist ->
-            val route = Wishlists.Detail(wishlist.id, name = wishlist.title)
+            val route = Wishlists.Detail(id = wishlist.id, name = wishlist.title)
             navController.navigate(route)
           },
           onNavToWishlistSharedDetail = { wishlist ->
@@ -147,6 +132,14 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
           },
           onNavToAdminCategories = {
             navController.navigate(Wishlists.Categories)
+          },
+          onNavToNewItem = { wishlist, itemByShare ->
+            val route = Wishlists.NewItem(
+              wishlistId = wishlist.id,
+              link = (itemByShare as? WishlistNewItemByShare.Url)?.url,
+              imageUrl = (itemByShare as? WishlistNewItemByShare.Uri)?.uri,
+            )
+            navController.navigate(route)
           }
         )
       }
@@ -266,7 +259,12 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
               route.target
             )
           },
-          onBack = { reload -> navController.popBackStackWithResult(key = NavResult.UPDATE_WISHLIST_FROM_DETAIL, reload) }
+          onBack = { reload ->
+            navController.popBackStackWithResult(
+              key = NavResult.UPDATE_WISHLIST_FROM_DETAIL,
+              reload
+            )
+          }
         )
       }
 
@@ -276,7 +274,7 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
       ) { backStackEntry ->
         val route = backStackEntry.toRoute<Wishlists.NewItem>()
         WishlistNewItemRoute(
-          viewModel = koinViewModel { parametersOf(route.wishlistId, route.link) },
+          viewModel = koinViewModel { parametersOf(route.wishlistId, route.link, route.imageUrl) },
           onFinish = { navController.popBackStackWithResult(key = NavResult.NEW_ITEM, result = it) }
         )
       }

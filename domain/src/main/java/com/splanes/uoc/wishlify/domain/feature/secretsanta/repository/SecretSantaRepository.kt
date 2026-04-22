@@ -75,4 +75,6 @@ interface SecretSantaRepository {
     chatId: String,
     text: String,
   ): Result<Unit>
+
+  suspend fun addEventParticipantByToken(token: String): Result<Unit>
 }

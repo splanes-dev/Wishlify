@@ -10,6 +10,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistU
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchCategoriesUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistNewItemByShare
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsFilter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,11 +31,10 @@ class WishlistsListViewModel(
 ) : ViewModel() {
 
   private val viewModelState = MutableStateFlow(ViewModelState())
+  private var itemByShare: WishlistNewItemByShare? = null
 
   val uiState = viewModelState.asStateFlow()
-    .onStart {
-      fetchWishlistsAndCategories()
-    }
+    .onStart { fetchWishlistsAndCategories() }
     .map { state -> state.toUiState(errorUiMapper) }
     .stateIn(
       initialValue = viewModelState.value.toUiState(errorUiMapper),
@@ -42,13 +42,23 @@ class WishlistsListViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
-  fun onDeeplinkOpened(token: String) {
+  fun onAddToEditorsDeeplinkOpened(token: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     viewModelScope.launch {
       addWishlistEditorFromLinkUseCase(token)
         .onSuccess { fetchWishlists() }
         .onFailure { viewModelState.update { state -> state.copy(isLoadingFullscreen = false) } }
     }
+  }
+
+  fun onNewItemByUrl(url: String) {
+    itemByShare = WishlistNewItemByShare.Url(url)
+    viewModelScope.launch { fetchWishlistsAndCategories() }
+  }
+
+  fun onNewItemByUri(uri: String) {
+    itemByShare = WishlistNewItemByShare.Uri(uri)
+    viewModelScope.launch { fetchWishlistsAndCategories() }
   }
 
   fun onUpdateFilters(filtersState: WishlistsFiltersState) {
@@ -118,6 +128,16 @@ class WishlistsListViewModel(
     }
   }
 
+  fun onCloseWishlistSelectionModal() {
+    itemByShare = null
+    viewModelState.update { state ->
+      state.copy(
+        isWishlistSelectionModalOpen = false,
+        wishlistNewItemByShare = null,
+      )
+    }
+  }
+
   fun onClearSharedWishlistFeedback() {
     viewModelState.update { state -> state.copy(sharedWishlistFeedback = null) }
   }
@@ -156,6 +176,8 @@ class WishlistsListViewModel(
         isLoadingFullscreen = false,
         wishlists = wishlistsResult.getOrDefault(emptyList()),
         categories = categoriesResult.getOrDefault(emptyList()),
+        isWishlistSelectionModalOpen = itemByShare != null,
+        wishlistNewItemByShare = itemByShare,
         error = wishlistsResult.exceptionOrNull()
       )
     }
@@ -166,6 +188,8 @@ class WishlistsListViewModel(
     val filtersState: WishlistsFiltersState = WishlistsFiltersState(),
     val categories: List<Category> = emptyList(),
     val sharedWishlistFeedback: String? = null,
+    val isWishlistSelectionModalOpen: Boolean = false,
+    val wishlistNewItemByShare: WishlistNewItemByShare? = null,
     val isLoadingFullscreen: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
@@ -191,6 +215,8 @@ class WishlistsListViewModel(
             categories = categories,
             wishlists = wishlists.withFilters(filtersState).sort(),
             sharedWishlistFeedback = sharedWishlistFeedback,
+            isWishlistSelectionModalOpen = isWishlistSelectionModalOpen,
+            wishlistNewItemByShare = wishlistNewItemByShare,
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )

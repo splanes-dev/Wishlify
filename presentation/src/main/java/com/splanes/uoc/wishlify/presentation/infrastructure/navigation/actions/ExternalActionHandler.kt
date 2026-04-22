@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 class ExternalActionHandler {
 
-  private val actionsSharedFlow = MutableSharedFlow<Action>(replay = 1, extraBufferCapacity = 1)
-  val actions = actionsSharedFlow.asSharedFlow()
+  private val actionsSharedFlow = MutableSharedFlow<Action?>(replay = 1, extraBufferCapacity = 1)
+  private val actions = actionsSharedFlow.asSharedFlow()
 
   fun dispatch(action: Action) {
     actionsSharedFlow.tryEmit(action)
@@ -14,7 +14,11 @@ class ExternalActionHandler {
 
   suspend fun consume(consumer: suspend (Action) -> Unit) {
     actions.collect { action ->
-      consumer(action)
+      action?.let { consumer(action) }
     }
+  }
+
+  fun clear() {
+    actionsSharedFlow.tryEmit(null)
   }
 }

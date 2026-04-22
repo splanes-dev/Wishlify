@@ -30,11 +30,8 @@ class WishlifyActivity : ComponentActivity() {
 
     setContent {
       WishlifyTheme {
-
-        val navController = rememberNavController()
-
         WishlifyApp(
-          navController = navController,
+          navController = rememberNavController(),
           navGraphs = currentKoinScope().getAll(),
           startDestination = startDestination
         )
@@ -65,4 +62,3 @@ class WishlifyActivity : ComponentActivity() {
     else -> null
   }
 }
-

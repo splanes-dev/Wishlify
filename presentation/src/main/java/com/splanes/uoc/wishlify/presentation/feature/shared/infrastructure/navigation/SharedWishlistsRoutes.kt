@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data object SharedWishlists {
 
   @Serializable
-  data class List(val deeplinkToken: String?)
+  data object List
 
   @Serializable
   data class ThirdPartyDetail(

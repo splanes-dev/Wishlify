@@ -10,7 +10,6 @@ import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemot
 import com.splanes.uoc.wishlify.data.feature.wishlists.mapper.WishlistsDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.util.UrlDataExtractor
-import com.splanes.uoc.wishlify.domain.common.error.GenericError
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
@@ -437,15 +436,8 @@ class WishlistsRepositoryImpl(
       result?.let { wishlistsMapper.mergeUrlDataResults(data, result) } ?: data
     }
 
-  override suspend fun addWishlistEditor(
-    uid: String,
-    token: String
-  ): Result<Unit> =
+  override suspend fun addWishlistEditor(token: String): Result<Unit> =
     runCatching {
-      val wishlist =
-        wishlistsRemoteDataSource.fetchWishlistByToken(token) ?: throw GenericError.Unknown()
-
-      val updated = wishlist.copy(editors = (wishlist.editors + uid).distinct())
-      wishlistsRemoteDataSource.upsertWishlist(updated)
+      wishlistsRemoteDataSource.joinToWishlistEditorsByToken(token)
     }
 }

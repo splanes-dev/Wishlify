@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.AddEventParticipantFromLinkUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaEventsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 class SecretSantaListViewModel(
   private val fetchSecretSantaEventsUseCase: FetchSecretSantaEventsUseCase,
+  private val addEventParticipantFromLinkUseCase: AddEventParticipantFromLinkUseCase,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
@@ -29,6 +31,14 @@ class SecretSantaListViewModel(
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(5_000)
     )
+
+  fun onJoinToParticipantsByToken(token: String) {
+    viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
+    viewModelScope.launch {
+      addEventParticipantFromLinkUseCase(token)
+      fetchSecretSantaEvents()
+    }
+  }
 
   fun onNewEventResult() {
     viewModelScope.launch { fetchSecretSantaEvents() }

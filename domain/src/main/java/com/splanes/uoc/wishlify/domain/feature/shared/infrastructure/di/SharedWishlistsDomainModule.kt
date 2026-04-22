@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.domain.feature.shared.infrastructure.di
 
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.AddSharedWishlistParticipantByTokenUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistChatOlderMessagesUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistItemsUseCase
@@ -23,4 +24,5 @@ internal val SharedWishlistsDomainModule = module {
   singleOf(::SendMessageSharedWishlistChatUseCase)
   singleOf(::SubscribeSharedWishlistChatUseCase)
   singleOf(::FetchSharedWishlistChatOlderMessagesUseCase)
+  singleOf(::AddSharedWishlistParticipantByTokenUseCase)
 }

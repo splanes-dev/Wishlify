@@ -119,5 +119,8 @@
     <string name="wishlist_shared">Compartida</string>
     <string name="wishlist_shared_event">Llistat compartit</string>
     <string name="wishlist_shared_secret_santa_info_banner"><![CDATA[Has compartit aquest llistat en un esdeveniment d\'amic invisible.<br/><b>La llista estarà bloquejada per no afectar altres usuaris.</b>]]></string>
-
+    <string name="wishlists_select_wishlist_to_new_item_shared_title">Selecciona una Wishlist</string>
+    <string name="wishlists_select_wishlist_to_new_item_shared_description">Escull a quina wishlist desitges afegir el nou ítem</string>
+    <string name="wishlists_select_wishlist_to_new_item_shared_url">Es crearà un nou ítem a partir de l\'enllaç compartit:</string>
+    <string name="wishlists_select_wishlist_to_new_item_shared_uri">Es crearà un nou ítem amb la imatge:</string>
 </resources>

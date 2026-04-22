@@ -111,7 +111,9 @@ fun WishlistNewItemScreen(
     mutableStateOf(uiState.form.priority)
   }
 
-  var imageSelected: ImagePicker.Resource? by remember { mutableStateOf(null) }
+  var imageSelected: ImagePicker.Resource? by remember(uiState.form.photo) {
+    mutableStateOf(uiState.form.photo)
+  }
 
   val isButtonEnabled by remember(uiState.form) {
     derivedStateOf {

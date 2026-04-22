@@ -9,6 +9,9 @@ import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlistCategories
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlistItems
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlists
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.withBatch
+import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.JoinByInvitationLinkType
+import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.extractLinkMetadata
+import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.joinByInvitationLink
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.CategoryEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistItemEntity
@@ -45,22 +48,6 @@ class WishlistsRemoteDataSource(
         .get()
         .await()
         .toObject<WishlistEntity>() ?: throw GenericError.Unknown()
-    } catch (_: UnknownHostException) {
-      throw GenericError.NoInternet()
-    } catch (e: Throwable) {
-      Timber.e(e)
-      throw GenericError.Unknown(cause = e)
-    }
-
-  suspend fun fetchWishlistByToken(token: String): WishlistEntity? =
-    try {
-      wishlists
-        .whereEqualTo("editorInviteLink", token)
-        .limit(1)
-        .get()
-        .await()
-        .firstOrNull()
-        ?.toObject<WishlistEntity>()
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
     } catch (e: Throwable) {
@@ -259,8 +246,7 @@ class WishlistsRemoteDataSource(
   suspend fun extractUrlData(link: String): Map<*, *>? {
     try {
       val result = functions
-        .getHttpsCallable("extractLinkMetadata")
-        .call(mapOf("url" to link))
+        .extractLinkMetadata(link)
         .await()
 
       return result.data as? Map<*, *>
@@ -272,6 +258,19 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
   }
+
+  suspend fun joinToWishlistEditorsByToken(token: String) =
+    try {
+      functions
+        .joinByInvitationLink(token, type = JoinByInvitationLinkType.WishlistEditor)
+        .await()
+
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
 
   private fun categoriesOf(uid: String) =
     db.users.document(uid).wishlistCategories

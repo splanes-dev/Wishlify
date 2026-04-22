@@ -38,11 +38,11 @@ class HomeViewModel(
   }
 
   fun onCreateWishlistItemByShare(action: CreateNewWishlistItem) {
-    val uri = when (action) {
-      is NewWishlistItemByImage -> action.uri.toString()
-      is NewWishlistItemByUrl -> action.url
+    val effect = when (action) {
+      is NewWishlistItemByImage -> HomeUiSideEffect.NavToWishlistNewItemByUri(action.uri.toString())
+      is NewWishlistItemByUrl -> HomeUiSideEffect.NavToWishlistNewItemByUrl(action.url)
     }
-    uiSideEffectChannel.trySend(HomeUiSideEffect.NavToWishlistNewItem(uri))
+    viewModelScope.launch { uiSideEffectChannel.send(effect) }
   }
 
   fun onOpenDeeplink(uri: Uri) {
@@ -52,8 +52,9 @@ class HomeViewModel(
       is Deeplink.WishlistShare -> HomeUiSideEffect.NavToSharedWishlist(deeplink)
       null -> null
     }
-
-    effect?.let(uiSideEffectChannel::trySend)
+    effect?.let {
+      viewModelScope.launch { uiSideEffectChannel.send(effect) }
+    }
   }
 
   fun cancelSessionStateObserver() {

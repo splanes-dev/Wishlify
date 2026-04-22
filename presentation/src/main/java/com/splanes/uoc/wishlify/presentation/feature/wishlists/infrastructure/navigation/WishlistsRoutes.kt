@@ -6,11 +6,7 @@ import kotlinx.serialization.Serializable
 data object Wishlists {
 
   @Serializable
-  data class List(
-    val joinToEditorsTokenDeeplink: String? = null,
-    val uriToCreateNewItem: String? = null,
-    val urlToCreateNewItem: String? = null,
-  )
+  data object List
 
   @Serializable
   data object Categories
@@ -31,7 +27,11 @@ data object Wishlists {
   data class DetailShared(val id: String, val name: String, val target: String?)
 
   @Serializable
-  data class NewItem(val wishlistId: String, val link: String?)
+  data class NewItem(
+    val wishlistId: String,
+    val link: String?,
+    val imageUrl: String? = null
+  )
 
   @Serializable
   data class EditItem(val wishlistId: String, val itemId: String)

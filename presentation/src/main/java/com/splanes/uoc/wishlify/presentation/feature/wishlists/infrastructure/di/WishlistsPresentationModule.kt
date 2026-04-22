@@ -15,6 +15,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.crea
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.mapper.WishlistFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.creation.mapper.WishlistFormUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.edition.WishlistsEditListViewModel
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.WishlistExternalActionHandler
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.Wishlists
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.WishlistsNavGraph
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.mapper.CategoryFormErrorMapper
@@ -32,6 +33,7 @@ internal val WishlistsPresentationModule = module {
   // Navigation
   single(named(HomeNavStartRoute)) { Wishlists } bind Any::class
   singleOf(::WishlistsNavGraph) bind FeatureHomeNavGraph::class
+  singleOf(::WishlistExternalActionHandler)
   // ViewModels
   viewModelOf(::WishlistsListViewModel)
   viewModelOf(::WishlistsCategoriesViewModel)
@@ -75,10 +77,11 @@ internal val WishlistsPresentationModule = module {
       errorUiMapper = get(),
     )
   }
-  viewModel { (wishlistId: String, link: String?) ->
+  viewModel { (wishlistId: String, link: String?, imageUrl: String?) ->
     WishlistNewItemViewModel(
       wishlistId = wishlistId,
       link = link,
+      imageUri = imageUrl,
       createWishlistItemUseCase = get(),
       fetchAllLinkDataUseCase = get(),
       formErrorMapper = get(),

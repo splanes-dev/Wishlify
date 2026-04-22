@@ -61,10 +61,12 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMen
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCard
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCardSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistFilterBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistSelectionBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsFiltersBar
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsSearchBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistsSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistCardSettings
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistNewItemByShare
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsFilter
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsSettings
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
@@ -77,12 +79,14 @@ fun WishlistsListScreen(
   onUpdateFilters: (state: WishlistsFiltersState) -> Unit,
   onCreateWishlist: (isOwn: Boolean) -> Unit,
   onWishlistClick: (Wishlist) -> Unit,
+  onWishlistClickWithCreate: (Wishlist, WishlistNewItemByShare) -> Unit,
   onEditWishlist: (Wishlist) -> Unit,
   onShareWishlist: (Wishlist) -> Unit,
   onDeleteWishlist: (Wishlist) -> Unit,
   onAdminCategories: () -> Unit,
   onSharedBackToPrivate: (wishlist: Wishlist) -> Unit,
   onClearSharedWishlistFeedback: () -> Unit,
+  onCloseWishlistSelectionModal: () -> Unit,
   onDismissError: () -> Unit,
 ) {
 
@@ -98,6 +102,8 @@ fun WishlistsListScreen(
 
   var isWishlistSettingsModalOpen by remember { mutableStateOf(false) }
   val wishlistSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  val wishlistSelectionSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
   var isDeleteItemDialogVisible by remember { mutableStateOf(false) }
 
@@ -388,6 +394,24 @@ fun WishlistsListScreen(
           coroutineScope
             .launch { filterSheetState.hide() }
             .invokeOnCompletion { filterOpened = null }
+        }
+      )
+    }
+
+    uiState.wishlistNewItemByShare?.let { itemByShare ->
+      WishlistSelectionBottomSheet(
+        visible = uiState.isWishlistSelectionModalOpen,
+        sheetState = wishlistSelectionSheetState,
+        wishlists = wishlists.filter { it !is Wishlist.Shared },
+        itemByShare = itemByShare,
+        onDismiss = onCloseWishlistSelectionModal,
+        onSelect = { w ->
+          coroutineScope
+            .launch { wishlistSelectionSheetState.hide() }
+            .invokeOnCompletion {
+              onCloseWishlistSelectionModal()
+              onWishlistClickWithCreate(w, itemByShare)
+            }
         }
       )
     }

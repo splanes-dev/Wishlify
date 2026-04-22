@@ -25,6 +25,7 @@
     <string name="close">Tancar</string>
     <string name="attention">Atenció</string>
     <string name="finished">Finalitzada</string>
+    <string name="select">Seleccionar</string>
     <string name="search">Cercar</string>
     <string name="event_finished">Finalitzat</string>
     <string name="save">Desar</string>

@@ -4,11 +4,14 @@ import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
+import com.google.firebase.functions.FirebaseFunctions
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlistChatMessages
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlistItems
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlists
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.withBatch
+import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.JoinByInvitationLinkType
+import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.joinByInvitationLink
 import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistChatMessageEntity
 import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistEntity
 import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistItemEntity
@@ -23,7 +26,8 @@ import timber.log.Timber
 import java.net.UnknownHostException
 
 class SharedWishlistsRemoteDataSource(
-  private val db: FirebaseFirestore
+  private val db: FirebaseFirestore,
+  private val functions: FirebaseFunctions,
 ) {
 
   private val sharedWishlists by lazy { db.sharedWishlists }
@@ -233,6 +237,19 @@ class SharedWishlistsRemoteDataSource(
         registration.remove()
       }
     }.distinctUntilChanged()
+
+  suspend fun addParticipantByToken(token: String) {
+    try {
+      functions
+        .joinByInvitationLink(token, JoinByInvitationLinkType.SharedWishlist)
+        .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
 
   private fun wishlistItemsOf(id: String) =
     db.sharedWishlists.document(id).sharedWishlistItems
