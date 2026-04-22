@@ -7,3 +7,4 @@ export {cleanupWishlistOnDelete} from "./wishlistCleanup";
 export {expireSharedWishlistStatesDaily} from "./scheduledSharedWishlistCleanup";
 export {extractLinkMetadata} from "./extractLinkMetadata";
 export {joinByInvitationLink} from "./joinByInvitationLink";
+export {cleanupExpiredCollectionsDaily} from "./cleanupExpiredCollectionsDaily";

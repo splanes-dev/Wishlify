@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.data.feature.wishlists.repository
 
+import com.splanes.uoc.wishlify.data.common.utils.nowInMillis
 import com.splanes.uoc.wishlify.data.feature.groups.datasource.GroupsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.secretsanta.datasource.SecretSantaRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.shared.datasource.SharedWishlistsRemoteDataSource
@@ -88,6 +89,7 @@ class WishlistsRepositoryImpl(
           val groups = groupsRemoteDataSource.fetchGroups(uid)
           secretSantaRemoteDataSource
             .fetchSecretSantaEvents(uid, groups.map { it.id })
+            .filter { event -> event.deadline > nowInMillis() } // Non-expired
             .map { event ->
               async {
                 val w = secretSantaRemoteDataSource.fetchParticipantWishlist(event.id, uid)
@@ -219,6 +221,7 @@ class WishlistsRepositoryImpl(
           val groups = groupsRemoteDataSource.fetchGroups(uid)
           secretSantaRemoteDataSource
             .fetchSecretSantaEvents(uid, groups.map { it.id })
+            .filter { event -> event.deadline > nowInMillis() } // Non-expired
             .map { event ->
               async {
                 val w = secretSantaRemoteDataSource.fetchParticipantWishlist(event.id, uid)

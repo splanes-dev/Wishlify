@@ -117,17 +117,31 @@ fun SecretSantaListScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(16.dp),
       ) {
-        items(
-          items = uiState.events.filter { !it.isFinished() },
-          key = { event -> event.id }
-        ) { event ->
-          SecretSantaEventCard(
-            modifier = Modifier
-              .fillMaxWidth()
-              .animateItem(),
-            event = event,
-            onClick = { onEventClick(event) }
-          )
+        if (uiState.events.filter { !it.isFinished() }.isNotEmpty()) {
+          items(
+            items = uiState.events.filter { !it.isFinished() },
+            key = { event -> event.id }
+          ) { event ->
+            SecretSantaEventCard(
+              modifier = Modifier
+                .fillMaxWidth()
+                .animateItem(),
+              event = event,
+              onClick = { onEventClick(event) }
+            )
+          }
+        } else {
+          item {
+            EmptyState(
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 4.dp),
+              image = painterResource(R.drawable.img_secret_santa_empty),
+              title = stringResource(R.string.secret_santa_list_empty_state_title),
+              description = stringResource(R.string.secret_santa_list_empty_state_active_description),
+              descriptionStyle = WishlifyTheme.typography.titleMedium
+            )
+          }
         }
 
         if (existsEventsFinished) {

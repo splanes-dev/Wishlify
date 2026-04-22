@@ -86,13 +86,26 @@ async function findSingleDocByToken(
 }
 
 function ensureStringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
+  return Array.isArray(value)
+    ? value.filter((v): v is string => typeof v === "string")
+    : [];
 }
 
 function ensureOptionalString(value: unknown): string | null {
-    return typeof value === "string" && value.trim().length > 0
-      ? value
-      : null;
+  return typeof value === "string" && value.trim().length > 0
+    ? value
+    : null;
+}
+
+function ensureOptionalNumber(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value)
+    ? value
+    : null;
+}
+
+function hasDeadlineExpired(deadline: unknown): boolean {
+  const deadlineMillis = ensureOptionalNumber(deadline);
+  return deadlineMillis != null && deadlineMillis < Date.now();
 }
 
 async function isUserInGroup(
@@ -131,8 +144,6 @@ async function joinWishlistAsEditor(
 
   tx.update(doc.ref, {
     editors: admin.firestore.FieldValue.arrayUnion(uid),
-    // opcional one-shot:
-    // editorInviteLink: null,
   });
 
   return {
@@ -155,6 +166,13 @@ async function joinSharedWishlistAsParticipant(
   );
   const data = doc.data();
 
+  if (hasDeadlineExpired(data.deadline)) {
+    throw new HttpsError(
+      "failed-precondition",
+      "Shared wishlist invitation expired"
+    );
+  }
+
   const participants = ensureStringArray(data.participants);
   const groupId = ensureOptionalString(data.group);
 
@@ -175,7 +193,7 @@ async function joinSharedWishlistAsParticipant(
   }
 
   tx.update(doc.ref, {
-    participants: admin.firestore.FieldValue.arrayUnion(uid)
+    participants: admin.firestore.FieldValue.arrayUnion(uid),
   });
 
   return {
@@ -198,6 +216,20 @@ async function joinSecretSantaAsParticipant(
   );
   const data = doc.data();
 
+  if (hasDeadlineExpired(data.deadline)) {
+    throw new HttpsError(
+      "failed-precondition",
+      "Secret Santa invitation expired"
+    );
+  }
+
+  if (data.drawStatus === "Done") {
+    throw new HttpsError(
+      "failed-precondition",
+      "Secret Santa draw already done"
+    );
+  }
+
   const participants = ensureStringArray(data.participants);
   const groupId = ensureOptionalString(data.group);
 
@@ -218,7 +250,7 @@ async function joinSecretSantaAsParticipant(
   }
 
   tx.update(doc.ref, {
-    participants: admin.firestore.FieldValue.arrayUnion(uid)
+    participants: admin.firestore.FieldValue.arrayUnion(uid),
   });
 
   return {

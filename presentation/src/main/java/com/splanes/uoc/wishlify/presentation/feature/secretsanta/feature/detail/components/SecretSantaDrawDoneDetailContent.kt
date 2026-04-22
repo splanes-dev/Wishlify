@@ -139,6 +139,7 @@ private fun ReceiverSection(
 
   AnonymousChat(
     modifier = Modifier.fillMaxWidth(),
+    enabled = !event.deadline.isExpired(),
     text = htmlString(R.string.secret_santa_event_detail_draw_done_receiver_anonymous_chat_description, event.receiver.username),
     pendingNotifications = event.receiverChatNotificationCount,
     onClick = { onAction(SecretSantaDetailAction.OpenReceiverChat) }
@@ -216,6 +217,7 @@ private fun GiverSection(
 
   AnonymousChat(
     modifier = Modifier.fillMaxWidth(),
+    enabled = !event.deadline.isExpired(),
     text = htmlString(R.string.secret_santa_event_detail_draw_done_giver_anonymous_chat_description),
     pendingNotifications = event.giverChatNotificationCount,
     onClick = { onAction(SecretSantaDetailAction.OpenGiverChat) }
@@ -228,6 +230,7 @@ private fun GiverSection(
 @Composable
 private fun AnonymousChat(
   text: AnnotatedString,
+  enabled: Boolean,
   pendingNotifications: Int,
   modifier: Modifier = Modifier,
   onClick: () -> Unit,
@@ -260,6 +263,7 @@ private fun AnonymousChat(
         Button(
           modifier = Modifier.fillMaxWidth(),
           shapes = ButtonShape,
+          enabled = enabled,
           colors = ButtonDefaults.buttonColors(
             containerColor = WishlifyTheme.colorScheme.tertiaryContainer,
             contentColor = WishlifyTheme.colorScheme.onTertiaryContainer,
