@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.AddSharedWishlistParticipantByTokenUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class SharedWishlistsListViewModel(
   private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase,
@@ -46,6 +48,16 @@ class SharedWishlistsListViewModel(
 
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
+  }
+
+  suspend fun fetchSharedWishlistById(id: String): SharedWishlist {
+    val currentState = viewModelState.value
+    if (currentState.wishlists.isNotEmpty()) {
+      return currentState.wishlists.first { it.id == id }
+    } else {
+      delay(250.milliseconds)
+      return fetchSharedWishlistById(id)
+    }
   }
 
   private fun fetchSharedWishlists() {

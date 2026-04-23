@@ -199,6 +199,7 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
 
         SecretSantaDetailRoute(
           viewModel = viewModel,
+          externalActionHandler = koinInject(),
           onNavToEdit = { eventId ->
             val route = SecretSanta.UpdateEvent(eventId)
             navController.navigate(route)

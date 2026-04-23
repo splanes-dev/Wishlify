@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.data.feature.user.repository
 
 import com.splanes.uoc.wishlify.data.common.utils.sha256
 import com.splanes.uoc.wishlify.data.feature.authentication.datasource.AuthRemoteDataSource
+import com.splanes.uoc.wishlify.data.feature.user.datasource.UserLocalDataSource
 import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
@@ -15,6 +16,7 @@ import kotlinx.coroutines.coroutineScope
 class UserRepositoryImpl(
   private val authRemoteDataSource: AuthRemoteDataSource,
   private val remoteDataSource: UserRemoteDataSource,
+  private val localDataSource: UserLocalDataSource,
   private val mapper: UserDataMapper
 ) : UserRepository {
 
@@ -29,7 +31,8 @@ class UserRepositoryImpl(
     photoUrl: String?
   ) =
     runCatching {
-      val entity = mapper.map(uid, username, photoUrl)
+      val token = localDataSource.fetchUserToken()
+      val entity = mapper.map(uid, token, username, photoUrl)
       remoteDataSource.upsertUser(entity)
     }
 
@@ -99,4 +102,17 @@ class UserRepositoryImpl(
 
       remoteDataSource.upsertUser(updated)
     }
+
+  override suspend fun storeUserToken(token: String) {
+    localDataSource.storeUserToken(token)
+  }
+
+  override suspend fun updateUserToken(uid: String) {
+    val token = localDataSource.fetchUserToken()
+    if (token != null) {
+      val entity = remoteDataSource.fetchUserById(uid) ?: return
+      val updated = entity.copy(token = token)
+      remoteDataSource.upsertUser(updated)
+    }
+  }
 }

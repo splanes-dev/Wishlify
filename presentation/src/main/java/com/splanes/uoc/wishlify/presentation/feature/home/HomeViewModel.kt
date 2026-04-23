@@ -48,8 +48,8 @@ class HomeViewModel(
   fun onOpenDeeplink(uri: Uri) {
     val effect = when (val deeplink = deeplinkMapper.map(uri)) {
       is Deeplink.SecretSanta -> HomeUiSideEffect.NavToSecretSanta(deeplink)
-      is Deeplink.WishlistEditor -> HomeUiSideEffect.NavToWishlist(deeplink)
-      is Deeplink.WishlistShare -> HomeUiSideEffect.NavToSharedWishlist(deeplink)
+      is Deeplink.SharedWishlist -> HomeUiSideEffect.NavToSharedWishlist(deeplink)
+      is Deeplink.JoinWishlistEditor -> HomeUiSideEffect.NavToWishlist(deeplink)
       null -> null
     }
     effect?.let {

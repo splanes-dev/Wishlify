@@ -96,6 +96,7 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
       ) { backStackEntry ->
 
         val route = backStackEntry.toRoute<SharedWishlists.ThirdPartyDetail>()
+        val externalActionHandler = koinInject<SharedWishlistExternalActionHandler>()
 
         SharedWishlistThirdPartyDetailRoute(
           viewModel = koinViewModel {
@@ -105,6 +106,7 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
               route.target
             )
           },
+          externalActionHandler = externalActionHandler,
           onNavToChat = {
             val route = SharedWishlists.ThirdPartyChat(
               sharedWishlistId = route.sharedWishlistId,
@@ -119,7 +121,7 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
 
       composable<SharedWishlists.ThirdPartyChat>(
         enterTransition = Transitions.SlideInHorizontal.enter,
-        exitTransition = Transitions.SlideInHorizontal.exit
+        exitTransition = Transitions.SlideInHorizontal.exit,
       ) { backStackEntry ->
         val route = backStackEntry.toRoute<SharedWishlists.ThirdPartyChat>()
 

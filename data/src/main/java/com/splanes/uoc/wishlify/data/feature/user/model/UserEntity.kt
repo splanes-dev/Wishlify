@@ -9,6 +9,7 @@ data class UserEntity(
   @SerialName("username") val username: String = "",
   @SerialName("photoUrl") val photoUrl: String? = null,
   @SerialName("code") val code: String = "",
+  @SerialName("token") val token: String = "",
   @SerialName("hobbies") val hobbies: Hobbies = Hobbies(),
   @SerialName("rewards") val rewards: Rewards = Rewards(),
   @SerialName("notifications") val notifications: Notifications = Notifications(),

@@ -20,9 +20,9 @@ data class InviteLink(
       .toString()
 
   enum class Origin(val path: String) {
-    WishlistEditor("wishlists-editor"),
-    WishlistShare("wishlist-share"),
-    SecretSanta("secret-santa");
+    WishlistEditor("wishlist/join"),
+    WishlistShare("shared-wishlist/join"),
+    SecretSanta("secret-santa/join");
 
     companion object
   }

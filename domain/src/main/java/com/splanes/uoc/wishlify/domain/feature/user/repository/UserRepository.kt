@@ -13,4 +13,6 @@ interface UserRepository {
   suspend fun fetchNotificationsProfile(uid: String): Result<User.NotificationsProfile>
   suspend fun searchUsers(query: String): Result<List<User.Basic>>
   suspend fun updateProfile(request: UpdateProfileRequest, imageMedia: ImageMedia?): Result<Unit>
+  suspend fun storeUserToken(token: String)
+  suspend fun updateUserToken(uid: String)
 }

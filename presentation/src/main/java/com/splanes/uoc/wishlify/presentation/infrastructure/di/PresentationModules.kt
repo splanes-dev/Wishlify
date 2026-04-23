@@ -4,6 +4,7 @@ import com.splanes.uoc.wishlify.presentation.common.infrastructure.di.CommonPres
 import com.splanes.uoc.wishlify.presentation.feature.authentication.infrastructure.di.AuthPresentationModule
 import com.splanes.uoc.wishlify.presentation.feature.groups.infrastructure.di.GroupsPresentationModule
 import com.splanes.uoc.wishlify.presentation.feature.home.infrastructure.di.HomePresentationModule
+import com.splanes.uoc.wishlify.presentation.feature.notifications.infrastucture.di.PushNotificationsPresentationModule
 import com.splanes.uoc.wishlify.presentation.feature.profile.infrastructure.di.ProfilePresentationModule
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.di.SecretSantaPresentationModule
 import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.di.SharedWishlistsPresentationModule
@@ -20,4 +21,5 @@ val PresentationModules = listOf(
   SecretSantaPresentationModule,
   GroupsPresentationModule,
   ProfilePresentationModule,
+  PushNotificationsPresentationModule,
 )

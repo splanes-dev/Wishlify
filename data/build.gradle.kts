@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.jetbrains.kotlin.serialization)
+  alias(libs.plugins.google.services)
 }
 
 android {
@@ -40,6 +41,7 @@ dependencies {
   implementation(libs.google.firebase.firestore)
   implementation(libs.google.firebase.storage)
   implementation(libs.google.firebase.functions)
+  implementation(libs.google.firebase.messaging)
   // Timber
   implementation(libs.timber)
 }

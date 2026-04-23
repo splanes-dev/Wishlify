@@ -20,8 +20,21 @@ fun SharedWishlistsListRoute(
   LaunchedEffect(externalActionHandler) {
     externalActionHandler.consume { action ->
       when (action) {
-        is SharedWishlistExternalAction.JoinToParticipantsByToken ->
+        is SharedWishlistExternalAction.JoinToParticipantsByToken -> {
           viewModel.onJoinToParticipantsByToken(action.token)
+          externalActionHandler.clean()
+        }
+
+        is SharedWishlistExternalAction.OpenChatById -> {
+          val wishlist = viewModel.fetchSharedWishlistById(action.id)
+          onNavToThirdPartySharedWishlistDetail(wishlist)
+        }
+
+        is SharedWishlistExternalAction.OpenDetailById -> {
+          val wishlist = viewModel.fetchSharedWishlistById(action.id)
+          onNavToThirdPartySharedWishlistDetail(wishlist)
+          externalActionHandler.clean()
+        }
       }
     }
   }

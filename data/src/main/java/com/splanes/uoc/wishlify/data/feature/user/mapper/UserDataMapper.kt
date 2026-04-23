@@ -13,12 +13,13 @@ import com.splanes.uoc.wishlify.domain.feature.user.utils.newUserCode
 
 class UserDataMapper {
 
-  fun map(uid: String, username: String, photoUrl: String?): UserEntity =
+  fun map(uid: String, token: String?, username: String, photoUrl: String?): UserEntity =
     UserEntity(
       uid = uid,
       username = username,
       photoUrl = photoUrl,
       code = newUserCode(),
+      token = token.orEmpty(),
       hobbies = UserEntity.Hobbies(
         enabled = false,
         values = emptyList()

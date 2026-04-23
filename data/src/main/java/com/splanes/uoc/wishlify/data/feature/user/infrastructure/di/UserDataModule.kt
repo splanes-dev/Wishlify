@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.data.feature.user.infrastructure.di
 
+import com.splanes.uoc.wishlify.data.feature.user.datasource.UserLocalDataSource
 import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.user.repository.UserRepositoryImpl
@@ -11,6 +12,7 @@ import org.koin.dsl.module
 internal val UserDataModule = module {
   // Data source
   singleOf(::UserRemoteDataSource)
+  singleOf(::UserLocalDataSource)
   // Repository
   singleOf(::UserRepositoryImpl) bind UserRepository::class
   // Mapper

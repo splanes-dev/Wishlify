@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,6 +22,7 @@ fun WishlifyApp(
     modifier = Modifier
       .fillMaxSize()
       .background(WishlifyTheme.colorScheme.background)
+      .imePadding()
       .systemBarsPadding(),
     navController = navController,
     startDestination = startDestination,

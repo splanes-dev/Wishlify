@@ -21,8 +21,15 @@ fun SecretSantaListRoute(
   LaunchedEffect(externalActionHandler) {
     externalActionHandler.consume { action ->
       when (action) {
-        is SecretSantaExternalAction.JoinToParticipantsByToken ->
+        is SecretSantaExternalAction.JoinToParticipantsByToken -> {
           viewModel.onJoinToParticipantsByToken(action.token)
+          externalActionHandler.clean()
+        }
+
+        is SecretSantaExternalAction.OpenChatById -> {
+          val secretSantaEvent = viewModel.fetchSecretSantaEventById(action.secretSantaId)
+          onNavToDetail(secretSantaEvent)
+        }
       }
     }
   }

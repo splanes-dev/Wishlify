@@ -9,6 +9,7 @@ import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.model.SecretSantaChatType
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.detail.model.SecretSantaDetailAction
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class SecretSantaDetailViewModel(
   private val eventId: String,
@@ -40,6 +42,16 @@ class SecretSantaDetailViewModel(
 
   private val uiSideEffectChannel = Channel<SecretSantaDetailUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
+
+  suspend fun fetchSecretSantaEvent(): SecretSantaEventDetail.DrawDone {
+    val currentState = viewModelState.value
+    if (currentState.event != null) {
+      return currentState.event as SecretSantaEventDetail.DrawDone
+    } else {
+      delay(300.milliseconds)
+      return fetchSecretSantaEvent()
+    }
+  }
 
   fun onEventUpdated() {
     viewModelScope.launch { fetchSecretSantaEvent(eventId) }

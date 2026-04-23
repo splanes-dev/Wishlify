@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_chat_name">Xats</string>
+    <string name="notification_channel_chat_description">Missatges de xats: wishlist compartides i amic invisible</string>
+    <string name="notification_channel_general_name">General</string>
+    <string name="notification_channel_general_description">Missatges d\'actualitzacions i recordatoris</string>
+</resources>

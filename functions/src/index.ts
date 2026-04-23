@@ -8,3 +8,8 @@ export {expireSharedWishlistStatesDaily} from "./scheduledSharedWishlistCleanup"
 export {extractLinkMetadata} from "./extractLinkMetadata";
 export {joinByInvitationLink} from "./joinByInvitationLink";
 export {cleanupExpiredCollectionsDaily} from "./cleanupExpiredCollectionsDaily";
+export {onSharedWishlistChatMessageCreated} from "./onSharedWishlistChatMessageCreated";
+export {onSecretSantaChatMessageCreated} from "./onSecretSantaChatMessageCreated";
+
+
+export {sendTestPush} from "./sendPushTest";

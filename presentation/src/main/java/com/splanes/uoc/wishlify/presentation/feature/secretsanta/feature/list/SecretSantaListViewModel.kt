@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEven
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.AddEventParticipantFromLinkUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaEventsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class SecretSantaListViewModel(
   private val fetchSecretSantaEventsUseCase: FetchSecretSantaEventsUseCase,
@@ -37,6 +39,16 @@ class SecretSantaListViewModel(
     viewModelScope.launch {
       addEventParticipantFromLinkUseCase(token)
       fetchSecretSantaEvents()
+    }
+  }
+
+  suspend fun fetchSecretSantaEventById(id: String): SecretSantaEvent {
+    val currentState = viewModelState.value
+    if (currentState.events.isNotEmpty()) {
+      return currentState.events.first { it.id == id }
+    } else {
+      delay(250.milliseconds)
+      return fetchSecretSantaEventById(id)
     }
   }
 

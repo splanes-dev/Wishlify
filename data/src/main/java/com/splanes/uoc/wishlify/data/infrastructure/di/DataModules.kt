@@ -4,6 +4,7 @@ import com.splanes.uoc.wishlify.data.common.firebase.infrastructure.di.FirebaseM
 import com.splanes.uoc.wishlify.data.common.media.infrastructure.di.MediaDataModule
 import com.splanes.uoc.wishlify.data.feature.authentication.infrastructure.di.AuthenticationDataModule
 import com.splanes.uoc.wishlify.data.feature.groups.infrastructure.di.GroupsDataModule
+import com.splanes.uoc.wishlify.data.feature.notifications.infrastructure.di.PushNotificationsDataModule
 import com.splanes.uoc.wishlify.data.feature.secretsanta.infrastructure.di.SecretSantaDataModule
 import com.splanes.uoc.wishlify.data.feature.session.infrastructure.di.SessionDataModule
 import com.splanes.uoc.wishlify.data.feature.shared.infrastructure.di.SharedWishlistsDataModule
@@ -20,4 +21,5 @@ val DataModules = listOf(
   SharedWishlistsDataModule,
   SecretSantaDataModule,
   GroupsDataModule,
+  PushNotificationsDataModule,
 )

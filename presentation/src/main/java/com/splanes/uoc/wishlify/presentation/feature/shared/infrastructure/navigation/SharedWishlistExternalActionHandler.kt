@@ -1,21 +1,29 @@
 package com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation
 
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 class SharedWishlistExternalActionHandler {
-  private val channel = Channel<SharedWishlistExternalAction>(capacity = Channel.BUFFERED)
-  private val actions = channel.receiveAsFlow()
+
+  private val actions: MutableStateFlow<SharedWishlistExternalAction?> = MutableStateFlow(null)
 
   fun dispatch(action: SharedWishlistExternalAction) {
-    channel.trySend(action)
+    actions.update { action }
   }
 
   suspend fun consume(consumer: suspend (SharedWishlistExternalAction) -> Unit) {
-    actions.collect { action -> consumer(action) }
+    actions.collect { action ->
+      action?.let { consumer(action) }
+    }
+  }
+
+  fun clean() {
+    actions.update { null }
   }
 }
 
 sealed interface SharedWishlistExternalAction {
   data class JoinToParticipantsByToken(val token: String) : SharedWishlistExternalAction
+  data class OpenDetailById(val id: String) : SharedWishlistExternalAction
+  data class OpenChatById(val id: String) : SharedWishlistExternalAction
 }

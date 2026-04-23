@@ -27,6 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
+import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.home.infrastructure.navigation.Home
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSanta
@@ -86,7 +87,13 @@ fun HomeRoute(mainNavController: NavHostController) {
       when (effect) {
         HomeUiSideEffect.NoSession -> isSignedOut = true
         is HomeUiSideEffect.NavToSecretSanta -> {
-          val action = SecretSantaExternalAction.JoinToParticipantsByToken(effect.deeplink.token)
+          val action = when (val deeplink = effect.deeplink) {
+            is Deeplink.JoinSecretSanta ->
+              SecretSantaExternalAction.JoinToParticipantsByToken(deeplink.token)
+
+            is Deeplink.SecretSantaChat ->
+              SecretSantaExternalAction.OpenChatById(deeplink.secretSantaId, deeplink.chatType)
+          }
           secretSantaExternalActionHandler.dispatch(action)
           navController.navigate(SecretSanta.List) {
             launchSingleTop = true
@@ -94,7 +101,13 @@ fun HomeRoute(mainNavController: NavHostController) {
         }
 
         is HomeUiSideEffect.NavToSharedWishlist -> {
-          val action = SharedWishlistExternalAction.JoinToParticipantsByToken(effect.deeplink.token)
+          val action = when (val deeplink = effect.deeplink) {
+            is Deeplink.JoinSharedWishlist ->
+              SharedWishlistExternalAction.JoinToParticipantsByToken(deeplink.token)
+
+            is Deeplink.SharedWishlistChat ->
+              SharedWishlistExternalAction.OpenChatById(deeplink.sharedWishlistId)
+          }
           sharedWishlistExternalActionHandler.dispatch(action)
           navController.navigate(SharedWishlists.List) {
             launchSingleTop = true

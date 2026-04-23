@@ -90,6 +90,7 @@ google-firebase-storage = { group = "com.google.firebase", name = "firebase-stor
 google-firebase-functions = { group = "com.google.firebase", name = "firebase-functions" }
 google-firebase-appcheck = { group = "com.google.firebase", name = "firebase-appcheck" }
 google-firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug" }
+google-firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 # Logger
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }

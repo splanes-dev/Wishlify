@@ -189,7 +189,11 @@ private fun ChatText(
         start = 10.dp,
         end = 10.dp
       ),
-      horizontalAlignment = Alignment.End
+      horizontalAlignment = if (type == MessageType.CurrentUser) {
+        Alignment.End
+      } else {
+        Alignment.Start
+      }
     ) {
       Text(
         text = AnnotatedString.fromHtml(text),
