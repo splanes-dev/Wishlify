@@ -41,6 +41,7 @@ import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
+import com.splanes.uoc.wishlify.presentation.common.components.PushPermissionRequestBottomSheet
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.components.SecretSantaEventCard
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.components.SecretSantaEventsFinishedHeader
@@ -68,6 +69,8 @@ fun SecretSantaListScreen(
     derivedStateOf { uiState.events.any { e -> e.isFinished() } }
   }
   var areEventsFinishedVisible by remember { mutableStateOf(true) }
+
+  var isPermissionModalOpen by remember { mutableStateOf(true) }
 
   Box(
     modifier = Modifier
@@ -172,6 +175,11 @@ fun SecretSantaListScreen(
         }
       }
     }
+
+    PushPermissionRequestBottomSheet(
+      visible = isPermissionModalOpen,
+      onDismiss = { isPermissionModalOpen = false }
+    )
 
     SecretSantaEventsSettingsBottomSheet(
       visible = isSettingsModalOpen,

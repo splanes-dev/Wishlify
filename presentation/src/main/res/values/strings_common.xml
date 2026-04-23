@@ -77,4 +77,7 @@
     <string name="feature_not_yet_available_negative_btn">Meh, no gaire</string>
     <string name="filters">Filtres</string>
     <string name="apply_filter">Aplicar filtres</string>
+    <string name="allow">Permetre</string>
+    <string name="request_notification_permission_modal_title">Toc toc!</string>
+    <string name="request_notification_permission_modal_description"><![CDATA[Volem enviar-te notificacions perquè estiguis al dia de tot i no et perdis res.<br/><b>Res d\'spam, només les justes</b>. A més, recorda que pots configurar les notificacions des de la secció del perfil.]]></string>
 </resources>

@@ -23,5 +23,7 @@ class SecretSantaExternalActionHandler {
 
 sealed interface SecretSantaExternalAction {
   data class JoinToParticipantsByToken(val token: String) : SecretSantaExternalAction
+  data class OpenDetailById(val secretSantaId: String) : SecretSantaExternalAction
+
   data class OpenChatById(val secretSantaId: String, val chatType: String) : SecretSantaExternalAction
 }

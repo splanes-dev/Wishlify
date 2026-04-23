@@ -9,8 +9,12 @@ import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.JoinWishli
 import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.JoinWishlistEditorPattern
 import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.SecretSantaChat
 import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.SecretSantaChatPattern
+import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.SecretSantaDetail
+import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.SecretSantaDetailPattern
 import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.SharedWishlistChat
 import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.SharedWishlistChatPattern
+import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.SharedWishlistDetail
+import com.splanes.uoc.wishlify.presentation.common.deeplink.Deeplink.SharedWishlistDetailPattern
 
 class DeeplinkMapper {
 
@@ -37,9 +41,19 @@ class DeeplinkMapper {
         }
       }
 
+      SharedWishlistDetailPattern -> {
+        val sharedWishlistId = uri.lastPathSegment
+        sharedWishlistId?.let { id -> SharedWishlistDetail(id) }
+      }
+
       SharedWishlistChatPattern -> {
         val sharedWishlistId = uri.pathSegments.dropLast(1).lastOrNull()
         sharedWishlistId?.let { id -> SharedWishlistChat(id) }
+      }
+
+      SecretSantaDetailPattern -> {
+        val secretSantaId = uri.lastPathSegment
+        secretSantaId?.let { id -> SecretSantaDetail(id) }
       }
 
       SecretSantaChatPattern -> {
@@ -53,7 +67,6 @@ class DeeplinkMapper {
       }
 
       null -> null
-
     }
   }
 }

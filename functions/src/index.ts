@@ -10,6 +10,5 @@ export {joinByInvitationLink} from "./joinByInvitationLink";
 export {cleanupExpiredCollectionsDaily} from "./cleanupExpiredCollectionsDaily";
 export {onSharedWishlistChatMessageCreated} from "./onSharedWishlistChatMessageCreated";
 export {onSecretSantaChatMessageCreated} from "./onSecretSantaChatMessageCreated";
-
-
-export {sendTestPush} from "./sendPushTest";
+export {onSharedWishlistItemUpdated} from "./onSharedWishlistItemUpdated";
+export {sendDeadlineRemindersDaily} from "./sendDeadlineRemindersDaily";

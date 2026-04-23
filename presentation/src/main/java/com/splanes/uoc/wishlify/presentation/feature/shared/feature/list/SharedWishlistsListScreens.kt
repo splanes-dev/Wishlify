@@ -37,6 +37,7 @@ import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
+import com.splanes.uoc.wishlify.presentation.common.components.PushPermissionRequestBottomSheet
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
 import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistCard
@@ -62,6 +63,8 @@ fun SharedWishlistsListScreen(
 
   var isSearchModalOpen by remember { mutableStateOf(false) }
   val searchSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isPermissionModalOpen by remember { mutableStateOf(true) }
 
   Box(
     modifier = Modifier
@@ -139,6 +142,11 @@ fun SharedWishlistsListScreen(
         }
       }
     }
+
+    PushPermissionRequestBottomSheet(
+      visible = isPermissionModalOpen,
+      onDismiss = { isPermissionModalOpen = false }
+    )
 
     SharedWishlistsSearchBottomSheet(
       visible = isSearchModalOpen,

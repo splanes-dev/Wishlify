@@ -26,6 +26,12 @@ fun SecretSantaListRoute(
           externalActionHandler.clean()
         }
 
+        is SecretSantaExternalAction.OpenDetailById -> {
+          val secretSantaEvent = viewModel.fetchSecretSantaEventById(action.secretSantaId)
+          onNavToDetail(secretSantaEvent)
+          externalActionHandler.clean()
+        }
+
         is SecretSantaExternalAction.OpenChatById -> {
           val secretSantaEvent = viewModel.fetchSecretSantaEventById(action.secretSantaId)
           onNavToDetail(secretSantaEvent)

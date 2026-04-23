@@ -33,7 +33,9 @@ import com.splanes.uoc.wishlify.presentation.feature.home.infrastructure.navigat
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSanta
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSantaExternalAction
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSantaExternalActionHandler
-import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistExternalAction
+import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistExternalAction.JoinToParticipantsByToken
+import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistExternalAction.OpenChatById
+import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistExternalAction.OpenDetailById
 import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlistExternalActionHandler
 import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlists
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.infrastructure.navigation.WishlistExternalAction
@@ -91,6 +93,9 @@ fun HomeRoute(mainNavController: NavHostController) {
             is Deeplink.JoinSecretSanta ->
               SecretSantaExternalAction.JoinToParticipantsByToken(deeplink.token)
 
+            is Deeplink.SecretSantaDetail ->
+              SecretSantaExternalAction.OpenDetailById(deeplink.secretSantaId)
+
             is Deeplink.SecretSantaChat ->
               SecretSantaExternalAction.OpenChatById(deeplink.secretSantaId, deeplink.chatType)
           }
@@ -103,10 +108,13 @@ fun HomeRoute(mainNavController: NavHostController) {
         is HomeUiSideEffect.NavToSharedWishlist -> {
           val action = when (val deeplink = effect.deeplink) {
             is Deeplink.JoinSharedWishlist ->
-              SharedWishlistExternalAction.JoinToParticipantsByToken(deeplink.token)
+              JoinToParticipantsByToken(deeplink.token)
 
             is Deeplink.SharedWishlistChat ->
-              SharedWishlistExternalAction.OpenChatById(deeplink.sharedWishlistId)
+              OpenChatById(deeplink.sharedWishlistId)
+
+            is Deeplink.SharedWishlistDetail ->
+              OpenDetailById(deeplink.sharedWishlistId)
           }
           sharedWishlistExternalActionHandler.dispatch(action)
           navController.navigate(SharedWishlists.List) {

@@ -11,7 +11,11 @@ sealed interface Deeplink {
 
   data class JoinSecretSanta(val token: String) : SecretSanta
 
+  data class SharedWishlistDetail(val sharedWishlistId: String) : SharedWishlist
+
   data class SharedWishlistChat(val sharedWishlistId: String) : SharedWishlist
+
+  data class SecretSantaDetail(val secretSantaId: String) : SecretSanta
 
   data class SecretSantaChat(val secretSantaId: String, val chatType: String) : SecretSanta
 
@@ -19,20 +23,27 @@ sealed interface Deeplink {
     val regex: Regex
   }
   data object JoinWishlistEditorPattern : Pattern {
-    override val regex = Regex("^/wishlist/join/.*$")
+    override val regex = Regex("^/wishlist/join/[a-zA-Z0-9]{32}$")
   }
   data object JoinSharedWishlistPattern : Pattern {
-    override val regex = Regex("^/shared-wishlist/join/.*$")
+    override val regex = Regex("^/shared-wishlist/join/[a-zA-Z0-9]{32}$")
   }
   data object JoinSecretSantaPattern : Pattern {
-    override val regex = Regex("^/secret-santa/join/.*$")
+    override val regex = Regex("^/secret-santa/join/[a-zA-Z0-9]{32}$")
+  }
+  data object SharedWishlistDetailPattern : Pattern {
+    override val regex = Regex("^/shared-wishlist/[a-zA-Z0-9]{32}$")
   }
   data object SharedWishlistChatPattern : Pattern {
-    override val regex = Regex("^/shared-wishlist/.*/chat$")
+    override val regex = Regex("^/shared-wishlist/[a-zA-Z0-9]{32}/chat$")
+  }
+
+  data object SecretSantaDetailPattern : Pattern {
+    override val regex = Regex("^/secret-santa/[a-zA-Z0-9]{32}$")
   }
 
   data object SecretSantaChatPattern : Pattern {
-    override val regex = Regex("^/secret-santa/.*/chat$")
+    override val regex = Regex("^/secret-santa/[a-zA-Z0-9]{32}/chat$")
   }
 
   companion object {
@@ -40,7 +51,9 @@ sealed interface Deeplink {
       JoinWishlistEditorPattern,
       JoinSharedWishlistPattern,
       JoinSecretSantaPattern,
+      SharedWishlistDetailPattern,
       SharedWishlistChatPattern,
+      SecretSantaDetailPattern,
       SecretSantaChatPattern
     )
 
