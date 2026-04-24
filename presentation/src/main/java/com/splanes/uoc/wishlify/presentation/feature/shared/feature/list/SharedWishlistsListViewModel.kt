@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.presentation.feature.shared.feature.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.splanes.uoc.wishlify.domain.feature.notifications.usecase.IsPermissionModalVisibleUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.AddSharedWishlistParticipantByTokenUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
@@ -19,6 +20,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class SharedWishlistsListViewModel(
   private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase,
+  private val isPermissionModalVisibleUseCase: IsPermissionModalVisibleUseCase,
   private val addSharedWishlistParticipantByTokenUseCase: AddSharedWishlistParticipantByTokenUseCase,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
@@ -71,6 +73,7 @@ class SharedWishlistsListViewModel(
           viewModelState.update { state ->
             state.copy(
               isLoadingFullscreen = false,
+              isPermissionModalVisible = isPermissionModalVisibleUseCase(),
               wishlists = wishlists,
             )
           }
@@ -89,6 +92,7 @@ class SharedWishlistsListViewModel(
   private data class ViewModelState(
     val wishlists: List<SharedWishlist> = emptyList(),
     val isLoadingFullscreen: Boolean = true,
+    val isPermissionModalVisible: Boolean = false,
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
@@ -104,6 +108,7 @@ class SharedWishlistsListViewModel(
         else ->
           SharedWishlistsListUiState.Listing(
             wishlists = wishlists.sorted(),
+            isPermissionModalVisible = isPermissionModalVisible,
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )

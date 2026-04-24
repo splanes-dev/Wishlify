@@ -46,6 +46,7 @@ fun SharedWishlistThirdPartyDetailRoute(
         onDismissError = viewModel::onDismissError,
         onItemAction = viewModel::onItemAction,
         onUpdateItemState = viewModel::onUpdateItemState,
+        onChangeProductFilters = viewModel::onChangeProductFilters,
         onOpenItemStateModal = viewModel::onOpenItemStateModal,
         onClearShareRequestError = viewModel::onClearShareRequestError,
         onCloseItemDetailModal = viewModel::onCloseItemDetailModal,

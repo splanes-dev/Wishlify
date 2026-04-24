@@ -14,6 +14,7 @@ sealed interface WishlistsListUiState {
     val filtersState: WishlistsFiltersState,
     val categories: List<Category>,
     val sharedWishlistFeedback: String?,
+    val newCategoryNameError: String?,
     val isLoading: Boolean,
     val error: ErrorUiModel?,
   ): WishlistsListUiState
@@ -23,6 +24,7 @@ sealed interface WishlistsListUiState {
     val filtersState: WishlistsFiltersState,
     val categories: List<Category>,
     val sharedWishlistFeedback: String?,
+    val newCategoryNameError: String?,
     val isWishlistSelectionModalOpen: Boolean,
     val wishlistNewItemByShare: WishlistNewItemByShare?,
     val isLoading: Boolean,

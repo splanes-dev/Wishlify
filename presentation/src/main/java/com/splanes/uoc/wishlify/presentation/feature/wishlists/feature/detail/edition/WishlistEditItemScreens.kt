@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.edition
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -67,6 +69,7 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 fun WishlistEditItemFormScreen(
   uiState: WishlistEditItemUiState.Form,
   onEdit: (WishlistItemForm) -> Unit,
+  onAutocompleteByLink: (String) -> Unit,
   onClearInputError: (WishlistItemForm.Input) -> Unit,
   onDismissError: () -> Unit,
   onCancel: () -> Unit,
@@ -267,13 +270,31 @@ fun WishlistEditItemFormScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextInput(
+        Row(
           modifier = Modifier.fillMaxWidth(),
-          state = linkState,
-          label = stringResource(R.string.wishlists_new_item_link_input),
-          leadingIcon = Icons.Outlined.Link,
-          singleLine = true,
-        )
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+          TextInput(
+            modifier = Modifier.weight(1f),
+            state = linkState,
+            label = stringResource(R.string.wishlists_new_item_link_input),
+            leadingIcon = Icons.Outlined.Link,
+            singleLine = true,
+          )
+
+          AnimatedVisibility(visible = linkState.text.isNotBlank()) {
+            FilledTonalButton(
+              shapes = ButtonShape,
+              onClick = { onAutocompleteByLink(linkState.text) }
+            ) {
+              Icon(
+                painter = painterResource(R.drawable.ic_autocomplete),
+                contentDescription = null
+              )
+            }
+          }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

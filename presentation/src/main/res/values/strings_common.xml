@@ -80,4 +80,10 @@
     <string name="allow">Permetre</string>
     <string name="request_notification_permission_modal_title">Toc toc!</string>
     <string name="request_notification_permission_modal_description"><![CDATA[Volem enviar-te notificacions perquè estiguis al dia de tot i no et perdis res.<br/><b>Res d\'spam, només les justes</b>. A més, recorda que pots configurar les notificacions des de la secció del perfil.]]></string>
+    <string name="filter_product_price">Preu del producte</string>
+    <string name="filter_product_state">Estat del producte</string>
+    <string name="filter_product_priority">Prioritat del producte</string>
+    <string name="filter_operand_less_than">Menor que</string>
+    <string name="filter_operand_greater_than">Major que</string>
+    <string name="filter_operand_equal_to">Igual a</string>
 </resources>

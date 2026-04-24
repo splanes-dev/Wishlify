@@ -4,8 +4,10 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchAllLinkDataUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.UpdateWishlistItemUseCase
+import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormUiMapper
@@ -34,6 +36,7 @@ class WishlistEditItemViewModel(
   private val itemId: String,
   private val fetchWishlistItemUseCase: FetchWishlistItemUseCase,
   private val updateWishlistItemUseCase: UpdateWishlistItemUseCase,
+  private val fetchAllLinkDataUseCase: FetchAllLinkDataUseCase,
   private val formErrorMapper: WishlistItemFormErrorMapper,
   private val formUiMapper: WishlistItemFormUiMapper,
   private val errorUiMapper: ErrorUiMapper,
@@ -83,6 +86,26 @@ class WishlistEditItemViewModel(
               )
             }
           }
+      }
+    }
+  }
+
+  fun onAutocomplete(link: String) {
+    viewModelState.update { state -> state.copy(isLoading = true) }
+    viewModelScope.launch {
+      val data = fetchAllLinkDataUseCase(link).getOrNull()
+      viewModelState.update { state ->
+        state.copy(
+          isLoading = false,
+          form = state.form.copy(
+            photo = data?.imageUrl?.let(ImagePicker::Url) ?: state.form.photo,
+            name = data?.product ?: state.form.name,
+            description = data?.description ?: state.form.description,
+            store = data?.store ?: state.form.store,
+            unitPrice = data?.price?.toFloat() ?: state.form.unitPrice,
+            link = data?.link ?: state.form.link
+          )
+        )
       }
     }
   }

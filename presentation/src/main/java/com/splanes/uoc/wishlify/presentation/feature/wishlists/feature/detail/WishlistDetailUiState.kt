@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail
 
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 
 sealed interface WishlistDetailUiState {
@@ -17,6 +18,7 @@ sealed interface WishlistDetailUiState {
   data class Empty(
     val wishlistName: String,
     val wishlist: Wishlist,
+    val productFilters: List<FilterProduct>,
     val isNewItemByLinkModalOpen: Boolean,
     val newItemByLinkError: String?,
     val isLoading: Boolean,
@@ -32,6 +34,7 @@ sealed interface WishlistDetailUiState {
     val isNewItemByLinkModalOpen: Boolean,
     val newItemByLinkError: String?,
     val items: List<WishlistItem>,
+    val productFilters: List<FilterProduct>,
     val isLoading: Boolean,
     val error: ErrorUiModel?
   ) : WishlistDetailUiState {

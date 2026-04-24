@@ -10,6 +10,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistIt
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.UpdateWishlistItemPurchaseUseCase
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.WishlistItemAction
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.WishlistItemForm
@@ -139,6 +140,12 @@ class WishlistDetailViewModel(
     }
   }
 
+  fun onChangeProductFilters(filters: List<FilterProduct>) {
+    viewModelState.update { state ->
+      state.copy(filters = filters)
+    }
+  }
+
   fun onChangeItemByLinkModalVisibility(visible: Boolean) {
     viewModelState.update { state ->
       state.copy(
@@ -265,6 +272,7 @@ class WishlistDetailViewModel(
     val wishlistName: String,
     val wishlist: Wishlist? = null,
     val items: List<WishlistItem> = emptyList(),
+    val filters: List<FilterProduct> = emptyList(),
     val isItemDetailModalOpen: Boolean = false,
     val isItemDetailButtonLoading: Boolean = false,
     val itemSelected: WishlistItem? = null,
@@ -284,10 +292,11 @@ class WishlistDetailViewModel(
         wishlist == null ->
           WishlistDetailUiState.Error(wishlistName = wishlistName)
 
-        items.isEmpty() ->
+        items.isEmpty(filters) ->
           WishlistDetailUiState.Empty(
             wishlistName = wishlistName,
             wishlist = wishlist,
+            productFilters = filters,
             isNewItemByLinkModalOpen = isNewItemByLinkModalOpen,
             newItemByLinkError = newItemByLinkError,
             isLoading = isLoading,
@@ -298,7 +307,8 @@ class WishlistDetailViewModel(
           WishlistDetailUiState.Listing(
             wishlistName = wishlistName,
             wishlist = wishlist,
-            items = items.sorted(),
+            productFilters = filters,
+            items = items.sorted().applyFilters(filters),
             itemSelected = itemSelected,
             isItemDetailModalOpen = isItemDetailModalOpen,
             isItemDetailButtonLoading = isItemDetailButtonLoading,
@@ -308,6 +318,34 @@ class WishlistDetailViewModel(
             error = error?.let(errorUiMapper::map)
           )
       }
+
+    private fun List<WishlistItem>.isEmpty(filters: List<FilterProduct>) =
+      isEmpty() || applyFilters(filters).isEmpty()
+
+    private fun List<WishlistItem>.applyFilters(filters: List<FilterProduct>) =
+      this
+        .filter { item ->
+          filters
+            .filterIsInstance<FilterProduct.Price>()
+            .all { filter ->
+              when (filter.value) {
+                is FilterProduct.EqualTo<*> -> item.price == filter.value.value
+                is FilterProduct.GreaterThan<*> -> item.price > filter.value.value
+                is FilterProduct.LessThan<*> -> item.price < filter.value.value
+              }
+            }
+        }
+        .filter { item ->
+          filters
+            .filterIsInstance<FilterProduct.Priority>()
+            .all { filter ->
+              when (filter.value) {
+                is FilterProduct.EqualTo<*> -> item.priority == filter.value.value
+                is FilterProduct.GreaterThan<*> -> item.priority.weight > filter.value.value.weight
+                is FilterProduct.LessThan<*> -> item.priority.weight < filter.value.value.weight
+              }
+            }
+        }
 
     private fun List<WishlistItem>.sorted() = sortedWith(
       compareBy<WishlistItem> { it.purchased != null }

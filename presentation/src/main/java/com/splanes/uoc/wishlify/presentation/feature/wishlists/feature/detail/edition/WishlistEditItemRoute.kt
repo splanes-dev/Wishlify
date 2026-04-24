@@ -30,6 +30,7 @@ fun WishlistEditItemRoute(
       WishlistEditItemFormScreen(
         uiState = state,
         onEdit = viewModel::onEdit,
+        onAutocompleteByLink = viewModel::onAutocomplete,
         onClearInputError = viewModel::onClearInputError,
         onDismissError = viewModel::onDismissError,
         onCancel = { onFinish(false) }

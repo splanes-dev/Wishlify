@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.com
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BorderColor
 import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +48,7 @@ fun WishlistCardSettingsBottomSheet(
 }
 
 private fun WishlistCardSettings.icon() = when (this) {
+  WishlistCardSettings.FilterProducts -> Icons.Outlined.FilterAlt
   WishlistCardSettings.Edit -> Icons.Outlined.BorderColor
   WishlistCardSettings.Share -> Icons.Outlined.Share
   WishlistCardSettings.Delete -> Icons.Outlined.DeleteForever
@@ -55,6 +57,7 @@ private fun WishlistCardSettings.icon() = when (this) {
 
 @Composable
 private fun WishlistCardSettings.text() = when (this) {
+  WishlistCardSettings.FilterProducts -> R.string.filter_items
   WishlistCardSettings.Edit -> R.string.wishlists_item_edit
   WishlistCardSettings.Share -> R.string.wishlists_item_share
   WishlistCardSettings.BackToPrivate -> R.string.shared_wishlists_wishlist_settings_back_to_privates

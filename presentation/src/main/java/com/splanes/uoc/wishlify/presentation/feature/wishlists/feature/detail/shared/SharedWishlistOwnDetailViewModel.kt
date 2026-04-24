@@ -7,6 +7,7 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistUseCase
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
@@ -59,6 +60,10 @@ class SharedWishlistOwnDetailViewModel(
         isItemDetailModalOpen = true
       )
     }
+  }
+
+  fun onChangeProductFilters(filters: List<FilterProduct>) {
+    viewModelState.update { state -> state.copy(filters = filters) }
   }
 
   fun onBackToPrivate() {
@@ -120,6 +125,7 @@ class SharedWishlistOwnDetailViewModel(
     val wishlistTarget: String?,
     val wishlist: Wishlist.Shared? = null,
     val items: List<WishlistItem> = emptyList(),
+    val filters: List<FilterProduct> = emptyList(),
     val isItemDetailModalOpen: Boolean = false,
     val itemSelected: WishlistItem? = null,
     val isLoadingFullscreen: Boolean = true,
@@ -147,12 +153,44 @@ class SharedWishlistOwnDetailViewModel(
             wishlistName = wishlistName,
             wishlistTarget = wishlistTarget,
             wishlist = wishlist,
-            items = items,
+            items = items.sorted().applyFilters(filters),
             itemSelected = itemSelected,
+            productFilters = filters,
             isItemDetailModalOpen = isItemDetailModalOpen,
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )
       }
+
+    private fun List<WishlistItem>.sorted() = sortedWith(
+      compareBy<WishlistItem> { it.purchased != null }
+        .thenByDescending { it.priority.weight }
+        .thenBy { it.createdAt }
+    )
+
+    private fun List<WishlistItem>.applyFilters(filters: List<FilterProduct>) =
+      this
+        .filter { item ->
+          filters
+            .filterIsInstance<FilterProduct.Price>()
+            .all { filter ->
+              when (filter.value) {
+                is FilterProduct.EqualTo<*> -> item.price == filter.value.value
+                is FilterProduct.GreaterThan<*> -> item.price > filter.value.value
+                is FilterProduct.LessThan<*> -> item.price < filter.value.value
+              }
+            }
+        }
+        .filter { item ->
+          filters
+            .filterIsInstance<FilterProduct.Priority>()
+            .all { filter ->
+              when (filter.value) {
+                is FilterProduct.EqualTo<*> -> item.priority == filter.value.value
+                is FilterProduct.GreaterThan<*> -> item.priority.weight > filter.value.value.weight
+                is FilterProduct.LessThan<*> -> item.priority.weight < filter.value.value.weight
+              }
+            }
+        }
   }
 }

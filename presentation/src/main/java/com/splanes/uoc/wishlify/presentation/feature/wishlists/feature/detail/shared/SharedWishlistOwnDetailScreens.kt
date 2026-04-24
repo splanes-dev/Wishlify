@@ -42,6 +42,9 @@ import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProductBar
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProductBottomSheet
 import com.splanes.uoc.wishlify.presentation.common.utils.openBrowserLink
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistMoveToPrivateDialog
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.shared.components.SharedOwnWishlistDetailSettingsBottomSheet
@@ -58,6 +61,7 @@ import kotlinx.coroutines.launch
 fun SharedWishlistOwnDetailScreen(
   uiState: SharedWishlistOwnDetailUiState.Listing,
   onOpenItemDetail: (WishlistItem) -> Unit,
+  onChangeProductFilters: (List<FilterProduct>) -> Unit,
   onCloseItemDetailModal: () -> Unit,
   onBackToPrivates: () -> Unit,
   onDismissError: () -> Unit,
@@ -71,6 +75,9 @@ fun SharedWishlistOwnDetailScreen(
 
   var isSettingsModalOpen by remember { mutableStateOf(false) }
   val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  val productFiltersSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isProductFiltersModalOpen by remember { mutableStateOf(false) }
 
   var isBackToPrivateDialogOpen by remember { mutableStateOf(false) }
 
@@ -114,7 +121,7 @@ fun SharedWishlistOwnDetailScreen(
             } else {
               IconButton(
                 shapes = IconButtonShape,
-                onClick = { /* todo */ }
+                onClick = { isProductFiltersModalOpen = true }
               ) {
                 Icon(
                   imageVector = Icons.Outlined.FilterAlt,
@@ -144,17 +151,45 @@ fun SharedWishlistOwnDetailScreen(
           )
         }
 
-        items(
-          items = uiState.items,
-          key = { item -> item.id }
-        ) { item ->
-          SharedOwnWishlistItemCard(
-            modifier = Modifier
-              .fillMaxWidth()
-              .animateItem(),
-            item = item,
-            onClick = { onOpenItemDetail(item) }
-          )
+        if (uiState.productFilters.isNotEmpty()) {
+          item {
+            FilterProductBar(
+              modifier = Modifier.fillMaxWidth(),
+              filters = uiState.productFilters,
+              onOpenFilters = { isProductFiltersModalOpen = true },
+              onChange = onChangeProductFilters
+            )
+          }
+        }
+
+        if (uiState.items.isEmpty() && uiState.productFilters.isNotEmpty()) {
+          item {
+            Column {
+              Spacer(Modifier.weight(.5f))
+
+              EmptyState(
+                modifier = Modifier.fillMaxWidth(),
+                image = painterResource(R.drawable.wishlists_items_empty_state),
+                title = stringResource(R.string.wishlists_detail_empty_state_title),
+                description = stringResource(R.string.wishlists_detail_empty_state_with_filters_description)
+              )
+
+              Spacer(Modifier.weight(.5f))
+            }
+          }
+        } else {
+          items(
+            items = uiState.items,
+            key = { item -> item.id }
+          ) { item ->
+            SharedOwnWishlistItemCard(
+              modifier = Modifier
+                .fillMaxWidth()
+                .animateItem(),
+              item = item,
+              onClick = { onOpenItemDetail(item) }
+            )
+          }
         }
       }
     }
@@ -176,6 +211,27 @@ fun SharedWishlistOwnDetailScreen(
       )
     }
 
+    FilterProductBottomSheet(
+      visible = isProductFiltersModalOpen,
+      sheetState = productFiltersSheetState,
+      filters = listOf(
+        FilterProduct.Filter.Price,
+        FilterProduct.Filter.Priority,
+      ),
+      current = uiState.productFilters,
+      onDismiss = {
+        isProductFiltersModalOpen = false
+      },
+      onApply = { f ->
+        coroutineScope
+          .launch { productFiltersSheetState.hide() }
+          .invokeOnCompletion {
+            isProductFiltersModalOpen = false
+            onChangeProductFilters(f)
+          }
+      }
+    )
+
     SharedOwnWishlistDetailSettingsBottomSheet(
       visible = isSettingsModalOpen,
       sheetState = settingsSheetState,
@@ -183,9 +239,7 @@ fun SharedWishlistOwnDetailScreen(
       onDismiss = { isSettingsModalOpen = false },
       onSettingClick = { setting ->
         when (setting) {
-          SharedOwnWishlistSettings.Filter -> {
-            // TODO
-          }
+          SharedOwnWishlistSettings.Filter -> isProductFiltersModalOpen = true
           SharedOwnWishlistSettings.BackToPrivates -> isBackToPrivateDialogOpen = true
         }
         coroutineScope

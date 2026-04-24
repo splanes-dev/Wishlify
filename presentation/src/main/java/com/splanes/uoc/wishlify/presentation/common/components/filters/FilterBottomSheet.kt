@@ -1,4 +1,4 @@
-package com.splanes.uoc.wishlify.presentation.common.components
+package com.splanes.uoc.wishlify.presentation.common.components.filters
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement

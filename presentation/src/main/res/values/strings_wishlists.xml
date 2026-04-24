@@ -36,6 +36,7 @@
     <string name="wishlists_detail_empty_state_title">Ouch!</string>
     <string name="wishlists_detail_error_title">Ooops!</string>
     <string name="wishlists_detail_empty_state_description">La llista està buida.\nComença a afegir ítems i no deixis que se\'t passi res!</string>
+    <string name="wishlists_detail_empty_state_with_filters_description">No hi ha productes que compleixin els filtres marcats. Prova de modificar-los!</string>
     <string name="wishlists_detail_error_description">Hi hagut problemes per recuperar la informació… No et preocupis, estem treballant per solucionar-ho com més aviat millor.\nTorna a intentar-ho en una estona.</string>
     <string name="wishlists_detail_new_item">Afegir nou producte</string>
     <string name="wishlists_detail_new_item_link_modal_description">Enganxa l\'enllaç al producte, nosaltres fem la resta</string>

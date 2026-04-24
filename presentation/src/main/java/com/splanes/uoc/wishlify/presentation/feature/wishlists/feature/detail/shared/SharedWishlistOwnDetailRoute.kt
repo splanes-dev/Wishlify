@@ -31,6 +31,7 @@ fun SharedWishlistOwnDetailRoute(
       SharedWishlistOwnDetailScreen(
         uiState = state,
         onOpenItemDetail = viewModel::onOpenItemDetail,
+        onChangeProductFilters = viewModel::onChangeProductFilters,
         onDismissError = viewModel::onDismissError,
         onCloseItemDetailModal = viewModel::onCloseItemDetailModal,
         onBackToPrivates = viewModel::onBackToPrivate,

@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.ConfirmationDialog
@@ -58,6 +59,7 @@ import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.compone
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistsFinishedHeader
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenu
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenuItem
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.NewCategoryBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCard
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCardSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistFilterBottomSheet
@@ -78,6 +80,7 @@ fun WishlistsListScreen(
   uiState: WishlistsListUiState.Listing,
   onUpdateFilters: (state: WishlistsFiltersState) -> Unit,
   onCreateWishlist: (isOwn: Boolean) -> Unit,
+  onCreateCategory: (name: String, color: Category.CategoryColor) -> Unit,
   onWishlistClick: (Wishlist) -> Unit,
   onWishlistClickWithCreate: (Wishlist, WishlistNewItemByShare) -> Unit,
   onEditWishlist: (Wishlist) -> Unit,
@@ -86,6 +89,7 @@ fun WishlistsListScreen(
   onAdminCategories: () -> Unit,
   onSharedBackToPrivate: (wishlist: Wishlist) -> Unit,
   onClearSharedWishlistFeedback: () -> Unit,
+  onClearNewCategoryNameError: () -> Unit,
   onCloseWishlistSelectionModal: () -> Unit,
   onDismissError: () -> Unit,
 ) {
@@ -118,6 +122,9 @@ fun WishlistsListScreen(
   var filterOpened: WishlistsFilter? by remember { mutableStateOf(null) }
 
   var isBackToPrivateDialogOpen by remember { mutableStateOf(false) }
+
+  var isNewCategoryModalOpen by remember { mutableStateOf(false) }
+  val newCategorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
   var areWishlistsFinishedVisible by remember { mutableStateOf(false) }
   val existsWishlistsFinished by remember(wishlists) {
@@ -180,6 +187,7 @@ fun WishlistsListScreen(
             icon = rememberVectorPainter(Icons.Outlined.Sell),
             text = stringResource(R.string.wishlists_category),
             onClick = {
+              isNewCategoryModalOpen = true
               collapse()
             }
           )
@@ -346,6 +354,7 @@ fun WishlistsListScreen(
                 .launch { wishlistSettingsSheetState.hide() }
                 .invokeOnCompletion { isWishlistSettingsModalOpen = false }
             }
+            else -> Unit
           }
         }
       )
@@ -416,6 +425,22 @@ fun WishlistsListScreen(
       )
     }
 
+    NewCategoryBottomSheet(
+      isVisible = isNewCategoryModalOpen,
+      sheetState = newCategorySheetState,
+      error = uiState.newCategoryNameError,
+      onClearInputError = onClearNewCategoryNameError,
+      onDismiss = { isNewCategoryModalOpen = false },
+      onCreate = { name, color ->
+        coroutineScope
+          .launch { newCategorySheetState.hide() }
+          .invokeOnCompletion {
+            isNewCategoryModalOpen = false
+            onCreateCategory(name, color)
+          }
+      }
+    )
+
     WishlistsSearchBottomSheet(
       visible = isSearchModalOpen,
       sheetState = searchSheetState,
@@ -468,8 +493,10 @@ fun WishlistsListScreen(
 fun WishlistsListEmptyScreen(
   uiState: WishlistsListUiState.Empty,
   onCreateWishlist: (isOwn: Boolean) -> Unit,
+  onCreateCategory: (name: String, color: Category.CategoryColor) -> Unit,
   onUpdateFilters: (WishlistsFiltersState) -> Unit,
   onClearSharedWishlistFeedback: () -> Unit,
+  onClearNewCategoryNameError: () -> Unit,
   onAdminCategories: () -> Unit,
   onDismissError: () -> Unit,
 ) {
@@ -480,6 +507,9 @@ fun WishlistsListEmptyScreen(
 
   var isSettingsModalOpen by remember { mutableStateOf(false) }
   val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isNewCategoryModalOpen by remember { mutableStateOf(false) }
+  val newCategorySheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
   val resources = LocalResources.current
   val snackbarState = remember { SnackbarHostState() }
@@ -539,6 +569,7 @@ fun WishlistsListEmptyScreen(
             icon = rememberVectorPainter(Icons.Outlined.Sell),
             text = stringResource(R.string.wishlists_category),
             onClick = {
+              isNewCategoryModalOpen = true
               collapse()
             }
           )
@@ -624,6 +655,22 @@ fun WishlistsListEmptyScreen(
         }
       )
     }
+
+    NewCategoryBottomSheet(
+      isVisible = isNewCategoryModalOpen,
+      sheetState = newCategorySheetState,
+      error = uiState.newCategoryNameError,
+      onClearInputError = onClearNewCategoryNameError,
+      onDismiss = { isNewCategoryModalOpen = false },
+      onCreate = { name, color ->
+        coroutineScope
+          .launch { newCategorySheetState.hide() }
+          .invokeOnCompletion {
+            isNewCategoryModalOpen = false
+            onCreateCategory(name, color)
+          }
+      }
+    )
 
     WishlistsSettingsBottomSheet(
       visible = isSettingsModalOpen,

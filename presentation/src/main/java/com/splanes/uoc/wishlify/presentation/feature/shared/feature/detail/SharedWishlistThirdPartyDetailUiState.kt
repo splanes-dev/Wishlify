@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail
 
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.shared.model.SharedWishlistItemStateAction
 
@@ -28,6 +29,7 @@ sealed interface SharedWishlistThirdPartyDetailUiState {
     val itemSelectedToUpdateState: SharedWishlistItem?,
     val itemStateActions: List<SharedWishlistItemStateAction>,
     val items: List<SharedWishlistItem>,
+    val productFilters: List<FilterProduct>,
     val shareRequestError: String?,
     val isLoading: Boolean,
     val error: ErrorUiModel?

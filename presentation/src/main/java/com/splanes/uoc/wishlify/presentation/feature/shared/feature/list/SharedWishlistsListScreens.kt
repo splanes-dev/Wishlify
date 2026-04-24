@@ -64,7 +64,7 @@ fun SharedWishlistsListScreen(
   var isSearchModalOpen by remember { mutableStateOf(false) }
   val searchSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-  var isPermissionModalOpen by remember { mutableStateOf(true) }
+  var isPermissionModalOpen by remember { mutableStateOf(uiState.isPermissionModalVisible) }
 
   Box(
     modifier = Modifier

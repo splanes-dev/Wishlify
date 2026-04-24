@@ -50,6 +50,9 @@ import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
 import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProductBar
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProductBottomSheet
 import com.splanes.uoc.wishlify.presentation.common.utils.openBrowserLink
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenu
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenuItem
@@ -71,6 +74,7 @@ fun WishlistDetailScreen(
   onDeleteWishlist: (Wishlist) -> Unit,
   onCreateItem: (link: String?) -> Unit,
   onItemAction: (WishlistItem, WishlistItemAction) -> Unit,
+  onChangeProductFilters: (List<FilterProduct>) -> Unit,
   onChangeItemByLinkModalVisibility: (visible: Boolean) -> Unit,
   onClearInputError: (WishlistItemForm.Input) -> Unit,
   onCloseItemDetailModal: () -> Unit,
@@ -98,6 +102,9 @@ fun WishlistDetailScreen(
 
   val wishlistSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
   var isWishlistSettingsModalOpen by remember { mutableStateOf(false) }
+
+  val productFiltersSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isProductFiltersModalOpen by remember { mutableStateOf(false) }
 
   LaunchedEffect(uiState.isNewItemByLinkModalOpen) {
     if (uiState.isNewItemByLinkModalOpen) {
@@ -185,11 +192,24 @@ fun WishlistDetailScreen(
           .fillMaxSize()
           .padding(paddings),
         contentPadding = PaddingValues(
-          horizontal = 16.dp,
-          vertical = 24.dp
+          start = 16.dp,
+          end = 16.dp,
+          bottom = 24.dp
         ),
         verticalArrangement = Arrangement.spacedBy(16.dp),
       ) {
+
+        if (uiState.productFilters.isNotEmpty()) {
+          stickyHeader {
+            FilterProductBar(
+              modifier = Modifier.fillMaxWidth(),
+              filters = uiState.productFilters,
+              onOpenFilters = { isProductFiltersModalOpen = true },
+              onChange = onChangeProductFilters
+            )
+          }
+        }
+
         items(
           items = uiState.items,
           key = { item -> item.id }
@@ -207,16 +227,39 @@ fun WishlistDetailScreen(
       }
     }
 
+    FilterProductBottomSheet(
+      visible = isProductFiltersModalOpen,
+      sheetState = productFiltersSheetState,
+      filters = listOf(
+        FilterProduct.Filter.Price,
+        FilterProduct.Filter.Priority,
+      ),
+      current = uiState.productFilters,
+      onDismiss = {
+        isProductFiltersModalOpen = false
+      },
+      onApply = { f ->
+        coroutineScope
+          .launch { productFiltersSheetState.hide() }
+          .invokeOnCompletion {
+            isProductFiltersModalOpen = false
+            onChangeProductFilters(f)
+          }
+      }
+    )
+
     WishlistCardSettingsBottomSheet(
       visible = isWishlistSettingsModalOpen,
       sheetState = wishlistSettingsSheetState,
       settings = listOf(
+        WishlistCardSettings.FilterProducts,
         WishlistCardSettings.Edit,
         WishlistCardSettings.Delete
       ),
       onDismiss = { isWishlistSettingsModalOpen = false },
       onSettingClick = { setting ->
         when (setting) {
+          WishlistCardSettings.FilterProducts -> isProductFiltersModalOpen = true
           WishlistCardSettings.Edit -> onEditWishlist(uiState.wishlist)
           WishlistCardSettings.Delete -> isDeleteWishlistDialogVisible = true
           else -> {
@@ -361,6 +404,7 @@ fun WishlistDetailEmptyScreen(
   onDeleteWishlist: (Wishlist) -> Unit,
   onCreateItem: (link: String?) -> Unit,
   onBack: () -> Unit,
+  onChangeProductFilters: (List<FilterProduct>) -> Unit,
   onChangeItemByLinkModalVisibility: (visible: Boolean) -> Unit,
   onClearInputError: (WishlistItemForm.Input) -> Unit,
   onDismissError: () -> Unit
@@ -374,6 +418,9 @@ fun WishlistDetailEmptyScreen(
   var isWishlistSettingsModalOpen by remember { mutableStateOf(false) }
 
   var isDeleteWishlistDialogVisible by remember { mutableStateOf(false) }
+
+  val productFiltersSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isProductFiltersModalOpen by remember { mutableStateOf(false) }
 
   LaunchedEffect(uiState.isNewItemByLinkModalOpen) {
     if (uiState.isNewItemByLinkModalOpen) {
@@ -444,12 +491,19 @@ fun WishlistDetailEmptyScreen(
           .fillMaxSize()
           .verticalScroll(rememberScrollState())
           .padding(paddings)
-          .padding(
-            horizontal = 16.dp,
-            vertical = 24.dp
-          ),
+          .padding(horizontal = 16.dp)
+          .padding(bottom = 24.dp),
         verticalArrangement = Arrangement.Center
       ) {
+
+        if (uiState.productFilters.isNotEmpty()) {
+          FilterProductBar(
+            modifier = Modifier.fillMaxWidth(),
+            filters = uiState.productFilters,
+            onOpenFilters = { isProductFiltersModalOpen = true },
+            onChange = onChangeProductFilters
+          )
+        }
 
         Spacer(Modifier.weight(.5f))
 
@@ -457,7 +511,11 @@ fun WishlistDetailEmptyScreen(
           modifier = Modifier.fillMaxWidth(),
           image = painterResource(R.drawable.wishlists_items_empty_state),
           title = stringResource(R.string.wishlists_detail_empty_state_title),
-          description = stringResource(R.string.wishlists_detail_empty_state_description)
+          description = if (uiState.productFilters.isEmpty()) {
+            stringResource(R.string.wishlists_detail_empty_state_description)
+          } else {
+            stringResource(R.string.wishlists_detail_empty_state_with_filters_description)
+          }
         )
 
         Spacer(Modifier.weight(1f))
@@ -465,16 +523,41 @@ fun WishlistDetailEmptyScreen(
       }
     }
 
+    FilterProductBottomSheet(
+      visible = isProductFiltersModalOpen,
+      sheetState = productFiltersSheetState,
+      filters = listOf(
+        FilterProduct.Filter.Price,
+        FilterProduct.Filter.Priority,
+      ),
+      current = uiState.productFilters,
+      onDismiss = { isProductFiltersModalOpen = false },
+      onApply = { f ->
+        coroutineScope
+          .launch { productFiltersSheetState.hide() }
+          .invokeOnCompletion {
+            isProductFiltersModalOpen = false
+            onChangeProductFilters(f)
+          }
+      }
+    )
+
     WishlistCardSettingsBottomSheet(
       visible = isWishlistSettingsModalOpen,
       sheetState = wishlistSettingsSheetState,
-      settings = listOf(
+      settings = listOfNotNull(
+        if (uiState.productFilters.isNotEmpty()) {
+          WishlistCardSettings.FilterProducts
+        } else {
+          null
+        },
         WishlistCardSettings.Edit,
         WishlistCardSettings.Delete
       ),
       onDismiss = { isWishlistSettingsModalOpen = false },
       onSettingClick = { setting ->
         when (setting) {
+          WishlistCardSettings.FilterProducts -> isProductFiltersModalOpen = true
           WishlistCardSettings.Edit -> onEditWishlist(uiState.wishlist)
           WishlistCardSettings.Delete -> isDeleteWishlistDialogVisible = true
           else -> {

@@ -9,12 +9,14 @@ import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlis
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UpdateSharedWishlistItemUseCase
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.mapper.SharedWishlistItemStateErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.mapper.SharedWishlistItemUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.model.SharedWishlistItemAction
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.model.SharedWishlistItemStateRequestError
 import com.splanes.uoc.wishlify.presentation.feature.shared.model.SharedWishlistItemStateAction
+import com.splanes.uoc.wishlify.presentation.feature.shared.model.SharedWishlistState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -141,6 +143,10 @@ class SharedWishlistThirdPartyDetailViewModel(
           }
       }
     }
+  }
+
+  fun onChangeProductFilters(filters: List<FilterProduct>) {
+    viewModelState.update { state -> state.copy(filters = filters) }
   }
 
   fun onDismissBanner() {
@@ -301,6 +307,7 @@ class SharedWishlistThirdPartyDetailViewModel(
     val target: String,
     val sharedWishlist: SharedWishlist.ThirdParty? = null,
     val items: List<SharedWishlistItem> = emptyList(),
+    val filters: List<FilterProduct> = emptyList(),
     val itemSelected: SharedWishlistItem? = null,
     val itemSelectedToUpdateState: SharedWishlistItem? = null,
     val itemStateActions: List<SharedWishlistItemStateAction> = emptyList(),
@@ -332,7 +339,8 @@ class SharedWishlistThirdPartyDetailViewModel(
           itemSelectedToUpdateState = itemSelectedToUpdateState,
           isWishlistItemStateModalOpen = isWishlistItemStateModalOpen,
           itemStateActions = itemStateActions,
-          items = items.sorted(),
+          items = items.sorted().applyFilters(filters),
+          productFilters = filters,
           shareRequestError = shareRequestError?.let(itemStateErrorMapper::map),
           isLoading = isLoading,
           error = error?.let(errorUiMapper::map)
@@ -346,5 +354,43 @@ class SharedWishlistThirdPartyDetailViewModel(
       compareBy<SharedWishlistItem> { it.state }
         .thenByDescending { it.state.isCurrentUserParticipant }
     )
+
+    private fun List<SharedWishlistItem>.applyFilters(filters: List<FilterProduct>) =
+      this
+        .filter { item ->
+          filters
+            .filterIsInstance<FilterProduct.Price>()
+            .all { filter ->
+              when (filter.value) {
+                is FilterProduct.EqualTo<*> -> item.linkedItem.price == filter.value.value
+                is FilterProduct.GreaterThan<*> -> item.linkedItem.price > filter.value.value
+                is FilterProduct.LessThan<*> -> item.linkedItem.price < filter.value.value
+              }
+            }
+        }
+        .filter { item ->
+          filters
+            .filterIsInstance<FilterProduct.Priority>()
+            .all { filter ->
+              when (filter.value) {
+                is FilterProduct.EqualTo<*> -> item.linkedItem.priority == filter.value.value
+                is FilterProduct.GreaterThan<*> -> item.linkedItem.priority.weight > filter.value.value.weight
+                is FilterProduct.LessThan<*> -> item.linkedItem.priority.weight < filter.value.value.weight
+              }
+            }
+        }
+        .filter { item ->
+          filters
+            .filterIsInstance<FilterProduct.ProductState>()
+            .any { filter ->
+              val value = filter.value.value
+              when (value) {
+                SharedWishlistState.Purchase -> item.state is SharedWishlistItem.Purchased
+                SharedWishlistState.Lock -> item.state is SharedWishlistItem.Lock
+                SharedWishlistState.RequestShare -> item.state is SharedWishlistItem.ShareRequest
+                SharedWishlistState.Available -> item.state is SharedWishlistItem.Available
+              }
+            }
+        }
   }
 }

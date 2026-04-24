@@ -14,6 +14,7 @@ sealed interface SecretSantaListUiState {
 
   data class Events(
     val events: List<SecretSantaEvent>,
+    val isPermissionModalVisible: Boolean,
     val isLoading: Boolean,
     val error: ErrorUiModel?,
   ) : SecretSantaListUiState

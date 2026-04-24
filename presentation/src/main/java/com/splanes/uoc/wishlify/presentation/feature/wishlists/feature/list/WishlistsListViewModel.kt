@@ -6,12 +6,15 @@ import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UnshareWishlistUse
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.AddWishlistEditorFromLinkUseCase
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateCategoryUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.DeleteWishlistUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchCategoriesUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchWishlistsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistNewItemByShare
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsFilter
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.mapper.CategoryFormErrorMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.model.CategoryFormError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +30,8 @@ class WishlistsListViewModel(
   private val fetchCategoriesUseCase: FetchCategoriesUseCase,
   private val unshareWishlistUseCase: UnshareWishlistUseCase,
   private val addWishlistEditorFromLinkUseCase: AddWishlistEditorFromLinkUseCase,
+  private val categoryFormErrorMapper: CategoryFormErrorMapper,
+  private val createCategoryUseCase: CreateCategoryUseCase,
   private val errorUiMapper: ErrorUiMapper
 ) : ViewModel() {
 
@@ -35,12 +40,40 @@ class WishlistsListViewModel(
 
   val uiState = viewModelState.asStateFlow()
     .onStart { fetchWishlistsAndCategories() }
-    .map { state -> state.toUiState(errorUiMapper) }
+    .map { state -> state.toUiState(errorUiMapper, categoryFormErrorMapper) }
     .stateIn(
-      initialValue = viewModelState.value.toUiState(errorUiMapper),
+      initialValue = viewModelState.value.toUiState(errorUiMapper, categoryFormErrorMapper),
       scope = viewModelScope,
       started = SharingStarted.WhileSubscribed(5_000)
     )
+
+  fun onCreateCategory(name: String, color: Category.CategoryColor) {
+    if (validateCategoryForm(name)) {
+      viewModelScope.launch {
+        viewModelState.update { state -> state.copy(isLoading = true) }
+        val result = createCategoryUseCase(name, color)
+        viewModelState.update { state ->
+          result.fold(
+            onSuccess = { category ->
+              state.copy(
+                isLoading = false,
+                categories = buildList {
+                  addAll(state.categories.filter { cat -> cat.id != category.id })
+                  add(category)
+                },
+              )
+            },
+            onFailure = { error ->
+              state.copy(
+                isLoading = false,
+                error = error
+              )
+            }
+          )
+        }
+      }
+    }
+  }
 
   fun onAddToEditorsDeeplinkOpened(token: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
@@ -138,12 +171,33 @@ class WishlistsListViewModel(
     }
   }
 
+  fun onClearNewCategoryNameError() {
+    viewModelState.update { state -> state.copy(newCategoryNameError = null) }
+  }
+
   fun onClearSharedWishlistFeedback() {
     viewModelState.update { state -> state.copy(sharedWishlistFeedback = null) }
   }
 
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
+  }
+
+  private fun validateCategoryForm(name: String): Boolean {
+    val currentState = viewModelState.value
+    val error = when {
+      name.count() !in 3..20 ->
+        CategoryFormError.NameLength
+
+      currentState.categories.any { it.name.equals(name, ignoreCase = true) } ->
+        CategoryFormError.AlreadyExists
+
+      else -> null
+    }
+
+    viewModelState.update { state -> state.copy(newCategoryNameError = error) }
+
+    return error == null
   }
 
   private suspend fun fetchWishlists() {
@@ -188,6 +242,7 @@ class WishlistsListViewModel(
     val filtersState: WishlistsFiltersState = WishlistsFiltersState(),
     val categories: List<Category> = emptyList(),
     val sharedWishlistFeedback: String? = null,
+    val newCategoryNameError: CategoryFormError? = null,
     val isWishlistSelectionModalOpen: Boolean = false,
     val wishlistNewItemByShare: WishlistNewItemByShare? = null,
     val isLoadingFullscreen: Boolean = true,
@@ -195,7 +250,10 @@ class WishlistsListViewModel(
     val error: Throwable? = null,
   ) {
 
-    fun toUiState(errorUiMapper: ErrorUiMapper) =
+    fun toUiState(
+      errorUiMapper: ErrorUiMapper,
+      categoryFormErrorMapper: CategoryFormErrorMapper,
+    ) =
       when {
         isLoadingFullscreen ->
           WishlistsListUiState.Loading
@@ -205,6 +263,7 @@ class WishlistsListViewModel(
             filtersState = filtersState,
             categories = categories,
             sharedWishlistFeedback = sharedWishlistFeedback,
+            newCategoryNameError = newCategoryNameError?.let(categoryFormErrorMapper::map),
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )
@@ -217,6 +276,7 @@ class WishlistsListViewModel(
             sharedWishlistFeedback = sharedWishlistFeedback,
             isWishlistSelectionModalOpen = isWishlistSelectionModalOpen,
             wishlistNewItemByShare = wishlistNewItemByShare,
+            newCategoryNameError = newCategoryNameError?.let(categoryFormErrorMapper::map),
             isLoading = isLoading,
             error = error?.let(errorUiMapper::map)
           )

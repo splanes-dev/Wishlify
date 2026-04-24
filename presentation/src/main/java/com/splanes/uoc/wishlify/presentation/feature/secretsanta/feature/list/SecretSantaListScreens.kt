@@ -13,7 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Tune
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
@@ -70,7 +70,7 @@ fun SecretSantaListScreen(
   }
   var areEventsFinishedVisible by remember { mutableStateOf(true) }
 
-  var isPermissionModalOpen by remember { mutableStateOf(true) }
+  var isPermissionModalOpen by remember { mutableStateOf(uiState.isPermissionModalVisible) }
 
   Box(
     modifier = Modifier
@@ -88,8 +88,8 @@ fun SecretSantaListScreen(
               onClick = { isSettingsModalOpen = true }
             ) {
               Icon(
-                imageVector = Icons.Rounded.Tune,
-                contentDescription = stringResource(R.string.settings)
+                imageVector = Icons.Rounded.Search,
+                contentDescription = stringResource(R.string.search)
               )
             }
           }
@@ -120,7 +120,7 @@ fun SecretSantaListScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(16.dp),
       ) {
-        if (uiState.events.filter { !it.isFinished() }.isNotEmpty()) {
+        if (uiState.events.any { !it.isFinished() }) {
           items(
             items = uiState.events.filter { !it.isFinished() },
             key = { event -> event.id }
@@ -188,9 +188,6 @@ fun SecretSantaListScreen(
       onSettingClick = { setting ->
         when (setting) {
           SecretSantaEventsSettings.Search -> isSearchModalOpen = true
-          SecretSantaEventsSettings.Filter -> {
-            // TODO
-          }
         }
         coroutineScope
           .launch { settingsSheetState.hide() }

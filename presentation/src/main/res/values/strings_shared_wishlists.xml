@@ -16,6 +16,7 @@
         <item quantity="other">%d ítems disponibles</item>
     </plurals>
     <string name="shared_wishlists_detail_participants_header">%d participants</string>
+    <string name="shared_wishlists_item_state_available">Disponible</string>
     <string name="shared_wishlists_item_state_lock">Reservat</string>
     <string name="shared_wishlists_item_state_purchased">Comprat</string>
     <string name="shared_wishlists_item_state_share_request">Sol·licitud compartir</string>

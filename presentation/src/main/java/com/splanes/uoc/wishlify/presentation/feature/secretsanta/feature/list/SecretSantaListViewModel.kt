@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.splanes.uoc.wishlify.domain.feature.notifications.usecase.IsPermissionModalVisibleUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.AddEventParticipantFromLinkUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaEventsUseCase
@@ -20,6 +21,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class SecretSantaListViewModel(
   private val fetchSecretSantaEventsUseCase: FetchSecretSantaEventsUseCase,
   private val addEventParticipantFromLinkUseCase: AddEventParticipantFromLinkUseCase,
+  private val isPermissionModalVisibleUseCase: IsPermissionModalVisibleUseCase,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
@@ -67,6 +69,7 @@ class SecretSantaListViewModel(
         viewModelState.update { state ->
           state.copy(
             events = events,
+            isPermissionModalVisible = isPermissionModalVisibleUseCase(),
             isLoadingFullscreen = false,
           )
         }
@@ -83,6 +86,7 @@ class SecretSantaListViewModel(
 
   private data class ViewModelState(
     val events: List<SecretSantaEvent> = emptyList(),
+    val isPermissionModalVisible: Boolean = false,
     val isLoadingFullscreen: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null,
@@ -100,6 +104,7 @@ class SecretSantaListViewModel(
       else ->
         SecretSantaListUiState.Events(
           events = events.sorted(),
+          isPermissionModalVisible = isPermissionModalVisible,
           isLoading = isLoading,
           error = error?.let(errorUiMapper::map)
         )

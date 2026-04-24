@@ -47,9 +47,11 @@ fun WishlistsListRoute(
       WishlistsListEmptyScreen(
         uiState = state,
         onCreateWishlist = { onNavToNewWishlist(it) },
+        onCreateCategory = viewModel::onCreateCategory,
         onUpdateFilters = viewModel::onUpdateFilters,
         onAdminCategories = onNavToAdminCategories,
         onClearSharedWishlistFeedback = viewModel::onClearSharedWishlistFeedback,
+        onClearNewCategoryNameError = viewModel::onClearNewCategoryNameError,
         onDismissError = viewModel::onDismissError
       )
 
@@ -58,6 +60,7 @@ fun WishlistsListRoute(
         uiState = state,
         onUpdateFilters = viewModel::onUpdateFilters,
         onCreateWishlist = { onNavToNewWishlist(it) },
+        onCreateCategory = viewModel::onCreateCategory,
         onWishlistClick = { wishlist ->
           when (wishlist) {
             is Wishlist.Own,
@@ -81,6 +84,7 @@ fun WishlistsListRoute(
         onAdminCategories = onNavToAdminCategories,
         onSharedBackToPrivate = viewModel::onSharedBackToPrivate,
         onCloseWishlistSelectionModal = viewModel::onCloseWishlistSelectionModal,
+        onClearNewCategoryNameError = viewModel::onClearNewCategoryNameError,
         onDismissError = viewModel::onDismissError
       )
   }

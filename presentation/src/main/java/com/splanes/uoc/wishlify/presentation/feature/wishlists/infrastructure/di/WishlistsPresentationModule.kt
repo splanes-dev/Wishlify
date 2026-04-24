@@ -94,6 +94,7 @@ internal val WishlistsPresentationModule = module {
       wishlistId = wishlistId,
       itemId = itemId,
       fetchWishlistItemUseCase = get(),
+      fetchAllLinkDataUseCase = get(),
       updateWishlistItemUseCase = get(),
       formErrorMapper = get(),
       formUiMapper = get(),

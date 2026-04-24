@@ -11,6 +11,7 @@ sealed interface SharedWishlistsListUiState {
 
   data class Listing(
     val wishlists: List<SharedWishlist>,
+    val isPermissionModalVisible: Boolean,
     val isLoading: Boolean,
     val error: ErrorUiModel?,
   ): SharedWishlistsListUiState

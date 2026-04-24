@@ -99,6 +99,10 @@ class WishlistNewItemViewModel(
     }
   }
 
+  fun onAutocomplete(link: String) {
+    viewModelScope.launch { tryAutofillByLink(link) }
+  }
+
   fun onClearInputError(input: WishlistItemForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -139,12 +143,12 @@ class WishlistNewItemViewModel(
       state.copy(
         isLoading = false,
         form = state.form.copy(
-          photo = data?.imageUrl?.let(ImagePicker::Url),
-          name = data?.product.orEmpty(),
-          description = data?.description.orEmpty(),
-          store = data?.store.orEmpty(),
-          unitPrice = data?.price?.toFloat() ?: 0f,
-          link = data?.link.orEmpty()
+          photo = data?.imageUrl?.let(ImagePicker::Url) ?: state.form.photo,
+          name = data?.product ?: state.form.name,
+          description = data?.description ?: state.form.description,
+          store = data?.store ?: state.form.store,
+          unitPrice = data?.price?.toFloat() ?: state.form.unitPrice,
+          link = data?.link ?: state.form.link
         )
       )
     }

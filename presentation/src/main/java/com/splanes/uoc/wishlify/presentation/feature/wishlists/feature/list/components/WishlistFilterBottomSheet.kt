@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.presentation.R
-import com.splanes.uoc.wishlify.presentation.common.components.FilterBottomSheet
+import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsFilter
 
 @OptIn(ExperimentalMaterial3Api::class)

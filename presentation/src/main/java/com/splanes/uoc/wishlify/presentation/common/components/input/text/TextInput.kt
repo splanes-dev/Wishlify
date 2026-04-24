@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
@@ -44,7 +45,7 @@ fun TextInput(
   trailingIcon: (@Composable () -> Unit)? = null,
   enabled: Boolean = true,
   visualTransformation: VisualTransformation = VisualTransformation.None,
-  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+  keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
   keyboardActions: KeyboardActions = KeyboardActions.Default,
   singleLine: Boolean = false,
   maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
@@ -81,7 +82,7 @@ fun TextInput(
   trailingIcon: (@Composable () -> Unit)? = null,
   enabled: Boolean = true,
   visualTransformation: VisualTransformation = VisualTransformation.None,
-  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+  keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
   keyboardActions: KeyboardActions = KeyboardActions.Default,
   singleLine: Boolean = false,
   maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,

@@ -1,0 +1,20 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:viewportHeight="960" android:viewportWidth="960" android:width="24dp">
+      
+    <path android:fillColor="#000000" android:pathData="M261.83,148q13.84,0 23.84,10L362,235.33q10,10 9.67,23.34 -0.34,13.33 -10.34,23.33 -10,9.33 -23.5,9.67 -13.5,0.33 -23.5,-9.67l-76.66,-76.33q-10,-10 -9.84,-23.84Q228,168 238,158q10,-10 23.83,-10ZM543.83,53.5q9.5,9.5 9.5,23.83v103.34q0,14.33 -9.5,23.83 -9.5,9.5 -23.83,9.5 -14.33,0 -23.83,-9.5 -9.5,-9.5 -9.5,-23.83v-103.34q0,-14.33 9.5,-23.83 9.5,-9.5 23.83,-9.5 14.33,0 23.83,9.5ZM701.83,588q13.84,0 23.84,10L802,675.33q10,10 9.67,23.34 -0.34,13.33 -10.34,23.33 -10,9.33 -23.5,9.67 -13.5,0.33 -23.5,-9.67l-76.66,-76.33q-10,-10 -9.84,-23.84Q668,608 678,598q10,-10 23.83,-10ZM805.33,188.5q0,13.83 -10,23.83l-64,64q-10,10 -23.33,9.5 -13.33,-0.5 -23.33,-10.5 -10,-10 -10,-23.83 0,-13.83 10,-23.83l63,-63q10,-10 23.83,-10 13.83,0 23.83,10 10,10 10,23.83ZM906.5,463.83q-9.5,9.5 -23.83,9.5L779.33,473.33q-14.33,0 -23.83,-9.5 -9.5,-9.5 -9.5,-23.83 0,-14.33 9.5,-23.83 9.5,-9.5 23.83,-9.5h103.34q14.33,0 23.83,9.5 9.5,9.5 9.5,23.83 0,14.33 -9.5,23.83ZM209.67,872.67 L87.33,750.33q-10,-10 -10,-23.33 0,-13.33 10,-23.33L455,335q35,-35 85,-35t85,35q35,35 35,85t-35,85L256.33,872.67q-10,10 -23.33,10 -13.33,0 -23.33,-10ZM502.67,533 L483.83,514.33L465,495.67 446,477l-19,-18.67 38,37.34L502.67,533ZM233,802.67 L502.67,533 427,458.33 158.33,727 233,802.67Z"/>
+    
+</vector>

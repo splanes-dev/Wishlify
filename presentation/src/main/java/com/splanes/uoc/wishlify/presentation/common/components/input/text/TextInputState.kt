@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 class TextInputState(
   initialValue: String = "",
   private val supportingText: String = "",
-  private val onClearError: () -> Unit,
+  private val onClearError: () -> Unit = {},
 ) {
   var text by mutableStateOf(initialValue)
     private set

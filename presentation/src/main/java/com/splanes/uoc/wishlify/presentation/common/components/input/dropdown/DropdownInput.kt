@@ -51,8 +51,10 @@ fun DropdownInput(
   initial: DropdownInput.Option? = null,
   leadingIcon: ImageVector? = null,
   showButtonSpacer: Boolean = true,
+  readOnly: Boolean = false,
   supportingText: String = "",
   allowUnselect: Boolean = true,
+  closePopupOnSelect: Boolean = true,
   onSelectionChanged: (Int?) -> Unit,
   onAdd: ((id: Int) -> Unit)? = null,
 ) {
@@ -70,7 +72,7 @@ fun DropdownInput(
   ExposedDropdownMenuBox(
     modifier = modifier,
     expanded = expanded,
-    onExpandedChange = { expanded = it },
+    onExpandedChange = { expanded = it && !readOnly },
   ) {
     TextField(
       modifier = modifier
@@ -79,7 +81,11 @@ fun DropdownInput(
       state = textFieldState,
       readOnly = true,
       lineLimits = TextFieldLineLimits.SingleLine,
-      label = { Text(text = label) },
+      label = label.takeUnless { it.isBlank() }?.let {
+        @Composable {
+          Text(text = label)
+        }
+      },
       leadingIcon = leadingIcon?.let { icon ->
         @Composable {
           Icon(
@@ -122,6 +128,7 @@ fun DropdownInput(
             shapes = MenuDefaults.itemShape(index, options.count()),
             text = { Text(option.text, style = MaterialTheme.typography.bodyLarge) },
             selected = option == selected,
+            enabled = option.enabled,
             onClick = {
               if (allowUnselect || option != selected) {
                 selected = option.takeIf { selected != it }
@@ -131,6 +138,9 @@ fun DropdownInput(
                   textFieldState.clearText()
                 }
                 onSelectionChanged(selected?.id)
+                if (closePopupOnSelect) {
+                  expanded = false
+                }
               }
             },
             leadingIcon = option.leadingIcon?.let { icon ->
@@ -176,7 +186,10 @@ fun DropdownInput(
               Text(button.text, style = MaterialTheme.typography.bodyLarge)
             },
             selected = false,
-            onClick = { onAdd?.invoke(button.id) },
+            onClick = {
+              onAdd?.invoke(button.id)
+              expanded = false
+            },
             leadingIcon = button.leadingIcon?.let { icon ->
               @Composable {
                 Icon(
@@ -205,7 +218,8 @@ object DropdownInput {
     override val text: String,
     val leadingIcon: Painter? = null,
     val trailingIcon: Painter? = null,
-    val trailingIconColor: Color? = null
+    val trailingIconColor: Color? = null,
+    val enabled: Boolean = true
   ) : Item
 
   data class Button(
