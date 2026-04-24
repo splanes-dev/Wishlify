@@ -5,5 +5,6 @@ enum class WishlistCardSettings {
   BackToPrivate,
   Edit,
   Share,
+  Info,
   Delete,
 }

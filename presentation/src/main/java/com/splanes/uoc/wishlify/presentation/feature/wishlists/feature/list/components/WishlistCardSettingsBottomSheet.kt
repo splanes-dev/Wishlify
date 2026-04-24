@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BorderColor
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.FilterAlt
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,6 +53,7 @@ private fun WishlistCardSettings.icon() = when (this) {
   WishlistCardSettings.Edit -> Icons.Outlined.BorderColor
   WishlistCardSettings.Share -> Icons.Outlined.Share
   WishlistCardSettings.Delete -> Icons.Outlined.DeleteForever
+  WishlistCardSettings.Info -> Icons.Outlined.Info
   WishlistCardSettings.BackToPrivate -> Icons.Outlined.SettingsBackupRestore
 }
 
@@ -61,5 +63,6 @@ private fun WishlistCardSettings.text() = when (this) {
   WishlistCardSettings.Edit -> R.string.wishlists_item_edit
   WishlistCardSettings.Share -> R.string.wishlists_item_share
   WishlistCardSettings.BackToPrivate -> R.string.shared_wishlists_wishlist_settings_back_to_privates
+  WishlistCardSettings.Info -> R.string.wishlists_info
   WishlistCardSettings.Delete -> R.string.wishlists_item_delete
 }.let { id -> stringResource(id) }

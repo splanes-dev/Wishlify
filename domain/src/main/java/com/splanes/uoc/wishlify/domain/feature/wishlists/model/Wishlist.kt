@@ -133,6 +133,9 @@ sealed class Wishlist(
   )
 
   sealed interface ShareEvent
-  data class SharedWishlistEvent(val id: String) : ShareEvent
+  data class SharedWishlistEvent(
+    val id: String,
+    val inviteLink: InviteLink,
+  ) : ShareEvent
   data class SecretSantaEvent(val id: String) : ShareEvent
 }

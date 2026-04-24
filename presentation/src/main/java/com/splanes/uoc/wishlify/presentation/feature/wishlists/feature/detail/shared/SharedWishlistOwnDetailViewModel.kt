@@ -169,28 +169,32 @@ class SharedWishlistOwnDetailViewModel(
     )
 
     private fun List<WishlistItem>.applyFilters(filters: List<FilterProduct>) =
-      this
-        .filter { item ->
-          filters
-            .filterIsInstance<FilterProduct.Price>()
-            .all { filter ->
-              when (filter.value) {
-                is FilterProduct.EqualTo<*> -> item.price == filter.value.value
-                is FilterProduct.GreaterThan<*> -> item.price > filter.value.value
-                is FilterProduct.LessThan<*> -> item.price < filter.value.value
+      if (filters.isEmpty()) {
+        this
+      } else {
+        this
+          .filter { item ->
+            filters
+              .filterIsInstance<FilterProduct.Price>()
+              .all { filter ->
+                when (filter.value) {
+                  is FilterProduct.EqualTo<*> -> item.price == filter.value.value
+                  is FilterProduct.GreaterThan<*> -> item.price > filter.value.value
+                  is FilterProduct.LessThan<*> -> item.price < filter.value.value
+                }
               }
-            }
-        }
-        .filter { item ->
-          filters
-            .filterIsInstance<FilterProduct.Priority>()
-            .all { filter ->
-              when (filter.value) {
-                is FilterProduct.EqualTo<*> -> item.priority == filter.value.value
-                is FilterProduct.GreaterThan<*> -> item.priority.weight > filter.value.value.weight
-                is FilterProduct.LessThan<*> -> item.priority.weight < filter.value.value.weight
+          }
+          .filter { item ->
+            filters
+              .filterIsInstance<FilterProduct.Priority>()
+              .all { filter ->
+                when (filter.value) {
+                  is FilterProduct.EqualTo<*> -> item.priority == filter.value.value
+                  is FilterProduct.GreaterThan<*> -> item.priority.weight > filter.value.value.weight
+                  is FilterProduct.LessThan<*> -> item.priority.weight < filter.value.value.weight
+                }
               }
-            }
-        }
+          }
+      }
   }
 }

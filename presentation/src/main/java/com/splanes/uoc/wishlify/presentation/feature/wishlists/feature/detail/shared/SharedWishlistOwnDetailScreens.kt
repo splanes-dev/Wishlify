@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -47,6 +46,7 @@ import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterPro
 import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProductBottomSheet
 import com.splanes.uoc.wishlify.presentation.common.utils.openBrowserLink
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistMoveToPrivateDialog
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.WishlistInfoBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.shared.components.SharedOwnWishlistDetailSettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.shared.components.SharedOwnWishlistHeader
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.shared.components.SharedOwnWishlistItemCard
@@ -81,6 +81,9 @@ fun SharedWishlistOwnDetailScreen(
 
   var isBackToPrivateDialogOpen by remember { mutableStateOf(false) }
 
+  val wishlistInfoSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isWishlistInfoModalOpen by remember { mutableStateOf(false) }
+
   Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
       modifier = Modifier.fillMaxSize(),
@@ -108,26 +111,14 @@ fun SharedWishlistOwnDetailScreen(
             }
           },
           actions = {
-            if (uiState.wishlist.isFinished()) {
-              IconButton(
-                shapes = IconButtonShape,
-                onClick = { isSettingsModalOpen = true }
-              ) {
-                Icon(
-                  imageVector = Icons.Outlined.Tune,
-                  contentDescription = stringResource(R.string.settings)
-                )
-              }
-            } else {
-              IconButton(
-                shapes = IconButtonShape,
-                onClick = { isProductFiltersModalOpen = true }
-              ) {
-                Icon(
-                  imageVector = Icons.Outlined.FilterAlt,
-                  contentDescription = stringResource(R.string.filter)
-                )
-              }
+            IconButton(
+              shapes = IconButtonShape,
+              onClick = { isSettingsModalOpen = true }
+            ) {
+              Icon(
+                imageVector = Icons.Outlined.Tune,
+                contentDescription = stringResource(R.string.settings)
+              )
             }
           }
         )
@@ -235,10 +226,17 @@ fun SharedWishlistOwnDetailScreen(
     SharedOwnWishlistDetailSettingsBottomSheet(
       visible = isSettingsModalOpen,
       sheetState = settingsSheetState,
-      settings = SharedOwnWishlistSettings.entries,
+      settings = buildList {
+        add(SharedOwnWishlistSettings.Filter)
+        if (uiState.wishlist.isFinished()) {
+          add(SharedOwnWishlistSettings.BackToPrivates)
+        }
+        add(SharedOwnWishlistSettings.Info)
+      },
       onDismiss = { isSettingsModalOpen = false },
       onSettingClick = { setting ->
         when (setting) {
+          SharedOwnWishlistSettings.Info -> isWishlistInfoModalOpen = true
           SharedOwnWishlistSettings.Filter -> isProductFiltersModalOpen = true
           SharedOwnWishlistSettings.BackToPrivates -> isBackToPrivateDialogOpen = true
         }
@@ -246,6 +244,13 @@ fun SharedWishlistOwnDetailScreen(
           .launch { settingsSheetState.hide() }
           .invokeOnCompletion { isSettingsModalOpen = false }
       }
+    )
+
+    WishlistInfoBottomSheet(
+      visible = isWishlistInfoModalOpen,
+      sheetState = wishlistInfoSheetState,
+      wishlist = uiState.wishlist,
+      onDismiss = { isWishlistInfoModalOpen = false }
     )
 
     if (isBackToPrivateDialogOpen) {

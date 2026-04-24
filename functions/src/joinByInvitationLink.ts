@@ -161,7 +161,7 @@ async function joinSharedWishlistAsParticipant(
   const doc = await findSingleDocByToken(
     tx,
     "shared-wishlists",
-    "participantInviteLink",
+    "inviteLink",
     token
   );
   const data = doc.data();
@@ -211,7 +211,7 @@ async function joinSecretSantaAsParticipant(
   const doc = await findSingleDocByToken(
     tx,
     "secret-santa",
-    "participantInviteLink",
+    "inviteLink",
     token
   );
   const data = doc.data();

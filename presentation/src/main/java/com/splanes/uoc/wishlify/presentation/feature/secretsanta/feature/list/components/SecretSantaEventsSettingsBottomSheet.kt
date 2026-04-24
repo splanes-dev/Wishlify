@@ -1,7 +1,6 @@
 package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
@@ -37,11 +36,9 @@ fun SecretSantaEventsSettingsBottomSheet(
 @Composable
 private fun SecretSantaEventsSettings.icon() = when (this) {
   SecretSantaEventsSettings.Search -> Icons.Rounded.Search
-  SecretSantaEventsSettings.Filter -> Icons.Outlined.FilterAlt
 }
 
 @Composable
 private fun SecretSantaEventsSettings.text() = when (this) {
   SecretSantaEventsSettings.Search -> R.string.secret_santa_search
-  SecretSantaEventsSettings.Filter -> R.string.secret_santa_filter
 }.let { id -> stringResource(id) }

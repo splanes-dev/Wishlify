@@ -14,7 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.outlined.FilterAlt
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
@@ -48,11 +48,14 @@ import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterPro
 import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProductBottomSheet
 import com.splanes.uoc.wishlify.presentation.common.utils.openBrowserLink
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.components.SharedWishlistHeader
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.components.SharedWishlistInfoBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.components.SharedWishlistItemCardAnimated
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.components.SharedWishlistItemDetailBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.components.SharedWishlistItemInfoBanner
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.components.SharedWishlistItemStateBottomSheet
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.components.SharedWishlistThirdPartySettingsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.model.SharedWishlistItemAction
+import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.model.SharedWishlistSettings
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 import kotlinx.coroutines.launch
 
@@ -83,6 +86,12 @@ fun SharedWishlistThirdPartyDetailScreen(
   var isProductFiltersModalOpen by remember { mutableStateOf(false) }
   val productFiltersSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+  var isWishlistInfoModalOpen by remember { mutableStateOf(false) }
+  val wishlistInfoSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+  var isWishlistSettingsModalOpen by remember { mutableStateOf(false) }
+  val wishlistSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
   Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
       modifier = Modifier.fillMaxSize(),
@@ -112,11 +121,11 @@ fun SharedWishlistThirdPartyDetailScreen(
           actions = {
             IconButton(
               shapes = IconButtonShape,
-              onClick = { isProductFiltersModalOpen = true }
+              onClick = { isWishlistSettingsModalOpen = true }
             ) {
               Icon(
-                imageVector = Icons.Outlined.FilterAlt,
-                contentDescription = stringResource(R.string.filter)
+                imageVector = Icons.Outlined.Tune,
+                contentDescription = stringResource(R.string.settings)
               )
             }
           }
@@ -264,6 +273,32 @@ fun SharedWishlistThirdPartyDetailScreen(
         onUpdateState = { action -> onUpdateItemState(item, action) }
       )
     }
+
+    SharedWishlistThirdPartySettingsBottomSheet(
+      visible = isWishlistSettingsModalOpen,
+      sheetState = wishlistSettingsSheetState,
+      settings = listOf(
+        SharedWishlistSettings.Filter,
+        SharedWishlistSettings.Info,
+      ),
+      onDismiss = { isWishlistSettingsModalOpen = false },
+      onSettingClick = { setting ->
+        when (setting) {
+          SharedWishlistSettings.Filter -> isProductFiltersModalOpen = true
+          SharedWishlistSettings.Info -> isWishlistInfoModalOpen = true
+        }
+        coroutineScope
+          .launch { wishlistSettingsSheetState.hide() }
+          .invokeOnCompletion { isWishlistSettingsModalOpen = false }
+      }
+    )
+
+    SharedWishlistInfoBottomSheet(
+      visible = isWishlistInfoModalOpen,
+      sheetState = wishlistInfoSheetState,
+      wishlist = uiState.wishlist,
+      onDismiss = { isWishlistInfoModalOpen = false }
+    )
 
     FilterProductBottomSheet(
       visible = isProductFiltersModalOpen,

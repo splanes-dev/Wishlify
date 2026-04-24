@@ -2,5 +2,6 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.s
 
 enum class SharedOwnWishlistSettings {
   Filter,
-  BackToPrivates
+  BackToPrivates,
+  Info
 }

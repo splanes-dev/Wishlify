@@ -56,6 +56,7 @@ import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterPro
 import com.splanes.uoc.wishlify.presentation.common.utils.openBrowserLink
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenu
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenuItem
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.WishlistInfoBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.NewItemFromLinkBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.WishlistItemCard
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.components.WishlistItemDetailBottomSheet
@@ -105,6 +106,9 @@ fun WishlistDetailScreen(
 
   val productFiltersSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
   var isProductFiltersModalOpen by remember { mutableStateOf(false) }
+
+  val wishlistInfoSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isWishlistInfoModalOpen by remember { mutableStateOf(false) }
 
   LaunchedEffect(uiState.isNewItemByLinkModalOpen) {
     if (uiState.isNewItemByLinkModalOpen) {
@@ -227,6 +231,13 @@ fun WishlistDetailScreen(
       }
     }
 
+    WishlistInfoBottomSheet(
+      visible = isWishlistInfoModalOpen,
+      sheetState = wishlistInfoSheetState,
+      wishlist = uiState.wishlist,
+      onDismiss = { isWishlistInfoModalOpen = false }
+    )
+
     FilterProductBottomSheet(
       visible = isProductFiltersModalOpen,
       sheetState = productFiltersSheetState,
@@ -254,6 +265,7 @@ fun WishlistDetailScreen(
       settings = listOf(
         WishlistCardSettings.FilterProducts,
         WishlistCardSettings.Edit,
+        WishlistCardSettings.Info,
         WishlistCardSettings.Delete
       ),
       onDismiss = { isWishlistSettingsModalOpen = false },
@@ -261,6 +273,7 @@ fun WishlistDetailScreen(
         when (setting) {
           WishlistCardSettings.FilterProducts -> isProductFiltersModalOpen = true
           WishlistCardSettings.Edit -> onEditWishlist(uiState.wishlist)
+          WishlistCardSettings.Info -> isWishlistInfoModalOpen = true
           WishlistCardSettings.Delete -> isDeleteWishlistDialogVisible = true
           else -> {
             // Not allowed other settings
@@ -422,6 +435,9 @@ fun WishlistDetailEmptyScreen(
   val productFiltersSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
   var isProductFiltersModalOpen by remember { mutableStateOf(false) }
 
+  val wishlistInfoSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isWishlistInfoModalOpen by remember { mutableStateOf(false) }
+
   LaunchedEffect(uiState.isNewItemByLinkModalOpen) {
     if (uiState.isNewItemByLinkModalOpen) {
       isNewItemByLinkModalOpen = true
@@ -523,6 +539,13 @@ fun WishlistDetailEmptyScreen(
       }
     }
 
+    WishlistInfoBottomSheet(
+      visible = isWishlistInfoModalOpen,
+      sheetState = wishlistInfoSheetState,
+      wishlist = uiState.wishlist,
+      onDismiss = { isWishlistInfoModalOpen = false }
+    )
+
     FilterProductBottomSheet(
       visible = isProductFiltersModalOpen,
       sheetState = productFiltersSheetState,
@@ -552,6 +575,7 @@ fun WishlistDetailEmptyScreen(
           null
         },
         WishlistCardSettings.Edit,
+        WishlistCardSettings.Info,
         WishlistCardSettings.Delete
       ),
       onDismiss = { isWishlistSettingsModalOpen = false },
@@ -559,6 +583,7 @@ fun WishlistDetailEmptyScreen(
         when (setting) {
           WishlistCardSettings.FilterProducts -> isProductFiltersModalOpen = true
           WishlistCardSettings.Edit -> onEditWishlist(uiState.wishlist)
+          WishlistCardSettings.Info -> isWishlistInfoModalOpen = true
           WishlistCardSettings.Delete -> isDeleteWishlistDialogVisible = true
           else -> {
             // Not allowed other settings

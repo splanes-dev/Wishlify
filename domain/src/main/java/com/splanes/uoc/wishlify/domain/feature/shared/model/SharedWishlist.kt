@@ -88,6 +88,7 @@ sealed class SharedWishlist(
     val id: String,
     val name: String,
     val photo: ImageMedia,
-    val target: String?
+    val target: String?,
+    val description: String,
   )
 }

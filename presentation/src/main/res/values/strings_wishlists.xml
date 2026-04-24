@@ -81,6 +81,7 @@
     <string name="wishlists_share_select_group_input">Selecciona un grup</string>
     <string name="wishlists_share_or_share_by_link">o comparteix l\'enllaç</string>
     <string name="wishlists_share_list_link">Enllaç</string>
+    <string name="wishlists_share_list_link_label">Enllaç per compartir</string>
     <string name="wishlists_share_visibility_switch_input">És visible per als editors?</string>
     <string name="wishlists_share_date_limit">Data límit</string>
     <string name="wishlists_share_date_limit_invalid_error">La data no és vàlida. No pot ser passada ni superior a 6 mesos.</string>
@@ -95,6 +96,7 @@
     <string name="wishlists_share_wishlist_with_purchased_items_dialog">El llistat que vols compartir conté productes comprats.\nTingues en compte que únicament es compartiran aquells que estan disponibles.</string>
     <string name="wishlists_item_edit">Editar wishlist</string>
     <string name="wishlists_item_share">Compartir wishlist</string>
+    <string name="wishlists_info">Informació wishlist</string>
     <string name="wishlists_item_delete">Eliminar wishlist</string>
     <string name="wishlists_item_delete_item">Eliminar producte</string>
     <string name="wishlists_filters_target_title">Filtrar per destinatari</string>
@@ -118,6 +120,9 @@
     <string name="wishlists_filters_availability_with_items">Articles disponibles</string>
     <string name="wishlists_filters_availability_without_items">Sense articles disponibles</string>
     <string name="wishlist_shared">Compartida</string>
+    <string name="wishlist_shared_finished">Finalitzada</string>
+    <string name="wishlist_shared_info_description">Aquesta wishlist ha estat compartida en un esdeveniment (%s). La data de finalització és: %s.</string>
+    <string name="wishlist_shared_finished_info_description">Aquesta wishlist ha estat compartida en un esdeveniment (%s) que va finalitzar el %s.</string>
     <string name="wishlist_shared_event">Llistat compartit</string>
     <string name="wishlist_shared_secret_santa_info_banner"><![CDATA[Has compartit aquest llistat en un esdeveniment d\'amic invisible.<br/><b>La llista estarà bloquejada per no afectar altres usuaris.</b>]]></string>
     <string name="wishlists_select_wishlist_to_new_item_shared_title">Selecciona una Wishlist</string>

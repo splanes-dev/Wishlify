@@ -1,7 +1,6 @@
 package com.splanes.uoc.wishlify.domain.common.model
 
 import android.net.Uri
-import androidx.core.net.toUri
 import com.splanes.uoc.wishlify.domain.common.utils.newUuid
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -15,14 +14,15 @@ data class InviteLink(
       .scheme(SCHEME)
       .authority(AUTHORITY)
       .appendPath(origin.path)
+      .appendPath("join")
       .appendPath(token)
       .build()
       .toString()
 
   enum class Origin(val path: String) {
-    WishlistEditor("wishlist/join"),
-    WishlistShare("shared-wishlist/join"),
-    SecretSanta("secret-santa/join");
+    WishlistEditor("wishlist"),
+    WishlistShare("shared-wishlist"),
+    SecretSanta("secret-santa");
 
     companion object
   }
@@ -33,37 +33,12 @@ data class InviteLink(
     val WishlistShare = Origin.WishlistShare
     val SecretSanta = Origin.SecretSanta
 
-    fun fromUrl(url: String): InviteLink? =
-      runCatching {
-        val uri = url.toUri()
-        when {
-          uri.scheme != SCHEME -> null
-          uri.authority != AUTHORITY -> null
-          uri.pathSegments.count() != 2 -> null
-          else -> {
-            val (originString, token) = uri.pathSegments
-            val origin = Origin.from(originString)
-            when {
-              origin == null -> null
-              token.isEmpty() -> null
-              else -> {
-                InviteLink(
-                  token = token,
-                  origin = origin
-                )
-              }
-            }
-          }
-        }
-      }.getOrNull()
-
     @OptIn(ExperimentalUuidApi::class)
     fun new(origin: Origin) =
       InviteLink(
         token = newUuid(),
         origin = origin
       )
-
   }
 }
 

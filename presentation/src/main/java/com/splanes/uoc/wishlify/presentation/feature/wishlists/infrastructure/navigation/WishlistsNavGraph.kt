@@ -211,10 +211,12 @@ class WishlistsNavGraph : FeatureHomeNavGraph {
 
         // Result handler from share-wishlist
         navController.NavResultHandler<Pair<Boolean, String?>>(key = NavResult.SHARE_WISHLIST) { result ->
-          navController.popBackStackWithResult(
-            key = NavResult.SHARE_WISHLIST,
-            result = result
-          )
+          if (result.first) {
+            navController.popBackStackWithResult(
+              key = NavResult.SHARE_WISHLIST,
+              result = result
+            )
+          }
         }
 
         WishlistDetailRoute(

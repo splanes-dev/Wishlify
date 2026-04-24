@@ -88,7 +88,14 @@ class WishlistsDataMapper(
         target = entity.target,
         deadline = Date(deadline),
         event = if (sharedWishlists.containsKey(entity.id)) {
-          Wishlist.SharedWishlistEvent(sharedWishlists[entity.id]?.id ?: error("No sharedWishlistId found"))
+          val shared = sharedWishlists[entity.id] ?: error("No sharedWishlistId found")
+          Wishlist.SharedWishlistEvent(
+            shared.id,
+            InviteLink(
+              token = shared.inviteLink,
+              origin = InviteLink.WishlistShare
+            ),
+          )
         } else {
           Wishlist.SecretSantaEvent(secretSantaEvents[entity.id]?.id ?: error("No secret santa event found"))
         },
@@ -376,7 +383,8 @@ class WishlistsDataMapper(
       id = entity.id,
       name = entity.title,
       photo = imageMediaMapper.map(entity.photo),
-      target = entity.target
+      target = entity.target,
+      description = entity.description
     )
 
   fun mapToLinkedItem(entity: WishlistItemEntity): SharedWishlistItem.LinkedItem =

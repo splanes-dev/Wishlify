@@ -44,6 +44,7 @@
 
                 <data android:pathPrefix="/wishlists-editor" />
                 <data android:pathPrefix="/wishlist-share" />
+                <data android:pathPrefix="/shared-wishlist" />
                 <data android:pathPrefix="/secret-santa" />
 
                 <data android:pathPattern="/shared-wishlist/.*/chat" />

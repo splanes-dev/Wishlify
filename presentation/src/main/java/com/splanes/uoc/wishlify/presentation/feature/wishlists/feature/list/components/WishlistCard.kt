@@ -94,7 +94,9 @@ fun WishlistCard(
         }
 
         wishlist.targetOrNull()?.let { target ->
-          Spacer(Modifier.height(4.dp))
+          if (wishlist !is Wishlist.Shared || wishlist.isFinished()) {
+            Spacer(Modifier.height(4.dp))
+          }
 
           Text(
             text = target,
@@ -105,7 +107,7 @@ fun WishlistCard(
           )
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(4.dp))
 
         CardInfo(
           icon = painterResource(R.drawable.ic_gift),
@@ -126,6 +128,8 @@ fun WishlistCard(
             wishlist.editors.count()
           ),
         )
+
+        Spacer(Modifier.height(2.dp))
 
         Spacer(Modifier.weight(1f))
 

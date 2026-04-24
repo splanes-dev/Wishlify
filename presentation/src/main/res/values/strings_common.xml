@@ -29,6 +29,8 @@
     <string name="search">Cercar</string>
     <string name="event_finished">Finalitzat</string>
     <string name="save">Desar</string>
+    <string name="participants">Participants</string>
+    <string name="info">Informació</string>
     <string name="share">Compartir</string>
     <string name="filter">Filtrar</string>
     <string name="next">Següent</string>

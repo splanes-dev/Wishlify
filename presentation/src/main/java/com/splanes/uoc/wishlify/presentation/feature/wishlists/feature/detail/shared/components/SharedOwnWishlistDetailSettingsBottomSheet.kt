@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.s
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterAlt
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
@@ -42,6 +43,7 @@ fun SharedOwnWishlistDetailSettingsBottomSheet(
 private fun SharedOwnWishlistSettings.icon() =
   when (this) {
     SharedOwnWishlistSettings.Filter -> Icons.Outlined.FilterAlt
+    SharedOwnWishlistSettings.Info -> Icons.Outlined.Info
     SharedOwnWishlistSettings.BackToPrivates -> Icons.Outlined.SettingsBackupRestore
   }
 
@@ -49,6 +51,7 @@ private fun SharedOwnWishlistSettings.icon() =
 private fun SharedOwnWishlistSettings.text() =
   when (this) {
     SharedOwnWishlistSettings.Filter -> R.string.filter_items
+    SharedOwnWishlistSettings.Info -> R.string.wishlists_info
     SharedOwnWishlistSettings.BackToPrivates -> R.string.shared_wishlists_wishlist_settings_back_to_privates
   }.let { id -> stringResource(id) }
 

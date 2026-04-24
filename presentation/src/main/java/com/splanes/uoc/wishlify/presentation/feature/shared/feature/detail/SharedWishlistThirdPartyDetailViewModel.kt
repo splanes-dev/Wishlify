@@ -356,41 +356,45 @@ class SharedWishlistThirdPartyDetailViewModel(
     )
 
     private fun List<SharedWishlistItem>.applyFilters(filters: List<FilterProduct>) =
-      this
-        .filter { item ->
-          filters
-            .filterIsInstance<FilterProduct.Price>()
-            .all { filter ->
-              when (filter.value) {
-                is FilterProduct.EqualTo<*> -> item.linkedItem.price == filter.value.value
-                is FilterProduct.GreaterThan<*> -> item.linkedItem.price > filter.value.value
-                is FilterProduct.LessThan<*> -> item.linkedItem.price < filter.value.value
+      if (filters.isEmpty()) {
+        this
+      } else {
+        this
+          .filter { item ->
+            filters
+              .filterIsInstance<FilterProduct.Price>()
+              .all { filter ->
+                when (filter.value) {
+                  is FilterProduct.EqualTo<*> -> item.linkedItem.price == filter.value.value
+                  is FilterProduct.GreaterThan<*> -> item.linkedItem.price > filter.value.value
+                  is FilterProduct.LessThan<*> -> item.linkedItem.price < filter.value.value
+                }
               }
-            }
-        }
-        .filter { item ->
-          filters
-            .filterIsInstance<FilterProduct.Priority>()
-            .all { filter ->
-              when (filter.value) {
-                is FilterProduct.EqualTo<*> -> item.linkedItem.priority == filter.value.value
-                is FilterProduct.GreaterThan<*> -> item.linkedItem.priority.weight > filter.value.value.weight
-                is FilterProduct.LessThan<*> -> item.linkedItem.priority.weight < filter.value.value.weight
+          }
+          .filter { item ->
+            filters
+              .filterIsInstance<FilterProduct.Priority>()
+              .all { filter ->
+                when (filter.value) {
+                  is FilterProduct.EqualTo<*> -> item.linkedItem.priority == filter.value.value
+                  is FilterProduct.GreaterThan<*> -> item.linkedItem.priority.weight > filter.value.value.weight
+                  is FilterProduct.LessThan<*> -> item.linkedItem.priority.weight < filter.value.value.weight
+                }
               }
-            }
-        }
-        .filter { item ->
-          filters
-            .filterIsInstance<FilterProduct.ProductState>()
-            .any { filter ->
-              val value = filter.value.value
-              when (value) {
-                SharedWishlistState.Purchase -> item.state is SharedWishlistItem.Purchased
-                SharedWishlistState.Lock -> item.state is SharedWishlistItem.Lock
-                SharedWishlistState.RequestShare -> item.state is SharedWishlistItem.ShareRequest
-                SharedWishlistState.Available -> item.state is SharedWishlistItem.Available
+          }
+          .filter { item ->
+            filters
+              .filterIsInstance<FilterProduct.ProductState>()
+              .any { filter ->
+                val value = filter.value.value
+                when (value) {
+                  SharedWishlistState.Purchase -> item.state is SharedWishlistItem.Purchased
+                  SharedWishlistState.Lock -> item.state is SharedWishlistItem.Lock
+                  SharedWishlistState.RequestShare -> item.state is SharedWishlistItem.ShareRequest
+                  SharedWishlistState.Available -> item.state is SharedWishlistItem.Available
+                }
               }
-            }
-        }
+          }
+      }
   }
 }

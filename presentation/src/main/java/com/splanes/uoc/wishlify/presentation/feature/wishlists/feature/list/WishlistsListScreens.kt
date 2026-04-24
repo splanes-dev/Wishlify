@@ -59,6 +59,7 @@ import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.compone
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistsFinishedHeader
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenu
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.FABMenuItem
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.components.WishlistInfoBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.NewCategoryBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCard
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.components.WishlistCardSettingsBottomSheet
@@ -132,6 +133,9 @@ fun WishlistsListScreen(
       wishlists.any { w -> w.isFinished() }
     }
   }
+
+  val wishlistInfoSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+  var isWishlistInfoModalOpen by remember { mutableStateOf(false) }
 
   LaunchedEffect(uiState.sharedWishlistFeedback) {
     if (uiState.sharedWishlistFeedback != null) {
@@ -299,8 +303,10 @@ fun WishlistsListScreen(
             if (wishlist.isShareable()) {
               add(WishlistCardSettings.Share)
             }
+            add(WishlistCardSettings.Info)
             add(WishlistCardSettings.Delete)
           } else {
+            add(WishlistCardSettings.Info)
             if (wishlist.event is Wishlist.SharedWishlistEvent && wishlist.isFinished()) {
               add(WishlistCardSettings.BackToPrivate)
             }
@@ -341,6 +347,13 @@ fun WishlistsListScreen(
                 }
             }
 
+            WishlistCardSettings.Info -> {
+              isWishlistInfoModalOpen = true
+              coroutineScope
+                .launch { wishlistSettingsSheetState.hide() }
+                .invokeOnCompletion { isWishlistSettingsModalOpen = false }
+            }
+
             WishlistCardSettings.Delete -> {
               isDeleteItemDialogVisible = true
               coroutineScope
@@ -368,6 +381,16 @@ fun WishlistsListScreen(
           onConfirm = { onSharedBackToPrivate(wishlist) }
         )
       }
+
+      WishlistInfoBottomSheet(
+        visible = isWishlistInfoModalOpen,
+        sheetState = wishlistInfoSheetState,
+        wishlist = wishlist,
+        onDismiss = {
+          isWishlistInfoModalOpen = false
+          wishlistSelected = null
+        }
+      )
     }
 
     filterOpened?.let { filter ->
