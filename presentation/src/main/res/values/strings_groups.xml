@@ -26,4 +26,9 @@
     <string name="groups_edit_group">Editar grup</string>
     <string name="groups_leave_group">Sortir del grup</string>
     <string name="groups_delete_group">Eliminar grup</string>
+    <string name="groups_wishlists_by_group_title">Llistats compartits del grup</string>
+    <string name="groups_wishlists_by_group_description">A continuació pots veure els llistats compartits del grup %s:</string>
+    <string name="groups_secret_santa_by_group_title">Amics invisible del grup</string>
+    <string name="groups_secret_santa_by_group_description">A continuació pots veure els esdeveniments d\'amic invisible del grup %s:</string>
+    <string name="groups_events_by_group_filtered_results_banner">És possible que alguns resultats estiguin filtrats, com per exemple esdeveniments de llista compartida que hagis compartit tu. Estem treballant per solucionar aquesta incidència.</string>
 </resources>

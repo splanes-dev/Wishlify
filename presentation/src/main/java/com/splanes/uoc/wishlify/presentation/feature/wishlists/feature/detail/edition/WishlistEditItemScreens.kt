@@ -82,6 +82,7 @@ fun WishlistEditItemFormScreen(
 
   val storeState = rememberTextInputState(
     initialValue = uiState.form.store,
+    supportingText = stringResource(R.string.optional),
     onClearError = { onClearInputError(WishlistItemForm.Input.Store) }
   )
 
@@ -97,6 +98,7 @@ fun WishlistEditItemFormScreen(
 
   val linkState = rememberTextInputState(
     initialValue = uiState.form.link,
+    supportingText = stringResource(R.string.optional),
     onClearError = { onClearInputError(WishlistItemForm.Input.Link) }
   )
 

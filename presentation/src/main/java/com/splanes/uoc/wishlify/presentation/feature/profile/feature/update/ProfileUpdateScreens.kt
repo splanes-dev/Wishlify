@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -77,6 +78,11 @@ fun ProfileUpdateScreen(
           || uiState.user.email != emailState.text
           || uiState.form.photo != imageSelected
     }
+  }
+
+  LaunchedEffect(uiState.formErrors) {
+    usernameState.error(uiState.formErrors.usernameError)
+    emailState.error(uiState.formErrors.emailError)
   }
 
   Box(modifier = Modifier.fillMaxSize()) {

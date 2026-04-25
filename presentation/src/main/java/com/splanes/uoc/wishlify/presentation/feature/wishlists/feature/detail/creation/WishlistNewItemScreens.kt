@@ -80,6 +80,7 @@ fun WishlistNewItemScreen(
 
   val storeState = rememberTextInputState(
     initialValue = uiState.form.store,
+    supportingText = stringResource(R.string.optional),
     onClearError = { onClearInputError(WishlistItemForm.Input.Store) }
   )
 
@@ -95,6 +96,7 @@ fun WishlistNewItemScreen(
 
   val linkState = rememberTextInputState(
     initialValue = uiState.form.link,
+    supportingText = stringResource(R.string.optional),
     onClearError = { onClearInputError(WishlistItemForm.Input.Link) }
   )
 
@@ -207,7 +209,7 @@ fun WishlistNewItemScreen(
               state = storeState,
               label = stringResource(R.string.wishlists_new_item_store_input),
               leadingIcon = Icons.Outlined.Store,
-              singleLine = true
+              singleLine = true,
             )
           }
         }

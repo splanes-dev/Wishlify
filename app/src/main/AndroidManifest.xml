@@ -42,7 +42,7 @@
 
                 <data android:host="www.wishlify.com" />
 
-                <data android:pathPrefix="/wishlists-editor" />
+                <data android:pathPrefix="/wishlist" />
                 <data android:pathPrefix="/wishlist-share" />
                 <data android:pathPrefix="/shared-wishlist" />
                 <data android:pathPrefix="/secret-santa" />

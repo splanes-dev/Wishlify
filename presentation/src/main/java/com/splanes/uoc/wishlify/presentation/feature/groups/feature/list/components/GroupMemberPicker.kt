@@ -71,11 +71,17 @@ fun GroupMemberPicker(
 
           Spacer(Modifier.height(4.dp))
 
-          u.forEach { user ->
-            UserRow(
-              username = user.username,
-              onRemove = { onRemoveUser(user) }
-            )
+          Column {
+            u.forEachIndexed { index, user ->
+              UserRow(
+                username = user.username,
+                onRemove = { onRemoveUser(user) }
+              )
+
+              if (index != u.lastIndex) {
+                Spacer(Modifier.height(4.dp))
+              }
+            }
           }
         }
       }
@@ -128,6 +134,7 @@ private fun Header(onSearchClick: () -> Unit) {
     )
   }
 }
+
 
 @Composable
 private fun UserRow(

@@ -150,5 +150,5 @@ private val EmailRegex = Regex("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
     "\\." +
     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
     ")+")
-private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._]{1,18}[a-zA-Z0-9])?$")
+private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._ ]{1,18}[a-zA-Z0-9])?$")
 private val PasswordRegex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$")

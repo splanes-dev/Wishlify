@@ -28,6 +28,7 @@ class SecretSantaDataMapper {
           id = entity.id,
           name = entity.name,
           photoUrl = entity.photoUrl?.takeIf { it.isBlank() },
+          group = entity.group,
           deadline = Date(entity.deadline)
         )
 
@@ -36,6 +37,7 @@ class SecretSantaDataMapper {
           id = entity.id,
           name = entity.name,
           photoUrl = entity.photoUrl?.takeIf { it.isBlank() },
+          group = entity.group,
           deadline = Date(entity.deadline),
           target = assignments[entity.id]?.username
             ?: error("No assignment found for event `${entity.id}`. Draw is supposed to be done")

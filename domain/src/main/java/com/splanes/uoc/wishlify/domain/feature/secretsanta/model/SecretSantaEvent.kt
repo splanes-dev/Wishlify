@@ -7,6 +7,7 @@ sealed class SecretSantaEvent(
   open val id: String,
   open val name: String,
   open val photoUrl: String?,
+  open val group: String?,
   open val deadline: Date
 ) {
 
@@ -17,11 +18,13 @@ sealed class SecretSantaEvent(
     override val id: String,
     override val name: String,
     override val photoUrl: String?,
+    override val group: String?,
     override val deadline: Date
   ) : SecretSantaEvent(
     id = id,
     name = name,
     photoUrl = photoUrl,
+    group = group,
     deadline = deadline
   )
 
@@ -29,12 +32,14 @@ sealed class SecretSantaEvent(
     override val id: String,
     override val name: String,
     override val photoUrl: String?,
+    override val group: String?,
     override val deadline: Date,
     val target: String
   ) : SecretSantaEvent(
     id = id,
     name = name,
     photoUrl = photoUrl,
+    group = group,
     deadline = deadline
   )
 }

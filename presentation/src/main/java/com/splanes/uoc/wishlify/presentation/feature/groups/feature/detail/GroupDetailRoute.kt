@@ -27,6 +27,12 @@ fun GroupDetailRoute(
         uiState = state,
         onEditGroup = { group -> onNavToEdit(group.id, group.name) },
         onLeaveGroup = viewModel::onLeaveGroup,
+        onWishlistClick = {},
+        onSecretSantaEventClick = {},
+        onOpenWishlistsByGroupModal = viewModel::onOpenWishlistsByGroupModal,
+        onOpenSecretSantaEventsByGroupModal = viewModel::onOpenSecretSantaEventsByGroupModal,
+        onCloseWishlistsByGroupModal = viewModel::onCloseWishlistsByGroupModal,
+        onCloseSecretSantaEventsByGroupModal = viewModel::onCloseSecretSantaEventsByGroupModal,
         onDismissError = viewModel::onDismissError,
         onBack = { onFinish(false) }
       )

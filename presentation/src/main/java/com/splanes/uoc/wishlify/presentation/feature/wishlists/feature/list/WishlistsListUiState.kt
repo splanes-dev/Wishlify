@@ -39,5 +39,5 @@ data class WishlistsFiltersState(
   val availability: WishlistsFilter.Availability? = null
 ) {
   fun hasFilters() =
-    target != null || category != null && shareStatus != null || availability != null
+    target != null || category != null || shareStatus != null || availability != null
 }

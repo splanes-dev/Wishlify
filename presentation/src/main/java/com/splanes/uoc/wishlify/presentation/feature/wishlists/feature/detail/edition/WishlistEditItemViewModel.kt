@@ -183,7 +183,7 @@ class WishlistEditItemViewModel(
     }
 
     val amountError = when {
-      unitPrice == 0f -> AmountWishlistItemFormError.Invalid
+      amount == 0 -> AmountWishlistItemFormError.Invalid
       else -> null
     }
 

@@ -7,6 +7,10 @@ import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.groups.model.UpdateGroupRequest
 import com.splanes.uoc.wishlify.domain.feature.groups.usecase.FetchGroupUseCase
 import com.splanes.uoc.wishlify.domain.feature.groups.usecase.UpdateGroupUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaEventsUseCase
+import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +28,8 @@ class GroupDetailViewModel(
   groupName: String,
   private val fetchGroupUseCase: FetchGroupUseCase,
   private val updateGroupUseCase: UpdateGroupUseCase,
+  private val fetchSecretSantaEventsUseCase: FetchSecretSantaEventsUseCase,
+  private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
@@ -73,6 +79,72 @@ class GroupDetailViewModel(
     }
   }
 
+  fun onOpenWishlistsByGroupModal() {
+    val currentState = viewModelState.value
+    if (currentState.wishlistsByGroup.isEmpty()) {
+      viewModelState.update { state -> state.copy(isLoading = true) }
+      viewModelScope.launch {
+        fetchSharedWishlistsUseCase()
+          .onSuccess { wishlists ->
+            viewModelState.update { state ->
+              state.copy(
+                isLoading = false,
+                isWishlistsByGroupsModalOpen = true,
+                wishlistsByGroup = wishlists.filter { it.group?.id == currentState.group?.id },
+              )
+            }
+          }
+          .onFailure { error ->
+            viewModelState.update { state ->
+              state.copy(
+                isLoading = false,
+                error = error,
+              )
+            }
+          }
+      }
+    } else {
+      viewModelState.update { state -> state.copy(isWishlistsByGroupsModalOpen = true) }
+    }
+  }
+
+  fun onOpenSecretSantaEventsByGroupModal() {
+    val currentState = viewModelState.value
+    if (currentState.secretSantaEventsByGroup.isEmpty()) {
+      viewModelState.update { state -> state.copy(isLoading = true) }
+      viewModelScope.launch {
+        fetchSecretSantaEventsUseCase()
+          .onSuccess { events ->
+            viewModelState.update { state ->
+              state.copy(
+                isLoading = false,
+                isSecretSantaEventsByGroupsModalOpen = true,
+                secretSantaEventsByGroup = events.filter { it.group == currentState.group?.id },
+              )
+            }
+          }
+          .onFailure { error ->
+            viewModelState.update { state ->
+              state.copy(
+                isLoading = false,
+                error = error,
+              )
+            }
+          }
+      }
+    } else {
+      viewModelState.update { state -> state.copy(isWishlistsByGroupsModalOpen = true) }
+    }
+  }
+
+  fun onCloseWishlistsByGroupModal() {
+    viewModelState.update { state -> state.copy(isWishlistsByGroupsModalOpen = false) }
+  }
+
+  fun onCloseSecretSantaEventsByGroupModal() {
+    viewModelState.update { state -> state.copy(isSecretSantaEventsByGroupsModalOpen = false) }
+  }
+
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
@@ -92,6 +164,10 @@ class GroupDetailViewModel(
   private data class ViewModelState(
     val groupName: String,
     val group: Group.Detail? = null,
+    val isWishlistsByGroupsModalOpen: Boolean = false,
+    val isSecretSantaEventsByGroupsModalOpen: Boolean = false,
+    val wishlistsByGroup: List<SharedWishlist> = emptyList(),
+    val secretSantaEventsByGroup: List<SecretSantaEvent> = emptyList(),
     val isLoadingFullscreen: Boolean = true,
     val isLoading: Boolean = false,
     val error: Throwable? = null
@@ -106,6 +182,10 @@ class GroupDetailViewModel(
       else ->
         GroupDetailUiState.Detail(
           group = group,
+          isWishlistsByGroupsModalOpen = isWishlistsByGroupsModalOpen,
+          isSecretSantaEventsByGroupsModalOpen = isSecretSantaEventsByGroupsModalOpen,
+          wishlistsByGroup = wishlistsByGroup,
+          secretSantaEventsByGroup = secretSantaEventsByGroup,
           isLoading = isLoading,
           error = error?.let(errorUiMapper::map)
         )

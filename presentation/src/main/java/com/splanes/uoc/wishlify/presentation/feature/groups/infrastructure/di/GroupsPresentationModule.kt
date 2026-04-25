@@ -28,6 +28,8 @@ internal val GroupsPresentationModule = module {
       groupId = groupId,
       groupName = groupName,
       fetchGroupUseCase = get(),
+      fetchSharedWishlistsUseCase = get(),
+      fetchSecretSantaEventsUseCase = get(),
       updateGroupUseCase = get(),
       errorUiMapper = get()
     )

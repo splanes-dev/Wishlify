@@ -162,7 +162,7 @@ class ProfileUpdateViewModel(
   }
 }
 
-private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._]{1,18}[a-zA-Z0-9])?$")
+private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._ ]{1,18}[a-zA-Z0-9])?$")
 private val EmailRegex = Regex("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
     "\\@" +
     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
