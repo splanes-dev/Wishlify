@@ -71,33 +71,35 @@ El projecte segueix una arquitectura moderna basada en:
 
 ### Wishlists
 
-| Wishlists                                      | Detall Wishlist                            | Detall ítem                                     |
-|------------------------------------------------|--------------------------------------------|-------------------------------------------------|
-| ![](readme/assets/img-wishlists.png)           | ![](readme/assets/img-wishlist-detail.png) | ![](readme/assets/img-wishlist-item-detail.png) |
 
-| Compartir wishlist                             |
-|------------------------------------------------|
-| ![](readme/assets/img-wishlist-share-list.png) |
+
+| Wishlists                                                 | Detall Wishlist                                                 | Detall ítem                                                          |
+|-----------------------------------------------------------|-----------------------------------------------------------------|----------------------------------------------------------------------|
+| <img src="readme/assets/img-wishlists.png" width="250" /> | <img src="readme/assets/img-wishlist-detail.png" width="250" /> | <img src="readme/assets/img-wishlist-item-detail.png" width="250" /> |
+
+| Compartir wishlist                                                  |
+|---------------------------------------------------------------------|
+| <img src="readme/assets/img-wishlist-share-list.png" width="250" /> |
 
 ### Wishlists compartides
 
-| Wishlists compartides                       | Detall Wishlist compartida                        | Detall ítem                                            |
-|---------------------------------------------|---------------------------------------------------|--------------------------------------------------------|
-| ![](readme/assets/img-shared-wishlists.png) | ![](readme/assets/img-shared-wishlist-detail.png) | ![](readme/assets/img-shared-wishlist-item-detail.png) |
+| Wishlists compartides                                            | Detall Wishlist compartida                                             | Detall ítem                                                                 |
+|------------------------------------------------------------------|------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| <img src="readme/assets/img-shared-wishlists.png" width="250" /> | <img src="readme/assets/img-shared-wishlist-detail.png" width="250" /> | <img src="readme/assets/img-shared-wishlist-item-detail.png" width="250" /> |
 
-| Xat compartir wishlist                          |
-|-------------------------------------------------|
-| ![](readme/assets/img-shared-wishlist-chat.png) |
+| Xat compartir wishlist                                               |
+|----------------------------------------------------------------------|
+| <img src="readme/assets/img-shared-wishlist-chat.png" width="250" /> |
 
 ### Amic invisible
 
-| Esdeveniments amic invisible                   | Detall Amic invisible                          | Creació d'exclusions                               |
-|------------------------------------------------|------------------------------------------------|----------------------------------------------------|
-| ![](readme/assets/img-secret-santa-events.png) | ![](readme/assets/img-secret-santa-detail.png) | ![](readme/assets/img-secret-santa-exclusions.png) |
+| Esdeveniments amic invisible                                        | Detall Amic invisible                                               | Creació d'exclusions                                                    |
+|---------------------------------------------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------------|
+| <img src="readme/assets/img-secret-santa-events.png" width="250" /> | <img src="readme/assets/img-secret-santa-detail.png" width="250" /> | <img src="readme/assets/img-secret-santa-exclusions.png" width="250" /> |
 
-| Xats anònims                                 |
-|----------------------------------------------|
-| ![](readme/assets/img-secret-santa-chat.png) |
+| Xats anònims                                                      |
+|-------------------------------------------------------------------|
+| <img src="readme/assets/img-secret-santa-chat.png" width="250" /> |
 
 ---
 
