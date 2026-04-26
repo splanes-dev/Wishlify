@@ -252,6 +252,12 @@ fun WishlistNewItemScreen(
               trailingIconColor = priority.color()
             )
           },
+          initial = DropdownInput.Option(
+            id = WishlistItem.Priority.entries.indexOf(prioritySelected),
+            text = prioritySelected.name(),
+            trailingIcon = rememberVectorPainter(prioritySelected.icon()),
+            trailingIconColor = prioritySelected.color()
+          ),
           label = stringResource(R.string.wishlists_new_item_priority_input),
           leadingIcon = prioritySelected.icon(),
           onSelectionChanged = { index ->

@@ -143,7 +143,7 @@ class SecretSantaRepositoryImpl(
           entity = entity,
           group = group?.let { g -> groupsMapper.mapToBasic(g, isActive = true) },
           receiver = assignment?.receiver,
-          giver = assignment?.receiver,
+          giver = assignment?.giver,
           receiverWishlist = receiverWishlist,
           receiverSharedHobbies = receiverHobbiesEnabled,
           currentUserWishlist = currentUserWishlist,
@@ -182,8 +182,8 @@ class SecretSantaRepositoryImpl(
         val event = secretSantaRemoteDataSource.fetchSecretSantaEvent(eventId)
           ?: error("No secret santa event found for id=$eventId")
 
-        val entities = assignments.mapValues { (_, receiver) ->
-          val giver = assignments.keys.first { user -> assignments[user] == receiver }
+        val entities = assignments.mapValues { ( user, receiver) ->
+          val giver = assignments.keys.first { u -> assignments[u] == user }
           SecretSantaAssignmentEntity(receiver, giver)
         }
         entities

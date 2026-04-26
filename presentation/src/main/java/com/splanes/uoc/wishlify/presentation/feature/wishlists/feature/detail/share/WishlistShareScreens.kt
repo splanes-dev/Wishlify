@@ -343,7 +343,9 @@ fun WishlistShareScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        WishlistShareWarningBanner(modifier = Modifier.fillMaxWidth())
+        if (editorsCanSeeUpdates) {
+          WishlistShareWarningBanner(modifier = Modifier.fillMaxWidth())
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

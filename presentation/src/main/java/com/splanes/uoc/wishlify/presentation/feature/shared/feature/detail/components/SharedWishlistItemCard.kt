@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -95,11 +94,7 @@ fun SharedWishlistItemCardAnimated(
             )
           }
         } else {
-          Modifier.border(
-            width = 1.dp,
-            color = borderColor,
-            shape = WishlifyTheme.shapes.small
-          )
+          Modifier
         }
       )
   ) {

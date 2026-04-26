@@ -255,7 +255,7 @@ class SharedWishlistsDataMapper {
       SharedWishlistItemEntity.State.Reserved ->
         sharedItem.reservation?.let { reservation ->
           SharedWishlistItem.Lock(
-            isCurrentUserParticipant = uid in reservation.reservedBy,
+            isCurrentUserParticipant = uid in reservation.reservedByGroup,
             isLockedByCurrentUser = reservation.reservedBy == uid,
             reservedBy = users[reservation.reservedBy]
               ?: error("No reservedBy user found for item `${sharedItem.id}`"),
@@ -268,7 +268,7 @@ class SharedWishlistsDataMapper {
       SharedWishlistItemEntity.State.Purchased ->
         sharedItem.purchased?.let { purchase ->
           SharedWishlistItem.Purchased(
-            isCurrentUserParticipant = uid in purchase.purchasedBy,
+            isCurrentUserParticipant = uid in purchase.purchasedByGroup,
             isPurchasedByCurrentUser = uid == purchase.purchasedBy,
             purchasedBy = users[purchase.purchasedBy]
               ?: error("No purchasedBy user found for item `${sharedItem.id}`"),
