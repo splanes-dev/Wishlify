@@ -149,7 +149,7 @@ Les notificacions inclouen navegació directa mitjançant deep links.
 
 1. Clonar el repositori:
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/splanes-dev/Wishlify.git
    ```
 2. Obrir el projecte a Android Studio
 3. Afegir el fitxer de configuració de Firebase:
