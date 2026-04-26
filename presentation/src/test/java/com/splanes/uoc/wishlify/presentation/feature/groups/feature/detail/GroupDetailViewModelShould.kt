@@ -8,6 +8,8 @@ import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.groups.model.UpdateGroupRequest
 import com.splanes.uoc.wishlify.domain.feature.groups.usecase.FetchGroupUseCase
 import com.splanes.uoc.wishlify.domain.feature.groups.usecase.UpdateGroupUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaEventsUseCase
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.presentation.common.UnitTest
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
@@ -27,6 +29,8 @@ class GroupDetailViewModelShould : UnitTest() {
 
   private val fetchGroupUseCase: FetchGroupUseCase = mock()
   private val updateGroupUseCase: UpdateGroupUseCase = mock()
+  private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase = mock()
+  private val fetchSecretSantaEventsUseCase: FetchSecretSantaEventsUseCase = mock()
   private val errorUiMapper: ErrorUiMapper = mock()
 
   private lateinit var viewModel: GroupDetailViewModel
@@ -38,6 +42,8 @@ class GroupDetailViewModelShould : UnitTest() {
       groupName = groupName,
       fetchGroupUseCase = fetchGroupUseCase,
       updateGroupUseCase = updateGroupUseCase,
+      fetchSharedWishlistsUseCase = fetchSharedWishlistsUseCase,
+      fetchSecretSantaEventsUseCase = fetchSecretSantaEventsUseCase,
       errorUiMapper = errorUiMapper,
     )
   }
@@ -57,6 +63,10 @@ class GroupDetailViewModelShould : UnitTest() {
       assertThat(detailState).isEqualTo(
         GroupDetailUiState.Detail(
           group = group,
+          isWishlistsByGroupsModalOpen = false,
+          isSecretSantaEventsByGroupsModalOpen = false,
+          wishlistsByGroup = emptyList(),
+          secretSantaEventsByGroup = emptyList(),
           isLoading = false,
           error = null,
         )
@@ -102,6 +112,10 @@ class GroupDetailViewModelShould : UnitTest() {
       assertThat(detailState).isEqualTo(
         GroupDetailUiState.Detail(
           group = group,
+          isWishlistsByGroupsModalOpen = false,
+          isSecretSantaEventsByGroupsModalOpen = false,
+          wishlistsByGroup = emptyList(),
+          secretSantaEventsByGroup = emptyList(),
           isLoading = false,
           error = null,
         )
@@ -137,6 +151,10 @@ class GroupDetailViewModelShould : UnitTest() {
       assertThat(loadingState).isEqualTo(
         GroupDetailUiState.Detail(
           group = group,
+          isWishlistsByGroupsModalOpen = false,
+          isSecretSantaEventsByGroupsModalOpen = false,
+          wishlistsByGroup = emptyList(),
+          secretSantaEventsByGroup = emptyList(),
           isLoading = true,
           error = null,
         )
@@ -146,6 +164,10 @@ class GroupDetailViewModelShould : UnitTest() {
       assertThat(notLoadingState).isEqualTo(
         GroupDetailUiState.Detail(
           group = group,
+          isWishlistsByGroupsModalOpen = false,
+          isSecretSantaEventsByGroupsModalOpen = false,
+          wishlistsByGroup = emptyList(),
+          secretSantaEventsByGroup = emptyList(),
           isLoading = false,
           error = null,
         )
@@ -194,6 +216,10 @@ class GroupDetailViewModelShould : UnitTest() {
       assertThat(loadingState).isEqualTo(
         GroupDetailUiState.Detail(
           group = group,
+          isWishlistsByGroupsModalOpen = false,
+          isSecretSantaEventsByGroupsModalOpen = false,
+          wishlistsByGroup = emptyList(),
+          secretSantaEventsByGroup = emptyList(),
           isLoading = true,
           error = null,
         )
@@ -203,6 +229,10 @@ class GroupDetailViewModelShould : UnitTest() {
       assertThat(errorState).isEqualTo(
         GroupDetailUiState.Detail(
           group = group,
+          isWishlistsByGroupsModalOpen = false,
+          isSecretSantaEventsByGroupsModalOpen = false,
+          wishlistsByGroup = emptyList(),
+          secretSantaEventsByGroup = emptyList(),
           isLoading = false,
           error = errorUiModel(),
         )
@@ -239,6 +269,10 @@ class GroupDetailViewModelShould : UnitTest() {
       assertThat(uiState).isEqualTo(
         GroupDetailUiState.Detail(
           group = group,
+          isWishlistsByGroupsModalOpen = false,
+          isSecretSantaEventsByGroupsModalOpen = false,
+          wishlistsByGroup = emptyList(),
+          secretSantaEventsByGroup = emptyList(),
           isLoading = false,
           error = null,
         )

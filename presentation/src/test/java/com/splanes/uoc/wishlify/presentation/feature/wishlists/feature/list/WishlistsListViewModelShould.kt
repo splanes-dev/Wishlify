@@ -42,6 +42,8 @@ class WishlistsListViewModelShould : UnitTest() {
       fetchCategoriesUseCase,
       unshareWishlistUseCase,
       mock(),
+      categoryFormErrorMapper = mock(),
+      createCategoryUseCase = mock(),
       errorUiMapper
     )
   }
@@ -79,6 +81,7 @@ class WishlistsListViewModelShould : UnitTest() {
           filtersState = WishlistsFiltersState(),
           categories = emptyList(),
           sharedWishlistFeedback = null,
+          newCategoryNameError = null,
           isLoading = false,
           error = null
         )
@@ -102,6 +105,7 @@ class WishlistsListViewModelShould : UnitTest() {
           filtersState = WishlistsFiltersState(),
           categories = emptyList(),
           sharedWishlistFeedback = null,
+          newCategoryNameError = null,
           isLoading = false,
           error = errorUiModel()
         )

@@ -287,7 +287,7 @@ class ProfileUpdateViewModelShould : UnitTest() {
 
     val form = UserProfileUpdateForm(
       photo = null,
-      username = "invalid user",
+      username = "_invalid_user_",
       email = "valid@test.com"
     )
 

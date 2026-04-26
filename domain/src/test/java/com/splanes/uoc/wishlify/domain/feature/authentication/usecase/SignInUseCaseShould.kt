@@ -3,6 +3,8 @@ package com.splanes.uoc.wishlify.domain.feature.authentication.usecase
 import com.google.common.truth.Truth.assertThat
 import com.splanes.uoc.wishlify.domain.feature.authentication.model.SignInRequest
 import com.splanes.uoc.wishlify.domain.feature.authentication.repository.AuthenticationRepository
+import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
+import com.splanes.uoc.wishlify.domain.feature.user.repository.UserRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -14,12 +16,14 @@ import org.mockito.kotlin.whenever
 class SignInUseCaseShould {
 
   private val authRepository: AuthenticationRepository = mock()
+  private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase = mock()
+  private val userRepository: UserRepository = mock()
 
   private lateinit var useCase: SignInUseCase
 
   @Before
   fun setup() {
-    useCase = SignInUseCase(authRepository)
+    useCase = SignInUseCase(authRepository, getCurrentUserIdUseCase, userRepository)
   }
 
   @Test

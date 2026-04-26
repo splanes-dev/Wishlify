@@ -14,6 +14,7 @@ import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
@@ -32,6 +33,9 @@ class SharedWishlistsListViewModelShould : UnitTest() {
     viewModel = SharedWishlistsListViewModel(
       fetchSharedWishlistsUseCase = fetchSharedWishlistsUseCase,
       addSharedWishlistParticipantByTokenUseCase = mock(),
+      isPermissionModalVisibleUseCase = mock {
+        on { invoke() } doReturn false
+      },
       errorUiMapper = errorUiMapper,
     )
   }
@@ -137,7 +141,8 @@ class SharedWishlistsListViewModelShould : UnitTest() {
       id = "",
       name = "",
       photo = ImageMedia.Url(""),
-      target = ""
+      target = "",
+      description = ""
     ),
     owner: User.Basic = User.Basic("", "", "", null),
     group: Group.Basic? = null,

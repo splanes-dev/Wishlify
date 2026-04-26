@@ -87,7 +87,8 @@ class UpdateSharedWishlistItemUseCaseShould {
         id = "",
         name = "",
         photo = ImageMedia.Url(""),
-        target = null
+        target = null,
+        description = ""
       ),
       owner = User.Basic("", "", "", null),
       group = null,

@@ -92,6 +92,7 @@ class WishlistDetailViewModelShould : UnitTest() {
         WishlistDetailUiState.Empty(
           wishlistName = wishlistName,
           wishlist = wishlist,
+          productFilters = emptyList(),
           isNewItemByLinkModalOpen = false,
           newItemByLinkError = null,
           isLoading = false,
@@ -351,6 +352,7 @@ class WishlistDetailViewModelShould : UnitTest() {
         WishlistDetailUiState.Empty(
           wishlistName = wishlistName,
           wishlist = wishlist,
+          productFilters = emptyList(),
           isNewItemByLinkModalOpen = false,
           newItemByLinkError = null,
           isLoading = false,
