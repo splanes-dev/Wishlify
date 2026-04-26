@@ -26,6 +26,8 @@ import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.creatio
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.edition.GroupsEditGroupRoute
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.list.edition.GroupsEditGroupViewModel
 import com.splanes.uoc.wishlify.presentation.feature.groups.feature.search.GroupsSearchUsersRoute
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.infrastructure.navigation.SecretSanta
+import com.splanes.uoc.wishlify.presentation.feature.shared.infrastructure.navigation.SharedWishlists
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureHomeNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.NavResultHandler
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitions
@@ -194,6 +196,18 @@ class GroupsNavGraph : FeatureHomeNavGraph {
           viewModel = viewModel,
           onNavToEdit = { groupId, name ->
             val route = Groups.EditGroup(groupId, name)
+            navController.navigate(route)
+          },
+          onNavToSharedWishlist = { wishlist ->
+            val route = SharedWishlists.ThirdPartyDetail(
+              wishlist.id,
+              wishlist.linkedWishlist.name,
+              wishlist.linkedWishlist.target.orEmpty()
+            )
+            navController.navigate(route)
+          },
+          onNavToSecretSanta = { event ->
+            val route = SecretSanta.Detail(event.id, event.name)
             navController.navigate(route)
           },
           onFinish = { result ->
