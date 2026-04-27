@@ -15,6 +15,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel that drives the app home shell.
+ *
+ * It observes session expiration and translates incoming external share or
+ * deeplink actions into navigation side effects for downstream features.
+ */
 class HomeViewModel(
   private val getSessionStateFlowUseCase: GetSessionStateFlowUseCase,
   private val deeplinkMapper: DeeplinkMapper,
@@ -25,6 +31,7 @@ class HomeViewModel(
 
   private var observeJob: Job? = null
 
+  /** Starts observing session state changes and emits logout navigation when needed. */
   fun observeSessionState() {
     if (observeJob?.isActive == true) return
 
@@ -37,6 +44,7 @@ class HomeViewModel(
     }
   }
 
+  /** Translates incoming Android share actions into wishlist-item creation flows. */
   fun onCreateWishlistItemByShare(action: CreateNewWishlistItem) {
     val effect = when (action) {
       is NewWishlistItemByImage -> HomeUiSideEffect.NavToWishlistNewItemByUri(action.uri.toString())
@@ -45,6 +53,7 @@ class HomeViewModel(
     viewModelScope.launch { uiSideEffectChannel.send(effect) }
   }
 
+  /** Resolves a deeplink URI into the matching feature navigation side effect. */
   fun onOpenDeeplink(uri: Uri) {
     val effect = when (val deeplink = deeplinkMapper.map(uri)) {
       is Deeplink.SecretSanta -> HomeUiSideEffect.NavToSecretSanta(deeplink)
@@ -57,6 +66,7 @@ class HomeViewModel(
     }
   }
 
+  /** Stops the session-state observer when the home shell no longer needs it. */
   fun cancelSessionStateObserver() {
     observeJob?.cancel()
   }

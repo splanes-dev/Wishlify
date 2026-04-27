@@ -11,6 +11,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the home presentation-layer dependencies. */
 internal val HomePresentationModule = module {
   // Navigation
   singleOf(::HomeNavGraph) bind FeatureMainNavGraph::class
