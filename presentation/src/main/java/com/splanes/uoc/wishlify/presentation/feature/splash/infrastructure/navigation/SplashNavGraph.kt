@@ -9,8 +9,15 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.launcher.
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Main navigation graph entry that hosts the splash destination and forwards the user into the
+ * authentication flow.
+ */
 class SplashNavGraph : FeatureMainNavGraph {
 
+  /**
+   * Registers the splash destination as the main entry point of the app shell.
+   */
   override fun NavGraphBuilder.buildNavGraph(navController: NavHostController) {
     composable<Splash> {
       val authLauncher = koinInject<AuthLauncher> { parametersOf(navController) }

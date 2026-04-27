@@ -9,6 +9,9 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/**
+ * Koin module that wires the presentation-layer dependencies for the splash feature.
+ */
 internal val SplashPresentationModule = module {
   // Navigation
   single(named(MainNavStartRoute)) { Splash } bind Any::class
