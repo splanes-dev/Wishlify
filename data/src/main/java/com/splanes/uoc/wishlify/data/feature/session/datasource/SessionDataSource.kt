@@ -8,13 +8,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 
+/**
+ * Firebase Auth backed data source for session state.
+ *
+ * It exposes the current authenticated user id and a reactive stream of auth
+ * state changes translated into domain session states.
+ */
 class SessionDataSource(
   private val firebaseAuth: FirebaseAuth,
 ) {
 
+  /** Returns the current authenticated user id or throws when there is no session. */
   fun getCurrentUserUidOrThrow(): String =
     firebaseAuth.currentUser?.uid ?: throw SessionError.NoSession()
 
+  /** Observes Firebase authentication changes as a distinct domain session flow. */
   fun observeAuthState(): Flow<SessionState> = callbackFlow {
 
     val listener = FirebaseAuth.AuthStateListener { auth ->

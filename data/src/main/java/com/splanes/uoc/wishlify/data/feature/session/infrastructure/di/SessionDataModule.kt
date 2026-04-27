@@ -7,6 +7,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the session data-layer components. */
+
 internal val SessionDataModule = module {
   // Data source
   singleOf(::SessionDataSource)
