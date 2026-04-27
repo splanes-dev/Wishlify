@@ -5,10 +5,12 @@ import com.splanes.uoc.wishlify.domain.feature.session.model.SessionState
 import com.splanes.uoc.wishlify.domain.feature.session.repository.SessionRepository
 import kotlinx.coroutines.flow.Flow
 
+/** Observes the authentication state of the current session. */
 class GetSessionStateFlowUseCase(
   private val repository: SessionRepository
 ) : UseCase() {
 
+  /** Returns a flow of session state updates. */
   operator fun invoke(): Flow<SessionState> =
     repository.observeSessionState()
 }
