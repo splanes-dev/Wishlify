@@ -22,6 +22,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel that drives the sign-in flow.
+ *
+ * It coordinates automatic sign-in on first collection, manual email/password
+ * sign-in, Google sign-in, local form validation and navigation side effects.
+ */
 class SignInViewModel(
   private val autoSignInUseCase: AutoSignInUseCase,
   private val signInUseCase: SignInUseCase,
@@ -43,6 +49,7 @@ class SignInViewModel(
   private val uiSideEffectChannel = Channel<SignInUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /** Validates and submits the email/password sign-in form. */
   fun onSignIn(form: SignInForm) {
     if (validateForm(form)) {
       viewModelState.update { state -> state.copy(isLoading = true) }
@@ -68,6 +75,7 @@ class SignInViewModel(
     }
   }
 
+  /** Starts the Google sign-in flow and exposes its progress in the UI state. */
   fun onGoogleSignIn() {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -86,10 +94,12 @@ class SignInViewModel(
     }
   }
 
+  /** Clears the currently displayed sign-in error dialog. */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /** Clears the validation error associated with the edited input field. */
   fun onClearInputError(input: SignInForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -99,6 +109,7 @@ class SignInViewModel(
     }
   }
 
+  /** Attempts automatic sign-in using the credentials already stored on device. */
   private suspend fun tryAutoSignIn() {
     autoSignInUseCase()
       .onSuccess {
@@ -111,6 +122,7 @@ class SignInViewModel(
       }
   }
 
+  /** Applies presentation-layer validation rules before submitting the form. */
   private fun validateForm(form: SignInForm): Boolean {
     val emailError = when {
       !form.email.matches(EmailRegex) -> EmailSignInFormError.Invalid

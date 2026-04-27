@@ -16,6 +16,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the authentication presentation-layer dependencies. */
 val AuthPresentationModule = module {
   // Navigation
   factory { (navController: NavHostController) ->

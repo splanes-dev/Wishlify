@@ -21,6 +21,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel that drives the sign-up flow.
+ *
+ * It coordinates manual registration, Google sign-up, local form validation
+ * and the navigation side effects emitted after successful registration.
+ */
 class SignUpViewModel(
   private val signUpUseCase: SignUpUseCase,
   private val googleSignUpUseCase: GoogleSignUpUseCase,
@@ -40,6 +46,7 @@ class SignUpViewModel(
   private val uiSideEffectChannel = Channel<SignUpUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /** Validates and submits the sign-up form. */
   fun onSignUp(form: SignUpForm) {
     if (validateForm(form)) {
       viewModelState.update { state -> state.copy(isLoading = true) }
@@ -66,6 +73,7 @@ class SignUpViewModel(
     }
   }
 
+  /** Starts the Google sign-up flow and exposes its progress in the UI state. */
   fun onGoogleSignUp() {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -84,10 +92,12 @@ class SignUpViewModel(
     }
   }
 
+  /** Clears the currently displayed sign-up error dialog. */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /** Clears the validation error associated with the edited input field. */
   fun onClearInputError(input: SignUpForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -98,6 +108,7 @@ class SignUpViewModel(
     }
   }
 
+  /** Applies presentation-layer validation rules before submitting the form. */
   private fun validateForm(form: SignUpForm): Boolean {
     val usernameError = when {
       form.username.isBlank() -> UsernameSignUpFormError.Blank

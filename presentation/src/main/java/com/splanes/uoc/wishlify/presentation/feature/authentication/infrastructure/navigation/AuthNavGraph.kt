@@ -13,8 +13,10 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
+/** Main navigation graph that hosts the authentication entry flow. */
 class AuthNavGraph : FeatureMainNavGraph {
 
+  /** Registers sign-in and sign-up destinations and their navigation wiring. */
   override fun NavGraphBuilder.buildNavGraph(navController: NavHostController) {
     navigation<Auth>(startDestination = SignIn) {
       composable<SignIn> {
