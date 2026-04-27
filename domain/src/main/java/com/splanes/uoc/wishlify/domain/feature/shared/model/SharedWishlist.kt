@@ -7,6 +7,12 @@ import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import java.time.Instant
 import java.util.Date
 
+/**
+ * Domain representation of a shared wishlist.
+ *
+ * It may represent either a wishlist owned by the current user or one shared
+ * by a third party.
+ */
 sealed class SharedWishlist(
   open val id: String,
   open val linkedWishlist: LinkedWishlist,
@@ -20,9 +26,11 @@ sealed class SharedWishlist(
   open val numOfItems: Int,
 ) {
 
+  /** Whether the shared wishlist deadline has already passed. */
   fun isFinished() =
     deadline.toInstant().isBefore(Instant.now())
 
+  /** Shared wishlist owned by the current user. */
   data class Own(
     override val id: String,
     override val linkedWishlist: LinkedWishlist,
@@ -47,6 +55,7 @@ sealed class SharedWishlist(
     numOfItems = numOfItems,
   )
 
+  /** Shared wishlist owned by another user and visible to the current user. */
   data class ThirdParty(
     override val id: String,
     override val linkedWishlist: LinkedWishlist,
@@ -73,6 +82,7 @@ sealed class SharedWishlist(
     sharedAt = sharedAt,
     numOfItems = numOfItems,
   ) {
+    /** Returns the number of unique participants that can effectively interact with updates. */
     fun totalParticipantsCount(): Int {
       val participantsUid = participants.map { it.uid }
       val editorsUid = editors.map { it.uid }
@@ -84,6 +94,7 @@ sealed class SharedWishlist(
     }
   }
 
+  /** Lightweight representation of the private wishlist linked to the shared flow. */
   data class LinkedWishlist(
     val id: String,
     val name: String,

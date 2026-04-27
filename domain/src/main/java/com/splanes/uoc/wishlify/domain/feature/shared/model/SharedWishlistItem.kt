@@ -4,12 +4,14 @@ import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import java.util.Date
 
+/** Item exposed inside a shared wishlist together with its collaborative state. */
 data class SharedWishlistItem(
   val id: String,
   val linkedItem: LinkedItem,
   val state: State,
 ) {
 
+  /** Snapshot of the original private wishlist item linked to this shared item. */
   data class LinkedItem(
     val id: String,
     val photoUrl: String?,
@@ -24,6 +26,11 @@ data class SharedWishlistItem(
     val price get() = unitPrice * amount
   }
 
+  /**
+   * Collaborative state of a shared wishlist item.
+   *
+   * States are comparable so items can be ordered by interaction priority.
+   */
   sealed interface State : Comparable<State> {
     val isCurrentUserParticipant: Boolean
 
@@ -45,10 +52,12 @@ data class SharedWishlistItem(
     }
   }
 
+  /** Item with no active reservation, purchase or share request. */
   data object Available : State {
     override val isCurrentUserParticipant: Boolean = false
   }
 
+  /** Item currently locked or reserved by a participant. */
   data class Lock(
     override val isCurrentUserParticipant: Boolean,
     val isLockedByCurrentUser: Boolean,
@@ -58,6 +67,7 @@ data class SharedWishlistItem(
     val expiresAt: Date
   ) : State
 
+  /** Item currently under a collaborative share request. */
   data class ShareRequest(
     override val isCurrentUserParticipant: Boolean,
     val isRequestedByCurrentUser: Boolean,
@@ -68,6 +78,7 @@ data class SharedWishlistItem(
     val participantsJoined: List<User.Basic>,
   ) : State
 
+  /** Item already purchased by a participant or group. */
   data class Purchased(
     override val isCurrentUserParticipant: Boolean,
     val isPurchasedByCurrentUser: Boolean,
