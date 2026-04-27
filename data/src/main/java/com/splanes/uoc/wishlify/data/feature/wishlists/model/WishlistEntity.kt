@@ -4,6 +4,7 @@ import com.splanes.uoc.wishlify.data.common.media.model.ImageMediaEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore persistence model for a wishlist header. */
 @Serializable
 data class WishlistEntity(
   @SerialName("id") val id: String = "",
@@ -22,24 +23,28 @@ data class WishlistEntity(
   @SerialName("lastUpdate") val lastUpdate: UpdateMetadata = UpdateMetadata(),
 ) {
 
+  /** Persisted owner-oriented type of the wishlist. */
   @Serializable
   enum class Type {
     @SerialName("own") Own,
     @SerialName("thirdParty") ThirdParty,
   }
 
+  /** Persisted category reference stored inside the wishlist. */
   @Serializable
   data class Category(
     @SerialName("owner") val owner: String = "",
     @SerialName("id") val id: String = "",
   )
 
+  /** Persisted sharing status of the wishlist. */
   @Serializable
   enum class ShareStatus {
     @SerialName("private") Private,
     @SerialName("shared") Shared,
   }
 
+  /** Persisted metadata about the last wishlist update. */
   @Serializable
   data class UpdateMetadata(
     @SerialName("updatedBy") val updatedBy: String = "",

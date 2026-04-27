@@ -24,8 +24,18 @@ import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * Local webpage metadata extractor backed by an off-screen [WebView].
+ *
+ * It acts as a fallback strategy when remote extraction is incomplete, letting
+ * the app inspect the rendered page and its JSON-LD metadata directly.
+ */
 class UrlDataExtractor(private val context: Context) {
 
+  /**
+   * Loads the target page, executes the extraction script and returns the
+   * resolved metadata, or `null` when the page cannot be processed in time.
+   */
   @SuppressLint("SetJavaScriptEnabled")
   suspend fun extract(url: String): UrlMetadata? = withContext(Dispatchers.Main) {
     withTimeoutOrNull(15_000.milliseconds) {
@@ -195,6 +205,7 @@ private const val EXTRACTION_SCRIPT = """
 })();
 """
 
+/** Lightweight in-memory representation of metadata extracted from a webpage. */
 data class UrlMetadata(
   val title: String?,
   val description: String?,

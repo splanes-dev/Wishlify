@@ -26,11 +26,13 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Date
 
+/** Maps wishlist persistence models into the domain projections consumed by the app. */
 class WishlistsDataMapper(
   private val imageMediaMapper: ImageMediaDataMapper,
   private val userDataMapper: UserDataMapper,
 ) {
 
+  /** Maps a persisted category into the domain category model. */
   fun mapCategory(entity: CategoryEntity): Category =
     Category(
       id = entity.id,
@@ -38,6 +40,7 @@ class WishlistsDataMapper(
       color = Category.CategoryColor.from(entity.color)
     )
 
+  /** Maps a domain category into its Firestore persistence model. */
   fun mapCategory(category: Category): CategoryEntity =
     CategoryEntity(
       id = category.id,
@@ -45,6 +48,10 @@ class WishlistsDataMapper(
       color = category.color.name.lowercase()
     )
 
+  /**
+   * Maps a persisted wishlist into the appropriate domain projection, taking
+   * into account whether it is private, shared or linked to Secret Santa.
+   */
   fun mapWishlist(
     uid: String,
     entity: WishlistEntity,
@@ -180,6 +187,7 @@ class WishlistsDataMapper(
       }
     }
 
+  /** Builds the persisted wishlist created from a creation request. */
   fun wishlistFromRequest(
     uid: String,
     imageMedia: ImageMedia,
@@ -211,6 +219,7 @@ class WishlistsDataMapper(
       ),
     )
 
+  /** Builds the persisted wishlist produced by an update request. */
   fun wishlistFromRequest(
     uid: String,
     imageMedia: ImageMedia,
@@ -242,6 +251,7 @@ class WishlistsDataMapper(
       ),
     )
 
+  /** Marks a wishlist as shared and links it to its shared-wishlist header. */
   fun shareWishlist(
     uid: String,
     sharedWishlistId: String,
@@ -256,6 +266,7 @@ class WishlistsDataMapper(
       )
     )
 
+  /** Maps a persisted wishlist item into its full domain representation. */
   fun mapItem(
     entity: WishlistItemEntity,
     users: List<UserBasic>,
@@ -295,6 +306,7 @@ class WishlistsDataMapper(
       }
     )
 
+  /** Builds the persisted wishlist item created from a creation request. */
   fun wishlistItemFromRequest(
     uid: String,
     imageMedia: ImageMedia?,
@@ -329,6 +341,7 @@ class WishlistsDataMapper(
       purchased = null,
     )
 
+  /** Builds the persisted wishlist item produced by an update request. */
   fun wishlistItemFromRequest(
     uid: String,
     imageMedia: ImageMedia?,
@@ -378,6 +391,7 @@ class WishlistsDataMapper(
       },
     )
 
+  /** Maps a wishlist into the lightweight representation used by shared wishlists. */
   fun mapToLinkedWishlist(entity: WishlistEntity): SharedWishlist.LinkedWishlist =
     SharedWishlist.LinkedWishlist(
       id = entity.id,
@@ -387,6 +401,7 @@ class WishlistsDataMapper(
       description = entity.description
     )
 
+  /** Maps a wishlist item into the lightweight representation used by shared items. */
   fun mapToLinkedItem(entity: WishlistItemEntity): SharedWishlistItem.LinkedItem =
     SharedWishlistItem.LinkedItem(
       id = entity.id,
@@ -404,6 +419,7 @@ class WishlistsDataMapper(
       link = entity.link.orEmpty(),
     )
 
+  /** Maps the callable metadata extraction result into domain URL data. */
   fun mapUrlDataResult(data: Map<*, *>?): WishlistItemUrlData {
     val obj = JSONObject(data?.toMutableMap() ?: mutableMapOf<Any, Any>())
     return WishlistItemUrlData(
@@ -416,6 +432,10 @@ class WishlistsDataMapper(
     )
   }
 
+  /**
+   * Completes callable metadata with locally extracted webpage metadata when
+   * some fields are still missing.
+   */
   fun mergeUrlDataResults(data: WishlistItemUrlData, metadata: UrlMetadata): WishlistItemUrlData =
     data.copy(
       product = data.product ?: metadata.title?.takeUnless { it == "null" },
@@ -425,6 +445,7 @@ class WishlistsDataMapper(
       price = data.price ?: extractPriceFromJsonLd(metadata.jsonLd)?.takeUnless { it.isNaN() }
     )
 
+  /** Tries to resolve a product price from JSON-LD product offers metadata. */
   private fun extractPriceFromJsonLd(jsonLd: List<Any>?): Double? {
 
     jsonLd?.forEach { item ->

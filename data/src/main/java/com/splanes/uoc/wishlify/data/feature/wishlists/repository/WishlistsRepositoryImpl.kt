@@ -26,6 +26,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
+/**
+ * Data-layer implementation of [WishlistsRepository].
+ *
+ * It composes wishlist persistence with users, shared wishlists, Secret Santa
+ * links and metadata extraction helpers to return the richer domain models
+ * required by the app.
+ */
 class WishlistsRepositoryImpl(
   private val wishlistsRemoteDataSource: WishlistsRemoteDataSource,
   private val userRemoteDataSource: UserRemoteDataSource,
@@ -38,6 +45,7 @@ class WishlistsRepositoryImpl(
   private val urlDataExtractor: UrlDataExtractor,
 ) : WishlistsRepository {
 
+  /** Fetches and maps the personal categories owned by the user. */
   override suspend fun fetchCategories(uid: String): Result<List<Category>> =
     runCatching {
       wishlistsRemoteDataSource.fetchCategories(uid)
@@ -45,12 +53,17 @@ class WishlistsRepositoryImpl(
       categories.map(wishlistsMapper::mapCategory)
     }
 
+  /** Persists a personal category for the user. */
   override suspend fun addCategory(uid: String, category: Category): Result<Unit> =
     runCatching {
       val entity = wishlistsMapper.mapCategory(category)
       wishlistsRemoteDataSource.upsertCategory(uid, entity)
     }
 
+  /**
+   * Fetches the user's visible wishlists and enriches them with users,
+   * categories, item counts and active shared or Secret Santa linkage.
+   */
   override suspend fun fetchWishlists(uid: String): Result<List<Wishlist>> =
     runCatching {
       coroutineScope {
@@ -182,6 +195,7 @@ class WishlistsRepositoryImpl(
       }
     }
 
+  /** Fetches one wishlist and resolves its related users, category and active links. */
   override suspend fun fetchWishlist(uid: String, wishlistId: String): Result<Wishlist> =
     runCatching {
       coroutineScope {
@@ -266,6 +280,7 @@ class WishlistsRepositoryImpl(
       }
     }
 
+  /** Fetches and maps all items of a wishlist with their related user metadata. */
   override suspend fun fetchWishlistItems(wishlistId: String): Result<List<WishlistItem>> =
     runCatching {
       coroutineScope {
@@ -305,6 +320,7 @@ class WishlistsRepositoryImpl(
       }
     }
 
+  /** Fetches and maps one wishlist item with its related user metadata. */
   override suspend fun fetchWishlistItem(
     wishlistId: String,
     item: String
@@ -336,6 +352,7 @@ class WishlistsRepositoryImpl(
       }
     }
 
+  /** Persists a newly created wishlist. */
   override suspend fun addWishlist(
     uid: String,
     imageMedia: ImageMedia,
@@ -346,6 +363,7 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertWishlist(entity)
     }
 
+  /** Persists the updated state of a wishlist. */
   override suspend fun updateWishlist(
     uid: String,
     imageMedia: ImageMedia,
@@ -356,6 +374,10 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertWishlist(entity)
     }
 
+  /**
+   * Creates the shared-wishlist header and marks the base wishlist as shared by
+   * linking both persistence records.
+   */
   override suspend fun shareWishlist(
     uid: String,
     request: ShareWishlistRequest
@@ -374,11 +396,13 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertWishlist(entity = updatedWishlist)
     }
 
+  /** Deletes a wishlist header. */
   override suspend fun deleteWishlist(wishlist: String): Result<Unit> =
     runCatching {
       wishlistsRemoteDataSource.removeWishlist(wishlistId = wishlist)
     }
 
+  /** Persists a newly created wishlist item. */
   override suspend fun addWishlistItem(
     uid: String,
     imageMedia: ImageMedia?,
@@ -389,6 +413,7 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertWishlistItem(wishlistId = request.wishlist, entity = entity)
     }
 
+  /** Persists the updated state of a wishlist item. */
   override suspend fun updateWishlistItem(
     uid: String,
     imageMedia: ImageMedia?,
@@ -399,6 +424,7 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertWishlistItem(wishlistId = request.wishlist, entity = entity)
     }
 
+  /** Persists the updated state of a personal category. */
   override suspend fun updateCategory(
     uid: String,
     category: Category
@@ -408,6 +434,7 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.upsertCategory(uid, entity)
     }
 
+  /** Deletes a wishlist item. */
   override suspend fun deleteWishlistItem(
     wishlist: String,
     item: String
@@ -416,6 +443,7 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.removeWishlistItem(wishlistId = wishlist, itemId = item)
     }
 
+  /** Deletes a category and clears its usage from affected wishlists. */
   override suspend fun deleteCategory(
     uid: String,
     category: String
@@ -424,12 +452,14 @@ class WishlistsRepositoryImpl(
       wishlistsRemoteDataSource.removeCategory(uid, category)
     }
 
+  /** Extracts product metadata through the remote callable strategy. */
   override suspend fun extractUrlData(url: String): Result<WishlistItemUrlData> =
     runCatching {
       val result = wishlistsRemoteDataSource.extractUrlData(url)
       wishlistsMapper.mapUrlDataResult(result)
     }
 
+  /** Completes URL metadata locally by loading the page when remote data is incomplete. */
   override suspend fun extractUrlDataLocally(
     data: WishlistItemUrlData,
     url: String
@@ -439,6 +469,7 @@ class WishlistsRepositoryImpl(
       result?.let { wishlistsMapper.mergeUrlDataResults(data, result) } ?: data
     }
 
+  /** Joins a wishlist as editor by using the invitation token. */
   override suspend fun addWishlistEditor(token: String): Result<Unit> =
     runCatching {
       wishlistsRemoteDataSource.joinToWishlistEditorsByToken(token)

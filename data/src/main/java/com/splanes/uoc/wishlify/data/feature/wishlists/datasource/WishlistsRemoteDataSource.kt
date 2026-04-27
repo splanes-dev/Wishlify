@@ -20,6 +20,13 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.net.UnknownHostException
 
+/**
+ * Firestore and callable-functions backed data source for wishlists.
+ *
+ * It encapsulates wishlist headers, items, personal categories and invitation
+ * or metadata extraction callables, translating infrastructure failures into
+ * domain-facing generic errors.
+ */
 class WishlistsRemoteDataSource(
   private val db: FirebaseFirestore,
   private val functions: FirebaseFunctions
@@ -27,6 +34,7 @@ class WishlistsRemoteDataSource(
 
   private val wishlists by lazy { db.wishlists }
 
+  /** Retrieves the wishlists where the user currently acts as editor. */
   suspend fun fetchWishlists(uid: String): List<WishlistEntity> =
     try {
       wishlists
@@ -41,6 +49,7 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Retrieves one wishlist by id or throws when it cannot be resolved. */
   suspend fun fetchWishlist(id: String): WishlistEntity =
     try {
       wishlists
@@ -55,6 +64,7 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Counts the items of a wishlist, optionally excluding purchased ones. */
   suspend fun fetchWishlistItemsCount(id: String, excludePurchased: Boolean = false): Int =
     try {
       wishlistItemsOf(id)
@@ -75,6 +85,7 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Retrieves all persisted items belonging to a wishlist. */
   suspend fun fetchWishlistItems(id: String): List<WishlistItemEntity> =
     try {
       wishlistItemsOf(id)
@@ -88,6 +99,7 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Retrieves a single wishlist item or throws when it does not exist. */
   suspend fun fetchWishlistItem(wishlistId: String, itemId: String): WishlistItemEntity =
     try {
       wishlistItemsOf(wishlistId)
@@ -102,6 +114,7 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces a wishlist document. */
   suspend fun upsertWishlist(entity: WishlistEntity) {
     try {
       wishlists
@@ -116,6 +129,7 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  /** Deletes a wishlist document. */
   suspend fun removeWishlist(wishlistId: String) {
     try {
       wishlists
@@ -130,6 +144,7 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  /** Creates or replaces a wishlist item document. */
   suspend fun upsertWishlistItem(wishlistId: String, entity: WishlistItemEntity) {
     try {
       wishlistItemsOf(wishlistId)
@@ -144,6 +159,7 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  /** Deletes a single wishlist item. */
   suspend fun removeWishlistItem(wishlistId: String, itemId: String) {
     try {
       wishlistItemsOf(wishlistId)
@@ -158,6 +174,7 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  /** Deletes several wishlist items in a single batch operation. */
   suspend fun removeWishlistItems(wishlistId: String, items: List<String>) {
     try {
       db.withBatch { batch ->
@@ -174,6 +191,7 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  /** Retrieves the personal categories owned by the given user. */
   suspend fun fetchCategories(uid: String) =
     try {
       categoriesOf(uid)
@@ -187,6 +205,7 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Retrieves one personal category by id, if it exists. */
   suspend fun fetchCategoryById(uid: String, id: String) =
     try {
       categoriesOf(uid)
@@ -201,6 +220,7 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces one personal category document. */
   suspend fun upsertCategory(uid: String, category: CategoryEntity) {
     try {
       categoriesOf(uid)
@@ -215,6 +235,10 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  /**
+   * Deletes a category and clears its references from the user-owned wishlists
+   * that currently use it.
+   */
   suspend fun removeCategory(uid: String, category: String) {
     try {
       db.withBatch { batch ->
@@ -243,6 +267,7 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  /** Invokes the server-side metadata extractor for a product URL. */
   suspend fun extractUrlData(link: String): Map<*, *>? {
     try {
       val result = functions
@@ -259,6 +284,7 @@ class WishlistsRemoteDataSource(
     }
   }
 
+  /** Joins a wishlist as editor through the shared invitation-link callable. */
   suspend fun joinToWishlistEditorsByToken(token: String) =
     try {
       functions
@@ -272,9 +298,11 @@ class WishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Returns the categories subcollection owned by the given user. */
   private fun categoriesOf(uid: String) =
     db.users.document(uid).wishlistCategories
 
+  /** Returns the items subcollection for the given wishlist. */
   private fun wishlistItemsOf(id: String) =
     db.wishlists.document(id).wishlistItems
 }

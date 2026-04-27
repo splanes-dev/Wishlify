@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.wishlists.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore persistence model for a wishlist item. */
 @Serializable
 data class WishlistItemEntity(
   @SerialName("id") val id: String = "",
@@ -21,6 +22,7 @@ data class WishlistItemEntity(
   @SerialName("purchased") val purchased: PurchaseMetadata? = null
 ) {
 
+  /** Persisted display priority of the wishlist item. */
   @Serializable
   enum class Priority {
     @SerialName("standard") Standard,
@@ -28,12 +30,14 @@ data class WishlistItemEntity(
     @SerialName("supertop") Supertop,
   }
 
+  /** Persisted metadata about the last item update. */
   @Serializable
   data class UpdateMetadata(
     @SerialName("updatedBy") val updatedBy: String = "",
     @SerialName("updatedAt") val updatedAt: Long = 0L,
   )
 
+  /** Persisted purchase metadata when the item has been marked as bought. */
   @Serializable
   data class PurchaseMetadata(
     @SerialName("purchasedBy") val purchasedBy: String = "",

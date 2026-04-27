@@ -9,6 +9,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the wishlists data-layer components. */
+
 internal val WishlistsDataModule = module {
   // Data source
   singleOf(::WishlistsRemoteDataSource)

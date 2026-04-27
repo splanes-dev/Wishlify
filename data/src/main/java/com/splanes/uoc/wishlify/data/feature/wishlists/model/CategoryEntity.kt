@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.wishlists.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore model for a user-owned wishlist category. */
 @Serializable
 data class CategoryEntity(
   @SerialName("id") val id: String = "",
