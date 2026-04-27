@@ -6,12 +6,20 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEven
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.repository.SecretSantaRepository
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 
+/**
+ * Executes the Secret Santa draw for an event.
+ *
+ * Participants are collected from the creator, explicit participants and
+ * optional group members, and exclusions are transformed into the format
+ * required by the draw executor.
+ */
 class DoSecretSantaDrawUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val executor: SecretSantaDrawExecutor,
   private val repository: SecretSantaRepository
 ) : UseCase() {
 
+  /** Computes and persists the draw assignments for [event]. */
   suspend operator fun invoke(event: SecretSantaEventDetail) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->

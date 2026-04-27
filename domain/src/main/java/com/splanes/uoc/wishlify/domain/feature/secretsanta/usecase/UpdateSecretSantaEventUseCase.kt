@@ -10,12 +10,19 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.UpdateSecretSan
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.repository.SecretSantaRepository
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 
+/**
+ * Updates an existing Secret Santa event for the current user.
+ *
+ * When the request contains a device image, it uploads it first. When the
+ * image is removed, the stored asset is deleted.
+ */
 class UpdateSecretSantaEventUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val imageMediaRepository: ImageMediaRepository,
   private val repository: SecretSantaRepository
 ) : UseCase() {
 
+  /** Updates the event described by [request]. */
   suspend operator fun invoke(request: UpdateSecretSantaEventRequest) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->
@@ -28,6 +35,7 @@ class UpdateSecretSantaEventUseCase(
       }
   }
 
+  /** Resolves the media reference that should be stored for the updated event image. */
   private suspend fun imageMediaOf(
     secretSantaId: String,
     request: ImageMediaRequest?

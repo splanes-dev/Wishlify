@@ -10,12 +10,19 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.CreateSecretSan
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.repository.SecretSantaRepository
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 
+/**
+ * Creates a new Secret Santa event for the current user.
+ *
+ * When the request includes a device image, it uploads it first and passes the
+ * resulting media reference to the repository.
+ */
 class CreateSecretSantaEventUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val imageMediaRepository: ImageMediaRepository,
   private val repository: SecretSantaRepository
 ) : UseCase() {
 
+  /** Creates the event described by [request]. */
   suspend operator fun invoke(request: CreateSecretSantaEventRequest) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->
@@ -30,6 +37,7 @@ class CreateSecretSantaEventUseCase(
       }
   }
 
+  /** Resolves the final media reference that should be stored for the event image. */
   private suspend fun imageMediaOf(
     secretSantaId: String,
     request: ImageMediaRequest

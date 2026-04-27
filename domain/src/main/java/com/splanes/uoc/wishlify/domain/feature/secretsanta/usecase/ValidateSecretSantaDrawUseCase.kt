@@ -4,10 +4,12 @@ import com.splanes.uoc.wishlify.domain.common.usecase.UseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.helper.SecretSantaDrawExecutor
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 
+/** Checks whether a Secret Santa draw is feasible for the given participants and exclusions. */
 class ValidateSecretSantaDrawUseCase(
   private val executor: SecretSantaDrawExecutor
 ) : UseCase() {
 
+  /** Returns whether a valid draw can be produced. */
   operator fun invoke(
     participants: List<User.Basic>,
     exclusions: List<Pair<User.Basic, User.Basic>>

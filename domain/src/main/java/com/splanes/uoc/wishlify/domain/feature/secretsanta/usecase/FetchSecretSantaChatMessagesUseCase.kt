@@ -6,12 +6,18 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.GetSecretSantaC
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.repository.SecretSantaRepository
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 
+/**
+ * Fetches a paginated batch of messages from a Secret Santa chat.
+ *
+ * The final chat id depends on whether the current user is acting as giver or receiver.
+ */
 class FetchSecretSantaChatMessagesUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val chatIdBuilder: SecretSantaChatIdBuilder,
   private val repository: SecretSantaRepository,
 ) : UseCase() {
 
+  /** Fetches chat messages using the role-aware [request] and pagination cursor. */
   suspend operator fun invoke(request: GetSecretSantaChatRequest, cursor: Long, limit: Int = 30) = execute {
     getCurrentUserIdUseCase().mapCatching { uid ->
 

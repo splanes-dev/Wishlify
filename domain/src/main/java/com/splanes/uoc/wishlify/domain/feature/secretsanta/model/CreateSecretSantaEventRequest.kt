@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import java.util.Date
 
+/** Input required to create a new Secret Santa event. */
 data class CreateSecretSantaEventRequest(
   val id: String,
   val name: String,

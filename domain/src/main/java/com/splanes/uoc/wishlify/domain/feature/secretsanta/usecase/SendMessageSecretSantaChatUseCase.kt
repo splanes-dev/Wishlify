@@ -6,12 +6,18 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaSend
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.repository.SecretSantaRepository
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 
+/**
+ * Sends a message to a Secret Santa chat.
+ *
+ * The final chat id depends on whether the current user is acting as giver or receiver.
+ */
 class SendMessageSecretSantaChatUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val chatIdBuilder: SecretSantaChatIdBuilder,
   private val repository: SecretSantaRepository,
 ) : UseCase() {
 
+  /** Sends the message described by [request]. */
   suspend operator fun invoke(request: SecretSantaSendMessageRequest) = execute {
     getCurrentUserIdUseCase().mapCatching { uid ->
 

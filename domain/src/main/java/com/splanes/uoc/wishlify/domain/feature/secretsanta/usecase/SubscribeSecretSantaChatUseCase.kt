@@ -6,12 +6,18 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.GetSecretSantaC
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.repository.SecretSantaRepository
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 
+/**
+ * Subscribes to real-time messages of a Secret Santa chat.
+ *
+ * The final chat id depends on whether the current user is acting as giver or receiver.
+ */
 class SubscribeSecretSantaChatUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val chatIdBuilder: SecretSantaChatIdBuilder,
   private val repository: SecretSantaRepository,
 ) : UseCase() {
 
+  /** Subscribes to the chat described by the role-aware [request]. */
   suspend operator fun invoke(request: GetSecretSantaChatRequest, limit: Int = 30) = execute {
     getCurrentUserIdUseCase().mapCatching { uid ->
 

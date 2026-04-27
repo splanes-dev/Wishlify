@@ -1,7 +1,14 @@
 package com.splanes.uoc.wishlify.domain.feature.secretsanta.helper
 
+/**
+ * Resolves Secret Santa assignments while respecting exclusions.
+ *
+ * It models the draw as a bipartite matching problem where each participant
+ * must be assigned exactly one valid receiver.
+ */
 class SecretSantaDrawExecutor {
 
+  /** Returns whether a valid draw exists for the given participants and exclusions. */
   fun isFeasible(
     participants: List<String>,
     exclusions: Map<String, List<String>>
@@ -9,6 +16,11 @@ class SecretSantaDrawExecutor {
     return solve(participants, exclusions) != null
   }
 
+  /**
+   * Computes a valid draw or throws when the assignment is impossible.
+   *
+   * @return A map from giver uid to receiver uid.
+   */
   fun executeOrThrow(
     participants: List<String>,
     exclusions: Map<String, List<String>>
@@ -16,6 +28,7 @@ class SecretSantaDrawExecutor {
      return solve(participants, exclusions) ?: throw IllegalStateException("Draw is not possible.")
   }
 
+  /** Attempts to solve the draw and returns `null` when no valid assignment exists. */
   private fun solve(
     participants: List<String>,
     exclusions: Map<String, List<String>>

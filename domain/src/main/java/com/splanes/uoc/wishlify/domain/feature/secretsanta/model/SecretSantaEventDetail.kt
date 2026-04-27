@@ -5,6 +5,7 @@ import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import java.util.Date
 
+/** Detailed representation of a Secret Santa event. */
 sealed class SecretSantaEventDetail(
   open val id: String,
   open val photoUrl: String?,
@@ -20,6 +21,7 @@ sealed class SecretSantaEventDetail(
   open val createdAt: Date
 ) {
 
+  /** Detailed event state before the draw has been executed. */
   data class DrawPending(
     override val id: String,
     override val photoUrl: String?,
@@ -48,6 +50,12 @@ sealed class SecretSantaEventDetail(
     createdAt = createdAt,
   )
 
+  /**
+   * Detailed event state after the draw has been executed.
+   *
+   * It includes the current user's assignment-specific data such as the
+   * receiver, shared wishlist visibility and notification counters.
+   */
   data class DrawDone(
     override val id: String,
     override val photoUrl: String?,
