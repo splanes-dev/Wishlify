@@ -25,6 +25,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates the password update flow, including local validation and profile loading.
+ */
 class ProfileUpdatePasswordViewModel(
   private val fetchBasicUserProfileUseCase: FetchBasicUserProfileUseCase,
   private val updateUserPasswordUseCase: UpdateUserPasswordUseCase,
@@ -49,6 +52,9 @@ class ProfileUpdatePasswordViewModel(
   private val uiSideEffectChannel = Channel<ProfileUpdateUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Validates the form and updates the current user password.
+   */
   fun onUpdatePassword(form: UserProfileUpdatePasswordForm) {
     if (validateForm(form)) {
       viewModelState.update { state -> state.copy(isLoading = true) }
@@ -65,15 +71,21 @@ class ProfileUpdatePasswordViewModel(
                 error = error,
               )
             }
-          }
+        }
       }
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Clears the validation error associated with a specific form input.
+   */
   fun onClearInputError(input: UserProfileUpdatePasswordForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -89,6 +101,9 @@ class ProfileUpdatePasswordViewModel(
     }
   }
 
+  /**
+   * Loads the current basic profile required by the password update screen.
+   */
   private suspend fun fetchProfile() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchBasicUserProfileUseCase()
@@ -100,6 +115,9 @@ class ProfileUpdatePasswordViewModel(
     }
   }
 
+  /**
+   * Validates the password update form.
+   */
   private fun validateForm(form: UserProfileUpdatePasswordForm): Boolean {
 
     val passwordError = when {
@@ -141,6 +159,9 @@ class ProfileUpdatePasswordViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the password update UI contract.
+     */
     fun toUiState(
       formErrorsMapper: UserProfileUpdatePasswordFormErrorUiMapper,
       errorUiMapper: ErrorUiMapper
@@ -158,4 +179,7 @@ class ProfileUpdatePasswordViewModel(
   }
 }
 
+/**
+ * Password strength validation pattern required by the password update form.
+ */
 private val PasswordRegex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$")

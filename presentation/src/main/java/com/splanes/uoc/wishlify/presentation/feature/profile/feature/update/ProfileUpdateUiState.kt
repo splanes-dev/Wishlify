@@ -5,6 +5,9 @@ import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.update.model.UserProfileUpdateForm
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.update.model.UserProfileUpdateFormUiErrors
 
+/**
+ * UI state for the profile update flow.
+ */
 sealed interface ProfileUpdateUiState {
 
   data object Loading : ProfileUpdateUiState
@@ -18,6 +21,9 @@ sealed interface ProfileUpdateUiState {
   ) : ProfileUpdateUiState
 }
 
+/**
+ * One-off effects emitted by the profile update flow.
+ */
 sealed interface ProfileUpdateUiSideEffect {
   data object ProfileUpdated : ProfileUpdateUiSideEffect
 }

@@ -5,6 +5,9 @@ import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.password.model.UserProfileUpdatePasswordForm
 import com.splanes.uoc.wishlify.presentation.feature.profile.feature.password.model.UserProfileUpdatePasswordFormUiErrors
 
+/**
+ * UI state for the password update flow.
+ */
 sealed interface ProfileUpdatePasswordUiState {
 
   data object Loading : ProfileUpdatePasswordUiState

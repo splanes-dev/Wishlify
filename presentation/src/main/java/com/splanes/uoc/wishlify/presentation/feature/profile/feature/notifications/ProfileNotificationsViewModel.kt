@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates notification preferences administration for the current user.
+ */
 class ProfileNotificationsViewModel(
   private val fetchUserNotificationsUseCase: FetchUserNotificationsUseCase,
   private val updateUserProfileUseCase: UpdateUserProfileUseCase,
@@ -39,6 +42,9 @@ class ProfileNotificationsViewModel(
   private val uiSideEffectChannel = Channel<ProfileNotificationsUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Updates the notification preferences of the current user.
+   */
   fun onUpdateNotifications(form: UserProfileNotificationsForm) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -67,10 +73,16 @@ class ProfileNotificationsViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the notification preferences profile and projects it into the editable form model.
+   */
   private suspend fun fetchUserProfile() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchUserNotificationsUseCase()
@@ -97,6 +109,9 @@ class ProfileNotificationsViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the notification preferences UI contract.
+     */
     fun toUiState(
       errorUiMapper: ErrorUiMapper,
     ) = when {

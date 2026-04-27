@@ -24,6 +24,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates the profile update flow, including form projection and local validation.
+ */
 class ProfileUpdateViewModel(
   private val fetchBasicUserProfileUseCase: FetchBasicUserProfileUseCase,
   private val updateUserProfileUseCase: UpdateUserProfileUseCase,
@@ -48,6 +51,9 @@ class ProfileUpdateViewModel(
   private val uiSideEffectChannel = Channel<ProfileUpdateUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Validates the form and updates the current user profile.
+   */
   fun onUpdate(form: UserProfileUpdateForm) {
     if (validateForm(form)) {
       viewModelState.update { state -> state.copy(isLoading = true) }
@@ -67,11 +73,14 @@ class ProfileUpdateViewModel(
                 error = error
               )
             }
-          }
+        }
       }
     }
   }
 
+  /**
+   * Clears the validation error associated with a specific form input.
+   */
   fun onClearInputError(input: UserProfileUpdateForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -84,10 +93,16 @@ class ProfileUpdateViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the current profile and projects it into the editable form model.
+   */
   private suspend fun fetchProfile() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchBasicUserProfileUseCase()
@@ -107,6 +122,9 @@ class ProfileUpdateViewModel(
     }
   }
 
+  /**
+   * Validates the profile update form.
+   */
   private fun validateForm(form: UserProfileUpdateForm): Boolean {
     val usernameError = when {
       form.username.isBlank() -> UserProfileUpdateFormNameError.Blank
@@ -140,6 +158,9 @@ class ProfileUpdateViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the profile update UI contract.
+     */
     fun toUiState(
       formErrorsMapper: UserProfileUpdateFormErrorUiMapper,
       errorUiMapper: ErrorUiMapper
@@ -162,7 +183,14 @@ class ProfileUpdateViewModel(
   }
 }
 
+/**
+ * Username validation pattern accepted by the profile update form.
+ */
 private val UsernameRegex = Regex("^[a-zA-Z0-9](?:[a-zA-Z0-9._ ]{1,18}[a-zA-Z0-9])?$")
+
+/**
+ * Email validation pattern accepted by the profile update form.
+ */
 private val EmailRegex = Regex("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
     "\\@" +
     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +

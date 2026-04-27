@@ -18,6 +18,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates hobbies administration for the current user profile.
+ */
 class ProfileHobbiesViewModel(
   private val fetchUserHobbiesUseCase: FetchUserHobbiesUseCase,
   private val updateUserProfileUseCase: UpdateUserProfileUseCase,
@@ -44,6 +47,9 @@ class ProfileHobbiesViewModel(
   private val uiSideEffectChannel = Channel<ProfileHobbiesUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Updates the hobbies settings of the current user.
+   */
   fun onUpdateHobbies(enabled: Boolean, hobbies: List<String>) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -70,10 +76,16 @@ class ProfileHobbiesViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the hobbies profile of the current user.
+   */
   private suspend fun fetchUserProfile() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchUserHobbiesUseCase()
@@ -91,6 +103,9 @@ class ProfileHobbiesViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the hobbies UI contract.
+     */
     fun toUiState(errorUiMapper: ErrorUiMapper) = when {
       isLoadingFullscreen -> ProfileHobbiesUiState.Loading
       user == null -> ProfileHobbiesUiState.Error

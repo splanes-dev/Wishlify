@@ -15,6 +15,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates the main profile screen, including profile loading and sign-out.
+ */
 class ProfileMainViewModel(
   private val fetchBasicUserProfileUseCase: FetchBasicUserProfileUseCase,
   private val signOutUseCase: SignOutUseCase,
@@ -31,6 +34,9 @@ class ProfileMainViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
+  /**
+   * Signs the current user out from the app.
+   */
   fun onSignOut() {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -39,10 +45,16 @@ class ProfileMainViewModel(
     }
   }
 
+  /**
+   * Reloads the profile after returning from the profile update flow.
+   */
   fun onProfileUpdated() {
     viewModelScope.launch { fetchUserProfile() }
   }
 
+  /**
+   * Loads the current basic profile.
+   */
   private suspend fun fetchUserProfile() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchBasicUserProfileUseCase()
@@ -60,6 +72,9 @@ class ProfileMainViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the main profile UI contract.
+     */
     fun toUiState(errorUiMapper: ErrorUiMapper) = when {
       isLoadingFullscreen -> ProfileMainUiState.Loading
       user == null -> ProfileMainUiState.Error

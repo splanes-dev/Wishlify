@@ -16,6 +16,9 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/**
+ * Koin module that wires the presentation-layer dependencies for the profile feature.
+ */
 internal val ProfilePresentationModule = module {
   // Navigation
   singleOf(::ProfileNavGraph) bind FeatureHomeNavGraph::class

@@ -28,13 +28,25 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.Transitio
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackStackWithResult
 import org.koin.androidx.compose.koinViewModel
 
+/**
+ * Home navigation graph that hosts the profile flows.
+ */
 class ProfileNavGraph : FeatureHomeNavGraph {
 
+  /**
+   * Position of the profile tab in the home navigation bar.
+   */
   override val position: Int = 4
 
+  /**
+   * Keeps the bottom navigation visible only on the main profile screen.
+   */
   override fun isNavigationBarVisible(destination: NavDestination?): Boolean =
     destination?.hasRoute(Profile.Main::class) == true
 
+  /**
+   * Renders the profile item in the home navigation bar.
+   */
   @Composable
   override fun RowScope.NavigationBarItem(
     current: NavDestination?,
@@ -61,6 +73,10 @@ class ProfileNavGraph : FeatureHomeNavGraph {
     )
   }
 
+  /**
+   * Registers the profile feature graph, including update, password, hobbies and notifications
+   * flows.
+   */
   override fun NavGraphBuilder.buildNavGraph(
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
@@ -144,6 +160,9 @@ class ProfileNavGraph : FeatureHomeNavGraph {
   }
 }
 
+/**
+ * Navigation result keys shared between profile destinations.
+ */
 private object NavResult {
   const val PROFILE_UPDATED = "updated-profile"
 }
