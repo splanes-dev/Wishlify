@@ -7,6 +7,7 @@ import com.google.firebase.functions.functions
 import com.google.firebase.storage.storage
 import org.koin.dsl.module
 
+/** Koin module that provides the shared Firebase SDK entry points used by the data layer. */
 internal val FirebaseModule = module {
   // Firebase Auth
   single { FirebaseAuth.getInstance() }

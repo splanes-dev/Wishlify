@@ -9,11 +9,17 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.net.UnknownHostException
 
+/**
+ * Firebase Storage-backed data source for uploading and deleting media files.
+ *
+ * It translates low-level storage errors into domain-facing generic errors.
+ */
 class MediaRemoteDataSource(
   private val context: Context,
   private val storage: FirebaseStorage
 ) {
 
+  /** Uploads the local file referenced by [uri] to the storage [path]. */
   suspend fun upload(path: String, uri: Uri): String {
     try {
       val ref = storage
@@ -38,6 +44,7 @@ class MediaRemoteDataSource(
     }
   }
 
+  /** Deletes the remote file stored at [path]. */
   suspend fun delete(path: String) {
     try {
       storage

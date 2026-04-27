@@ -5,6 +5,7 @@ import androidx.core.content.edit
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 
+/** Serializes [value] as JSON and stores it in shared preferences under [key]. */
 inline fun <reified T> SharedPreferences.writeJson(commit: Boolean = false, key: String, value: T) {
   runCatching {
     val json = Json.encodeToString(value)
@@ -14,6 +15,7 @@ inline fun <reified T> SharedPreferences.writeJson(commit: Boolean = false, key:
   }
 }
 
+/** Reads a JSON-encoded shared preferences entry and deserializes it as [T]. */
 inline fun <reified T> SharedPreferences.readJson(key: String): T? =
   runCatching {
     val json = getString(key, null)
