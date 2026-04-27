@@ -21,6 +21,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * Coordinates the Secret Santa detail screen and the actions available from each event state.
+ */
 class SecretSantaDetailViewModel(
   private val eventId: String,
   eventName: String,
@@ -43,6 +46,9 @@ class SecretSantaDetailViewModel(
   private val uiSideEffectChannel = Channel<SecretSantaDetailUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Returns the loaded event once the detail fetch has completed.
+   */
   suspend fun fetchSecretSantaEvent(): SecretSantaEventDetail.DrawDone {
     val currentState = viewModelState.value
     if (currentState.event != null) {
@@ -53,10 +59,16 @@ class SecretSantaDetailViewModel(
     }
   }
 
+  /**
+   * Refreshes the event after returning from a nested flow that may have modified it.
+   */
   fun onEventUpdated() {
     viewModelScope.launch { fetchSecretSantaEvent(eventId) }
   }
 
+  /**
+   * Dispatches a detail action to the matching navigation or mutation flow.
+   */
   fun onAction(event: SecretSantaEventDetail, action: SecretSantaDetailAction) {
     when (action) {
       SecretSantaDetailAction.OpenGiverChat ->
@@ -85,10 +97,16 @@ class SecretSantaDetailViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the Secret Santa event detail for the current event id.
+   */
   private suspend fun fetchSecretSantaEvent(id: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchSecretSantaDetailUseCase(id)
@@ -100,6 +118,9 @@ class SecretSantaDetailViewModel(
     }
   }
 
+  /**
+   * Runs the draw for the current event and reloads the updated detail on success.
+   */
   private fun onDoDraw(event: SecretSantaEventDetail) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -119,14 +140,24 @@ class SecretSantaDetailViewModel(
     }
   }
 
+  /**
+   * Requests navigation to the event edition flow.
+   */
   private fun onEditEvent(event: SecretSantaEventDetail) {
     uiSideEffectChannel.trySend(SecretSantaDetailUiSideEffect.NavToEdit(event.id))
   }
 
+  /**
+   * Requests navigation to the flow that shares the current user's wishlist with the giver.
+   */
   private fun onShareWishlistToGiver(event: SecretSantaEventDetail) {
     uiSideEffectChannel.trySend(SecretSantaDetailUiSideEffect.NavToShareWishlist(event.id))
   }
 
+  /**
+   * Requests navigation to either the current user's shared wishlist or the assigned receiver's
+   * wishlist.
+   */
   private fun onOpenSharedWishlist(
     event: SecretSantaEventDetail,
     isOwnWishlist: Boolean
@@ -140,6 +171,9 @@ class SecretSantaDetailViewModel(
     uiSideEffectChannel.trySend(effect)
   }
 
+  /**
+   * Requests navigation to the anonymous chat associated with the current participant role.
+   */
   private fun onOpenChat(event: SecretSantaEventDetail, type: SecretSantaChatType) {
     val e = event as? SecretSantaEventDetail.DrawDone
       ?: error("Tyring to open chat of secret santa event (${event.id}) but draw is not done...")
@@ -156,6 +190,9 @@ class SecretSantaDetailViewModel(
     uiSideEffectChannel.trySend(effect)
   }
 
+  /**
+   * Requests navigation to the receiver hobbies screen.
+   */
   private fun onOpenReceiverHobbies(event: SecretSantaEventDetail) {
     val e = event as? SecretSantaEventDetail.DrawDone
       ?: error("Tyring to open hobbies of secret santa event (${event.id}) but draw is not done...")
@@ -171,6 +208,9 @@ class SecretSantaDetailViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the detail UI contract.
+     */
     fun toUiState(errorUiMapper: ErrorUiMapper): SecretSantaDetailUiState = when {
       isLoadingFullscreen ->
         SecretSantaDetailUiState.Loading(eventName)
@@ -187,5 +227,4 @@ class SecretSantaDetailViewModel(
         )
     }
   }
-
 }

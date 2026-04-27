@@ -4,6 +4,9 @@ import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 
+/**
+ * Form data collected during Secret Santa event creation and edition.
+ */
 data class SecretSantaNewEventForm(
   val photo: ImagePicker.Resource? = null,
   val name: String = "",
@@ -14,6 +17,9 @@ data class SecretSantaNewEventForm(
   val participants: List<User.Basic> = emptyList(),
   val exclusions: List<Pair<User.Basic, User.Basic>> = emptyList()
 ) {
+  /**
+   * Inputs whose validation errors can be cleared independently.
+   */
   enum class Input {
     Name,
     Budget,

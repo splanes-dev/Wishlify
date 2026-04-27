@@ -8,6 +8,9 @@ import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.cr
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.model.SecretSantaNewEventFormUiErrors
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.model.SecretSantaNewEventStep
 
+/**
+ * UI state for the Secret Santa event edition flow.
+ */
 sealed interface SecretSantaUpdateEventUiState {
   data object Loading : SecretSantaUpdateEventUiState
   data object Error : SecretSantaUpdateEventUiState
@@ -23,8 +26,9 @@ sealed interface SecretSantaUpdateEventUiState {
   ) : SecretSantaUpdateEventUiState
 }
 
-
-
+/**
+ * One-off effects emitted by the Secret Santa event edition flow.
+ */
 sealed interface SecretSantaUpdateEventUiSideEffect {
   data object EventUpdated : SecretSantaUpdateEventUiSideEffect
 }

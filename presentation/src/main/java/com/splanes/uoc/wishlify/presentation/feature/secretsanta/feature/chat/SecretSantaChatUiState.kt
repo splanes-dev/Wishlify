@@ -4,6 +4,9 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaChat
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.chat.model.SecretSantaChatType
 
+/**
+ * UI state for the anonymous Secret Santa chat flow.
+ */
 sealed interface SecretSantaChatUiState {
 
   data class Loading(

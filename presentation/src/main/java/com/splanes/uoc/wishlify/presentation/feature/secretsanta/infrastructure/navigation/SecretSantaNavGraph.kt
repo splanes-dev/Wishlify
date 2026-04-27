@@ -41,13 +41,25 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Home navigation graph that hosts all Secret Santa flows and their result propagation.
+ */
 class SecretSantaNavGraph : FeatureHomeNavGraph {
 
+  /**
+   * Position of the Secret Santa tab in the home navigation bar.
+   */
   override val position: Int = 2
 
+  /**
+   * Keeps the bottom navigation visible only on the Secret Santa events list.
+   */
   override fun isNavigationBarVisible(destination: NavDestination?): Boolean =
     destination?.hasRoute(SecretSanta.List::class) == true
 
+  /**
+   * Renders the Secret Santa item in the home navigation bar.
+   */
   @Composable
   override fun RowScope.NavigationBarItem(
     current: NavDestination?,
@@ -74,6 +86,10 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
     )
   }
 
+  /**
+   * Registers the Secret Santa feature graph, including creation, detail, wishlist, chat and
+   * hobbies subflows.
+   */
   override fun NavGraphBuilder.buildNavGraph(
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,
@@ -329,6 +345,9 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
   }
 }
 
+/**
+ * Navigation result keys shared between Secret Santa destinations.
+ */
 private object NavResult {
   const val NEW_EVENT = "new-event"
   const val UPDATE_EVENT = "update-event"

@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates wishlist selection, preview and sharing for a Secret Santa event.
+ */
 class SecretSantaShareWishlistViewModel(
   private val eventId: String,
   private val fetchWishlistsUseCase: FetchWishlistsUseCase,
@@ -41,6 +44,9 @@ class SecretSantaShareWishlistViewModel(
   private val uiSideEffectChannel = Channel<SecretSantaShareWishlistUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Shares the selected wishlist with the current Secret Santa event.
+   */
   fun onShareWishlist(wishlist: Wishlist.Own) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -60,10 +66,16 @@ class SecretSantaShareWishlistViewModel(
     }
   }
 
+  /**
+   * Marks a wishlist as selected in the list state.
+   */
   fun onSelectWishlist(wishlist: Wishlist.Own?) {
     viewModelState.update { state -> state.copy(wishlistSelected = wishlist) }
   }
 
+  /**
+   * Opens a wishlist preview and loads its items.
+   */
   fun onOpenWishlist(wishlist: Wishlist.Own) {
     viewModelState.update { state ->
       state.copy(
@@ -83,6 +95,9 @@ class SecretSantaShareWishlistViewModel(
     }
   }
 
+  /**
+   * Opens the detail modal for a specific wishlist item.
+   */
   fun onOpenItemDetailModal(item: WishlistItem) {
     viewModelState.update { state ->
       state.copy(
@@ -92,6 +107,9 @@ class SecretSantaShareWishlistViewModel(
     }
   }
 
+  /**
+   * Closes the currently open wishlist item detail modal.
+   */
   fun onCloseItemDetailModal() {
     viewModelState.update { state ->
       state.copy(
@@ -101,6 +119,9 @@ class SecretSantaShareWishlistViewModel(
     }
   }
 
+  /**
+   * Returns from the wishlist preview to the shareable wishlists list.
+   */
   fun onCloseWishlist() {
     viewModelState.update { state ->
       state.copy(
@@ -112,6 +133,9 @@ class SecretSantaShareWishlistViewModel(
     }
   }
 
+  /**
+   * Loads only own wishlists that still contain at least one non-purchased item.
+   */
   private suspend fun fetchWishlists() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchWishlistsUseCase()
@@ -138,6 +162,9 @@ class SecretSantaShareWishlistViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
+    /**
+     * Maps internal state to the share flow UI contract.
+     */
     fun toUiState(errorUiMapper: ErrorUiMapper) = when {
       isLoadingFullscreen ->
         SecretSantaShareWishlistUiState.Loading(wishlist = wishlistOpened)

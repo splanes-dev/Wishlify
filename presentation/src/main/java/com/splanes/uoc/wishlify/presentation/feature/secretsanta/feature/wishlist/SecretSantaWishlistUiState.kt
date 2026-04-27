@@ -4,6 +4,9 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaWish
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 
+/**
+ * UI state for the Secret Santa wishlist detail flow.
+ */
 sealed interface SecretSantaWishlistUiState {
   data class Loading(val wishlistName: String?) : SecretSantaWishlistUiState
   data class Error(val wishlistName: String?) : SecretSantaWishlistUiState
@@ -18,6 +21,9 @@ sealed interface SecretSantaWishlistUiState {
   ) : SecretSantaWishlistUiState
 }
 
+/**
+ * One-off effects emitted by the Secret Santa wishlist detail flow.
+ */
 sealed interface SecretSantaWishlistUiSideEffect {
   data object WishlistRemoved : SecretSantaWishlistUiSideEffect
 }

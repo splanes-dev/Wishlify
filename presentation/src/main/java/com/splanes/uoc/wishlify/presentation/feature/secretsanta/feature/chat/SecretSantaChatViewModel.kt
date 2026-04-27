@@ -22,6 +22,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+/**
+ * Coordinates the anonymous Secret Santa chat, including real-time updates and paginated history.
+ */
 class SecretSantaChatViewModel(
   private val eventId: String,
   private val chatType: SecretSantaChatType,
@@ -44,6 +47,9 @@ class SecretSantaChatViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
+  /**
+   * Sends a new message using the request type that matches the current chat role.
+   */
   fun onSendMessage(text: String) {
     viewModelScope.launch {
 
@@ -64,6 +70,9 @@ class SecretSantaChatViewModel(
     }
   }
 
+  /**
+   * Loads older chat messages using the current cursor when pagination is available.
+   */
   fun onLoadOlderMessages() {
     val currentState = viewModelState.value
     if (currentState.isLoading || currentState.nextCursor == null) {
@@ -96,6 +105,9 @@ class SecretSantaChatViewModel(
     }
   }
 
+  /**
+   * Resolves the chat context and starts observing the real-time message stream.
+   */
   private suspend fun subscribeToChat() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
 
@@ -160,6 +172,9 @@ class SecretSantaChatViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the chat UI contract, adapting it to the current participant role.
+     */
     fun toUiState() = when {
       isLoadingFullscreen ->
         SecretSantaChatUiState.Loading(type = type, receiver = receiver)

@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
+/**
+ * Loads the hobbies profile of the Secret Santa receiver.
+ */
 class SecretSantaHobbiesViewModel(
   private val targetUid: String,
   private val fetchUserHobbiesUseCase: FetchUserHobbiesUseCase,
@@ -30,6 +33,9 @@ class SecretSantaHobbiesViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
+  /**
+   * Loads the hobbies profile associated with the current target user.
+   */
   private suspend fun fetchUserHobbies() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchUserHobbiesUseCase(targetUid)
@@ -47,6 +53,9 @@ class SecretSantaHobbiesViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
+    /**
+     * Maps internal state to the hobbies UI contract.
+     */
     fun toUiState(errorUiMapper: ErrorUiMapper) = when {
       isLoadingFullscreen -> SecretSantaHobbiesUiState.Loading
       targetUser == null -> SecretSantaHobbiesUiState.Error

@@ -18,6 +18,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * Coordinates the Secret Santa events list, including link-based participant joins and refreshes
+ * after nested flows.
+ */
 class SecretSantaListViewModel(
   private val fetchSecretSantaEventsUseCase: FetchSecretSantaEventsUseCase,
   private val addEventParticipantFromLinkUseCase: AddEventParticipantFromLinkUseCase,
@@ -36,6 +40,9 @@ class SecretSantaListViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
+  /**
+   * Adds the current user to an event using an invitation token and refreshes the list.
+   */
   fun onJoinToParticipantsByToken(token: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     viewModelScope.launch {
@@ -44,6 +51,9 @@ class SecretSantaListViewModel(
     }
   }
 
+  /**
+   * Returns the event already loaded in memory, waiting briefly until the initial fetch completes.
+   */
   suspend fun fetchSecretSantaEventById(id: String): SecretSantaEvent {
     val currentState = viewModelState.value
     if (currentState.events.isNotEmpty()) {
@@ -54,14 +64,24 @@ class SecretSantaListViewModel(
     }
   }
 
+  /**
+   * Refreshes the events list after returning from the creation flow.
+   */
   fun onNewEventResult() {
     viewModelScope.launch { fetchSecretSantaEvents() }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the current Secret Santa events and resolves whether the notification permission modal
+   * should be displayed.
+   */
   private suspend fun fetchSecretSantaEvents() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     fetchSecretSantaEventsUseCase()
@@ -91,6 +111,9 @@ class SecretSantaListViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
+    /**
+     * Maps internal state to the screen representation shown by the list UI.
+     */
     fun toUiState(errorUiMapper: ErrorUiMapper) = when {
       isLoadingFullscreen ->
         SecretSantaListUiState.Loading
@@ -110,6 +133,9 @@ class SecretSantaListViewModel(
         )
     }
 
+    /**
+     * Sorts events by deadline so the closest events appear first.
+     */
     private fun List<SecretSantaEvent>.sorted() = sortedWith(
       compareByDescending { it.deadline }
     )

@@ -8,6 +8,9 @@ import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.cr
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.model.SecretSantaNewEventFormUiErrors
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list.creation.model.SecretSantaNewEventStep
 
+/**
+ * UI state for the Secret Santa event creation flow.
+ */
 data class SecretSantaNewEventUiState(
   val step: SecretSantaNewEventStep,
   val form: SecretSantaNewEventForm,
@@ -19,6 +22,9 @@ data class SecretSantaNewEventUiState(
   val error: ErrorUiModel?,
 )
 
+/**
+ * One-off effects emitted by the Secret Santa event creation flow.
+ */
 sealed interface SecretSantaNewEventUiSideEffect {
   data object EventCreated : SecretSantaNewEventUiSideEffect
 }

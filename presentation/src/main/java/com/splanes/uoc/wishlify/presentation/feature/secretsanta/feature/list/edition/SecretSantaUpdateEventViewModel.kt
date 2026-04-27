@@ -38,6 +38,9 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
+/**
+ * Drives the multi-step flow used to edit an existing Secret Santa event.
+ */
 class SecretSantaUpdateEventViewModel(
   private val eventId: String,
   private val fetchSecretSantaDetailUseCase: FetchSecretSantaDetailUseCase,
@@ -64,6 +67,9 @@ class SecretSantaUpdateEventViewModel(
   private val uiSideEffectChannel = Channel<SecretSantaUpdateEventUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Advances the stepper and triggers the data loads required by the next step.
+   */
   fun onNextStep() {
     viewModelState.update { state ->
       val nextStep = state.step.next()
@@ -78,12 +84,19 @@ class SecretSantaUpdateEventViewModel(
     }
   }
 
+  /**
+   * Returns to the previous step in the edition flow.
+   */
   fun onPrevStep() {
     viewModelState.update { state ->
       state.copy(step = state.step.previous())
     }
   }
 
+  /**
+   * Persists the current form snapshot, validates the active step and either advances or updates
+   * the event.
+   */
   fun onNext(form: SecretSantaNewEventForm) {
     val currentStep = viewModelState.value.step
     val isValid = when (currentStep) {
@@ -100,6 +113,9 @@ class SecretSantaUpdateEventViewModel(
     }
   }
 
+  /**
+   * Updates the existing event using the current form contents.
+   */
   fun onCreate(form: SecretSantaNewEventForm) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -122,6 +138,9 @@ class SecretSantaUpdateEventViewModel(
     }
   }
 
+  /**
+   * Refreshes the available groups after returning from group creation.
+   */
   fun onNewGroupResult() {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -136,6 +155,9 @@ class SecretSantaUpdateEventViewModel(
     }
   }
 
+  /**
+   * Resolves the selected user ids and appends them to the current participants list.
+   */
   fun onUserSearchResult(users: List<String>) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -156,6 +178,9 @@ class SecretSantaUpdateEventViewModel(
     }
   }
 
+  /**
+   * Clears the validation error associated with a specific form input.
+   */
   fun onClearInputError(input: SecretSantaNewEventForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -174,10 +199,16 @@ class SecretSantaUpdateEventViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the event detail and projects it into the editable form model.
+   */
   private suspend fun fetchEvent(eventId: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     fetchSecretSantaDetailUseCase(eventId)
@@ -206,6 +237,9 @@ class SecretSantaUpdateEventViewModel(
       }
   }
 
+  /**
+   * Loads the groups that can be used as a participant source for the event.
+   */
   private fun fetchGroups() {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -219,6 +253,10 @@ class SecretSantaUpdateEventViewModel(
     }
   }
 
+  /**
+   * Resolves all members of the selected group so exclusions can be built with the full
+   * participant set.
+   */
   private fun fetchGroupMembers() {
     val currentState = viewModelState.value
     val group = currentState.form.group
@@ -242,6 +280,9 @@ class SecretSantaUpdateEventViewModel(
     }
   }
 
+  /**
+   * Validates the basics step fields.
+   */
   private fun validateBasicsForm(form: SecretSantaNewEventForm): Boolean {
     val nameError = when {
       form.name.count() !in 3..30 -> SecretSantaNewEventNameFormError.Length
@@ -271,6 +312,9 @@ class SecretSantaUpdateEventViewModel(
     return nameError == null && budgetError == null && deadlineError == null
   }
 
+  /**
+   * Validates that the current exclusions still allow a feasible Secret Santa draw.
+   */
   private fun validateExclusionsForm(form: SecretSantaNewEventForm): Boolean {
     val currentState = viewModelState.value
     val isValid = validateSecretSantaDrawUseCase(
@@ -289,6 +333,9 @@ class SecretSantaUpdateEventViewModel(
     return isValid
   }
 
+  /**
+   * Ensures the selected deadline is between today and six months from now.
+   */
   private fun isValidDate(millis: Long): Boolean {
     val zone = ZoneId.systemDefault()
 
@@ -313,6 +360,9 @@ class SecretSantaUpdateEventViewModel(
     val isLoadingFullscreen: Boolean = true,
     val error: Throwable? = null,
   ) {
+    /**
+     * Maps internal state to the UI contract consumed by the edition screen.
+     */
     fun toUiState(
       formErrorMapper: SecretSantaNewEventFormErrorMapper,
       errorUiMapper: ErrorUiMapper

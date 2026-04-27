@@ -3,6 +3,9 @@ package com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.list
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 
+/**
+ * UI state for the Secret Santa events list screen.
+ */
 sealed interface SecretSantaListUiState {
 
   data object Loading : SecretSantaListUiState

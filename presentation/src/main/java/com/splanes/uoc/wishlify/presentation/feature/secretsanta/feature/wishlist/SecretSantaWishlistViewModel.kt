@@ -21,6 +21,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Loads the Secret Santa wishlist shown to the current user and coordinates share removal when
+ * the wishlist belongs to the current participant.
+ */
 class SecretSantaWishlistViewModel(
   private val eventId: String,
   private val wishlistOwnerId: String?,
@@ -44,10 +48,16 @@ class SecretSantaWishlistViewModel(
   private val uiSideEffectChannel = Channel<SecretSantaWishlistUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Reloads the wishlist after a nested flow has modified its sharing state.
+   */
   fun onWishlistChanged() {
     viewModelScope.launch { fetchWishlistAndItems() }
   }
 
+  /**
+   * Removes the current user's wishlist share from the Secret Santa event.
+   */
   fun onDeleteWishlist() {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -67,14 +77,23 @@ class SecretSantaWishlistViewModel(
     }
   }
 
+  /**
+   * Opens the detail modal for a specific wishlist item.
+   */
   fun onOpenItemDetailModal(item: WishlistItem) {
     viewModelState.update { state -> state.copy(itemSelected = item) }
   }
 
+  /**
+   * Closes the currently open wishlist item detail modal.
+   */
   fun onCloseItemDetailModal() {
     viewModelState.update { state -> state.copy(itemSelected = null) }
   }
 
+  /**
+   * Loads the Secret Santa wishlist header and its items in parallel.
+   */
   private suspend fun fetchWishlistAndItems() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     coroutineScope {
@@ -103,6 +122,9 @@ class SecretSantaWishlistViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the wishlist detail UI contract.
+     */
     fun toUiState(errorUiMapper: ErrorUiMapper) = when {
       isLoadingFullscreen ->
         SecretSantaWishlistUiState.Loading(wishlistName = wishlist?.title)
