@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.user.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore persistence model for a user profile. */
 @Serializable
 data class UserEntity(
   @SerialName("uid") val uid: String = "",
@@ -15,18 +16,21 @@ data class UserEntity(
   @SerialName("notifications") val notifications: Notifications = Notifications(),
   @SerialName("metadata") val metadata: Metadata = Metadata(),
 ) {
+  /** Persisted user hobbies configuration. */
   @Serializable
   data class Hobbies(
     @SerialName("enabled") val enabled: Boolean = false,
     @SerialName("values") val values: List<String> = emptyList(),
   )
 
+  /** Persisted rewards snapshot associated with the user. */
   @Serializable
   data class Rewards(
     @SerialName("points") val points: Int = 0,
     @SerialName("purchased") val purchased: List<String> = emptyList(),
   )
 
+  /** Persisted notification preferences for user-facing reminders and chats. */
   @Serializable
   data class Notifications(
     @SerialName("sharedWishlistChat") val sharedWishlistChat: Boolean = true,
@@ -36,6 +40,7 @@ data class UserEntity(
     @SerialName("secretSantaDeadlineReminders") val secretSantaDeadlineReminders: Boolean = true,
   )
 
+  /** Persisted metadata about profile creation and last access. */
   @Serializable
   data class Metadata(
     @SerialName("createdAt") val createdAt: Long = 0L,

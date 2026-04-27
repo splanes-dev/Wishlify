@@ -11,8 +11,10 @@ import com.splanes.uoc.wishlify.domain.feature.user.model.UpdateProfileRequest
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.domain.feature.user.utils.newUserCode
 
+/** Maps user entities between persistence models and the domain projections used by the app. */
 class UserDataMapper {
 
+  /** Builds the initial persisted profile created for a newly registered user. */
   fun map(uid: String, token: String?, username: String, photoUrl: String?): UserEntity =
     UserEntity(
       uid = uid,
@@ -41,6 +43,7 @@ class UserDataMapper {
       )
     )
 
+  /** Applies a profile-update request on top of the current persisted user entity. */
   fun map(
     base: UserEntity,
     request: UpdateProfileRequest,
@@ -75,6 +78,7 @@ class UserDataMapper {
       )
     }
 
+  /** Extracts the lightweight data representation shared across data repositories. */
   fun mapToBasic(entity: UserEntity): UserBasic =
     UserBasic(
       uid = entity.uid,
@@ -83,6 +87,7 @@ class UserDataMapper {
       photoUrl = entity.photoUrl
     )
 
+  /** Maps the lightweight data representation into the basic domain user model. */
   fun map(basic: UserBasic): User.Basic =
     User.Basic(
       uid = basic.uid,
@@ -91,6 +96,7 @@ class UserDataMapper {
       photoUrl = basic.photoUrl
     )
 
+  /** Maps the persisted user plus auth email into the basic profile projection. */
   fun mapToBasicProfile(
     entity: UserEntity,
     email: Email
@@ -105,6 +111,7 @@ class UserDataMapper {
       isSocialAccount = email.isSocialAccount,
     )
 
+  /** Maps the persisted user into the hobbies profile projection. */
   fun mapToHobbiesProfile(
     entity: UserEntity
   ): User.HobbiesProfile =
@@ -119,6 +126,7 @@ class UserDataMapper {
       )
     )
 
+  /** Maps the persisted user into the notifications profile projection. */
   fun mapToNotificationsProfile(entity: UserEntity): User.NotificationsProfile =
     User.NotificationsProfile(
       uid = entity.uid,
