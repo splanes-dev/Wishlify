@@ -6,11 +6,13 @@ import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdU
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.repository.WishlistsRepository
 
+/** Creates a new wishlist category for the current user. */
 class CreateCategoryUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val repository: WishlistsRepository,
 ) : UseCase() {
 
+  /** Creates a category with the given [name] and [color]. */
   suspend operator fun invoke(name: String, color: Category.CategoryColor) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->

@@ -6,11 +6,13 @@ import com.splanes.uoc.wishlify.domain.common.usecase.UseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.domain.feature.wishlists.repository.WishlistsRepository
 
+/** Deletes a wishlist and its stored cover image. */
 class DeleteWishlistUseCase(
   private val mediaRepository: ImageMediaRepository,
   private val repository: WishlistsRepository,
 ) : UseCase() {
 
+  /** Deletes the given [wishlist]. */
   suspend operator fun invoke(wishlist: Wishlist) = execute {
     mediaRepository.delete(ImageMediaPath.WishlistCover(wishlist.id))
     repository.deleteWishlist(wishlist.id)

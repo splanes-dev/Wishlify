@@ -12,6 +12,12 @@ import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdU
 import com.splanes.uoc.wishlify.domain.feature.user.model.UpdateProfileRequest
 import com.splanes.uoc.wishlify.domain.feature.user.repository.UserRepository
 
+/**
+ * Updates a portion of the current user's profile.
+ *
+ * When basic information includes a new profile image, it is uploaded first.
+ * If the email changes, local credentials are updated and the user is signed out.
+ */
 class UpdateUserProfileUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val signOutUseCase: SignOutUseCase,
@@ -20,6 +26,7 @@ class UpdateUserProfileUseCase(
   private val repository: UserRepository
 ) : UseCase() {
 
+  /** Applies the profile update described by [request]. */
   suspend operator fun invoke(request: UpdateProfileRequest) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->
@@ -36,8 +43,10 @@ class UpdateUserProfileUseCase(
       }
   }
 
+  /** Returns whether the email has changed in a basic profile update. */
   private fun UpdateProfileRequest.BasicInfo.hasChangedEmail() = user.email != email
 
+  /** Resolves the final media reference that should be stored for the profile image. */
   private suspend fun imageMediaOf(
     uid: String,
     request: ImageMediaRequest

@@ -6,6 +6,12 @@ import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import java.time.Instant
 import java.util.Date
 
+/**
+ * Domain representation of a wishlist.
+ *
+ * A wishlist may belong to the current user, to a third party, or already be
+ * shared through a collaborative event.
+ */
 sealed class Wishlist(
   open val id: String,
   open val title: String,
@@ -21,18 +27,22 @@ sealed class Wishlist(
   open val lastUpdate: UpdateMetadata
 ) {
 
+  /** Whether this wishlist can be shared with others. */
   fun isShareable() =
     this !is Shared && numOfItems > 0 && numOfNonPurchasedItems > 0
 
+  /** Whether the shared wishlist deadline has already passed. */
   fun isFinished() =
     this is Shared && deadline.toInstant().isBefore(Instant.now())
 
+  /** Returns the gifting target when the wishlist is not the current user's own wishlist. */
   fun targetOrNull() = when (this) {
     is Own -> null
     is Shared -> target
     is ThirdParty -> target
   }
 
+  /** Wishlist owned by the current user. */
   data class Own(
     override val id: String,
     override val title: String,
@@ -61,6 +71,7 @@ sealed class Wishlist(
     lastUpdate = lastUpdate,
   )
 
+  /** Wishlist created for another person and editable by the current user. */
   data class ThirdParty(
     override val id: String,
     override val title: String,
@@ -90,6 +101,7 @@ sealed class Wishlist(
     lastUpdate = lastUpdate,
   )
 
+  /** Wishlist currently linked to a collaborative sharing flow. */
   data class Shared(
     override val id: String,
     override val title: String,
@@ -121,21 +133,26 @@ sealed class Wishlist(
     lastUpdate = lastUpdate,
   )
 
+  /** Category assignment with ownership metadata. */
   data class WishlistCategory(
     val category: Category,
     val owner: String,
     val isOwn: Boolean,
   )
 
+  /** Metadata about the latest update performed on the wishlist. */
   data class UpdateMetadata(
     val updatedBy: User.Basic,
     val updatedAt: Date
   )
 
+  /** Event that currently exposes this wishlist outside the private flow. */
   sealed interface ShareEvent
+  /** Event metadata for a shared wishlist flow. */
   data class SharedWishlistEvent(
     val id: String,
     val inviteLink: InviteLink,
   ) : ShareEvent
+  /** Event metadata for a Secret Santa flow. */
   data class SecretSantaEvent(val id: String) : ShareEvent
 }

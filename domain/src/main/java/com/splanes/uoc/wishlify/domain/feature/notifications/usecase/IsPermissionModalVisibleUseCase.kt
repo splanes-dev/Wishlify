@@ -9,8 +9,8 @@ import java.time.ZoneId
 /**
  * Determines whether the notification permission modal should be shown again.
  *
- * The modal is considered visible when it has never been shown or when more
- * than one day has passed since the last display.
+ * The modal is considered visible when it has never been shown or when the
+ * current date is later than the day after the last display date.
  */
 class IsPermissionModalVisibleUseCase(
   private val repository: NotificationsRepository

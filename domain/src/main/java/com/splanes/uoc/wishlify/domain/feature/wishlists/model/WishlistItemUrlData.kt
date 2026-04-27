@@ -1,5 +1,6 @@
 package com.splanes.uoc.wishlify.domain.feature.wishlists.model
 
+/** Product metadata extracted from an item URL. */
 data class WishlistItemUrlData(
   val imageUrl: String?,
   val product: String?,

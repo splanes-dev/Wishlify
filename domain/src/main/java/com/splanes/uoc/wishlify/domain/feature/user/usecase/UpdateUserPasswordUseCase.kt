@@ -5,10 +5,16 @@ import com.splanes.uoc.wishlify.domain.common.usecase.UseCase
 import com.splanes.uoc.wishlify.domain.feature.authentication.repository.AuthenticationRepository
 import com.splanes.uoc.wishlify.domain.feature.user.model.UpdatePasswordRequest
 
+/**
+ * Updates the password of the current user using locally stored credentials.
+ *
+ * On success the user is signed out and the stored credentials are cleared.
+ */
 class UpdateUserPasswordUseCase(
   val authenticationRepository: AuthenticationRepository
 ) : UseCase() {
 
+  /** Updates the password according to [request]. */
   suspend operator fun invoke(request: UpdatePasswordRequest) = execute {
     val localCredentials =
       authenticationRepository.fetchStoredCredentials() ?: throw GenericError.Unknown()

@@ -4,11 +4,13 @@ import com.splanes.uoc.wishlify.domain.common.usecase.UseCase
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.repository.UserRepository
 
+/** Retrieves the hobbies profile of a user. */
 class FetchUserHobbiesUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val repository: UserRepository,
 ) : UseCase() {
 
+  /** Fetches hobbies for the current user or for the explicitly provided [userUid]. */
   suspend operator fun invoke(userUid: String? = null) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->

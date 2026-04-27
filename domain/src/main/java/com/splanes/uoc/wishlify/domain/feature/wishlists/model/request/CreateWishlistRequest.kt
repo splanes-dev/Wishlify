@@ -4,6 +4,7 @@ import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaRequest
 import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 
+/** Input required to create a wishlist. */
 sealed class CreateWishlistRequest(
   open val id: String,
   open val title: String,
@@ -13,6 +14,7 @@ sealed class CreateWishlistRequest(
   open val editorInviteLink: InviteLink,
 ) {
 
+  /** Request to create a wishlist owned by the current user. */
   data class Own(
     override val id: String,
     override val title: String,
@@ -29,6 +31,7 @@ sealed class CreateWishlistRequest(
     editorInviteLink = editorInviteLink,
   )
 
+  /** Request to create a wishlist for a third party. */
   data class ThirdParty(
     override val id: String,
     override val title: String,

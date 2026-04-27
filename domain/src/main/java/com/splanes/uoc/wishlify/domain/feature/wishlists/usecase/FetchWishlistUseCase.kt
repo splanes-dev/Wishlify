@@ -4,11 +4,13 @@ import com.splanes.uoc.wishlify.domain.common.usecase.UseCase
 import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.repository.WishlistsRepository
 
+/** Retrieves a single wishlist for the current user. */
 class FetchWishlistUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val wishlistsRepository: WishlistsRepository
 ) : UseCase() {
 
+  /** Fetches the wishlist identified by [wishlistId]. */
   suspend operator fun invoke(wishlistId: String) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->

@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.domain.feature.wishlists.model.request
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 
+/** Input required to update an existing wishlist item. */
 data class UpdateWishlistItemRequest(
   val wishlist: String,
   val currentItem: WishlistItem,
@@ -18,6 +19,7 @@ data class UpdateWishlistItemRequest(
   val purchased: PurchaseRequest?,
 ) {
 
+  /** Requested purchase state transition for the item. */
   sealed interface PurchaseRequest
   data object Purchased : PurchaseRequest
   data object Available : PurchaseRequest

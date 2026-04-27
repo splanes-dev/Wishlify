@@ -5,6 +5,7 @@ import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 
+/** Input required to update an existing wishlist. */
 sealed class UpdateWishlistRequest(
   open val currentWishlist: Wishlist,
   open val title: String,
@@ -14,6 +15,7 @@ sealed class UpdateWishlistRequest(
   open val editorInviteLink: InviteLink,
 ) {
 
+  /** Request to update a wishlist owned by the current user. */
   data class Own(
     override val currentWishlist: Wishlist,
     override val title: String,
@@ -30,6 +32,7 @@ sealed class UpdateWishlistRequest(
     editorInviteLink = editorInviteLink,
   )
 
+  /** Request to update a wishlist created for a third party. */
   data class ThirdParty(
     override val currentWishlist: Wishlist,
     override val title: String,

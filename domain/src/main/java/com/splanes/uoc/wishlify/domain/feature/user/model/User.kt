@@ -1,5 +1,10 @@
 package com.splanes.uoc.wishlify.domain.feature.user.model
 
+/**
+ * Domain representation of an application user.
+ *
+ * Different projections are exposed depending on the feature needs.
+ */
 sealed class User(
   open val uid: String,
   open val username: String,
@@ -7,6 +12,7 @@ sealed class User(
   open val photoUrl: String?
 ) {
 
+  /** Lightweight user projection used across collaborative features. */
   data class Basic(
     override val uid: String,
     override val username: String,
@@ -19,6 +25,7 @@ sealed class User(
     photoUrl = photoUrl,
   )
 
+  /** Profile projection focused on account and identity information. */
   data class BasicProfile(
     override val uid: String,
     override val username: String,
@@ -34,6 +41,7 @@ sealed class User(
     photoUrl = photoUrl,
   )
 
+  /** Profile projection focused on gifting interests and hobbies. */
   data class HobbiesProfile(
     override val uid: String,
     override val username: String,
@@ -47,6 +55,7 @@ sealed class User(
     photoUrl = photoUrl,
   )
 
+  /** Profile projection focused on notification preferences. */
   data class NotificationsProfile(
     override val uid: String,
     override val username: String,

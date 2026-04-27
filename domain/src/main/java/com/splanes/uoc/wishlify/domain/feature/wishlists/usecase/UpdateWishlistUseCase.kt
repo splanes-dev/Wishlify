@@ -10,12 +10,19 @@ import com.splanes.uoc.wishlify.domain.feature.session.usecase.GetCurrentUserIdU
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.UpdateWishlistRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.repository.WishlistsRepository
 
+/**
+ * Updates an existing wishlist for the current user.
+ *
+ * Device images are uploaded first. Switching to a preset or remote URL removes
+ * the previously stored cover image.
+ */
 class UpdateWishlistUseCase(
   private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
   private val repository: WishlistsRepository,
   private val mediaRepository: ImageMediaRepository,
 ) : UseCase() {
 
+  /** Updates the wishlist described by [request]. */
   suspend operator fun invoke(request: UpdateWishlistRequest) = execute {
     getCurrentUserIdUseCase()
       .mapCatching { uid ->
@@ -33,6 +40,7 @@ class UpdateWishlistUseCase(
       }
   }
 
+  /** Resolves the final media reference that should be stored for the wishlist cover. */
   private suspend fun imageMediaOf(
     id: String,
     request: ImageMediaRequest

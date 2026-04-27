@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.domain.feature.wishlists.model.request
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaRequest
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 
+/** Input required to create a new item inside a wishlist. */
 data class CreateWishlistItemRequest(
   val wishlist: String,
   val id: String,
