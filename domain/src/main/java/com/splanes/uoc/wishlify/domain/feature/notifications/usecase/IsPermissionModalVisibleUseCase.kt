@@ -6,10 +6,21 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
+/**
+ * Determines whether the notification permission modal should be shown again.
+ *
+ * The modal is considered visible when it has never been shown or when more
+ * than one day has passed since the last display.
+ */
 class IsPermissionModalVisibleUseCase(
   private val repository: NotificationsRepository
 ) : UseCase() {
 
+  /**
+   * Returns whether the permission modal should be displayed now.
+   *
+   * When the modal is visible, the last shown timestamp is updated immediately.
+   */
   suspend operator fun invoke() =
     repository.fetchLastTimePermissionModalShown()
       .let { timestamp ->

@@ -6,10 +6,16 @@ import android.content.Context
 import androidx.core.content.getSystemService
 import com.splanes.uoc.wishlify.domain.R
 
+/**
+ * Notification channel identifiers used by the application push notifications.
+ */
 object PushNotificationChannel {
   const val CHAT = "chat"
   const val GENERAL = "general"
 
+  /**
+   * Creates the notification channels required by the application.
+   */
   object Factory {
     fun create(context: Context) {
 
