@@ -27,6 +27,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Data-layer implementation of [SecretSantaRepository].
+ *
+ * It composes Secret Santa persistence with user, group and wishlist data to
+ * produce the richer domain projections required by the app.
+ */
 class SecretSantaRepositoryImpl(
   private val secretSantaRemoteDataSource: SecretSantaRemoteDataSource,
   private val userRemoteDataSource: UserRemoteDataSource,
@@ -38,6 +44,10 @@ class SecretSantaRepositoryImpl(
   private val mapper: SecretSantaDataMapper,
 ) : SecretSantaRepository {
 
+  /**
+   * Fetches the visible events for the user and enriches finished ones with the
+   * resolved receiver assignment needed by the domain model.
+   */
   override suspend fun fetchSecretSantaEvents(uid: String): Result<List<SecretSantaEvent>> =
     runCatching {
       val groups = groupsRemoteDataSource
@@ -76,6 +86,10 @@ class SecretSantaRepositoryImpl(
       entities.map { entity -> mapper.map(entity, assignments) }
     }
 
+  /**
+   * Fetches one event and enriches it with group, users, assignment context and
+   * shared wishlist metadata.
+   */
   override suspend fun fetchSecretSantaEvent(
     uid: String,
     eventId: String
@@ -152,6 +166,7 @@ class SecretSantaRepositoryImpl(
       }
     }
 
+  /** Persists a newly created Secret Santa event. */
   override suspend fun createSecretSantaEvent(
     uid: String,
     imageMedia: ImageMedia?,
@@ -162,6 +177,7 @@ class SecretSantaRepositoryImpl(
       secretSantaRemoteDataSource.upsertSecretSantaEvent(entity)
     }
 
+  /** Persists the updated state of an existing Secret Santa event. */
   override suspend fun updateSecretSantaEvent(
     uid: String,
     imageMedia: ImageMedia?,
@@ -172,6 +188,7 @@ class SecretSantaRepositoryImpl(
       secretSantaRemoteDataSource.upsertSecretSantaEvent(entity)
     }
 
+  /** Persists draw assignments, updates the event status and creates chats. */
   override suspend fun doSecretSantaDraw(
     uid: String,
     eventId: String,
@@ -205,6 +222,10 @@ class SecretSantaRepositoryImpl(
       }
     }
 
+  /**
+   * Persists the wishlist shared by the current participant together with the
+   * non-purchased items that should remain visible to the giver.
+   */
   override suspend fun shareWishlistToGiver(
     uid: String,
     eventId: String,
@@ -241,6 +262,7 @@ class SecretSantaRepositoryImpl(
       }
     }
 
+  /** Removes the shared wishlist and its exported items for the participant. */
   override suspend fun unshareWishlistToGiver(
     uid: String,
     eventId: String
@@ -257,6 +279,7 @@ class SecretSantaRepositoryImpl(
       )
     }
 
+  /** Retrieves the shared wishlist header of a participant. */
   override suspend fun fetchSecretSantaWishlist(
     eventId: String,
     wishlistOwnerId: String
@@ -267,6 +290,7 @@ class SecretSantaRepositoryImpl(
       SecretSantaWishlist(entity.wishlist, entity.title)
     }
 
+  /** Retrieves and maps the shared wishlist items of a participant. */
   override suspend fun fetchSecretSantaWishlistItems(
     eventId: String,
     wishlistOwnerId: String
@@ -288,6 +312,10 @@ class SecretSantaRepositoryImpl(
       }
     }
 
+  /**
+   * Subscribes to chat messages in real time and enriches them with the
+   * resolved giver and receiver users.
+   */
   override suspend fun subscribeToSecretSantaChatMessages(
     uid: String,
     eventId: String,
@@ -322,6 +350,7 @@ class SecretSantaRepositoryImpl(
       }
     }
 
+  /** Fetches a paginated chat page and maps it into domain messages. */
   override suspend fun fetchSecretSantaChatMessages(
     uid: String,
     eventId: String,
@@ -374,6 +403,7 @@ class SecretSantaRepositoryImpl(
       }
     }
 
+  /** Persists a new message in the Secret Santa chat. */
   override suspend fun sendMessageToChat(
     uid: String,
     eventId: String,
@@ -389,6 +419,7 @@ class SecretSantaRepositoryImpl(
       )
     }
 
+  /** Joins a Secret Santa event using an invitation token. */
   override suspend fun addEventParticipantByToken(token: String): Result<Unit> =
     runCatching {
       secretSantaRemoteDataSource.addEventParticipantByToken(token)

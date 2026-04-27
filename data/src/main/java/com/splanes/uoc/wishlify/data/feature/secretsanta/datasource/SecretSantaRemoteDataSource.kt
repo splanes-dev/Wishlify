@@ -30,6 +30,12 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.net.UnknownHostException
 
+/**
+ * Firestore and callable-functions backed data source for Secret Santa persistence.
+ *
+ * It encapsulates event storage, assignments, participant wishlists and chats,
+ * translating infrastructure failures into domain-facing generic errors.
+ */
 class SecretSantaRemoteDataSource(
   private val db: FirebaseFirestore,
   private val functions: FirebaseFunctions,
@@ -37,6 +43,10 @@ class SecretSantaRemoteDataSource(
 
   private val secretSanta by lazy { db.secretSanta }
 
+  /**
+   * Retrieves the events visible to the user as creator, participant or member
+   * of a linked group.
+   */
   suspend fun fetchSecretSantaEvents(
     uid: String,
     groups: List<String>
@@ -61,6 +71,7 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Counts the Secret Santa events currently linked to the given group. */
   suspend fun countSecretSantaEventsByGroup(groupId: String): Int =
     try {
       secretSanta
@@ -75,6 +86,7 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Retrieves a single event by id, or `null` when it does not exist. */
   suspend fun fetchSecretSantaEvent(eventId: String): SecretSantaEventEntity? =
     try {
       secretSanta
@@ -89,6 +101,7 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces a Secret Santa event document. */
   suspend fun upsertSecretSantaEvent(entity: SecretSantaEventEntity) {
     try {
       secretSanta
@@ -103,6 +116,7 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Retrieves the stored assignment for a participant in the given event. */
   suspend fun fetchAssignment(uid: String, eventId: String): SecretSantaAssignmentEntity? =
     try {
       assignmentsOf(eventId)
@@ -117,6 +131,7 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces a participant assignment for the given event. */
   suspend fun upsertAssignment(
     eventId: String,
     uid: String,
@@ -135,6 +150,7 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Retrieves the wishlist header shared by a participant, if any. */
   suspend fun fetchParticipantWishlist(
     eventId: String,
     uid: String
@@ -151,6 +167,7 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces the wishlist header shared by a participant. */
   suspend fun upsertParticipantWishlist(
     eventId: String,
     uid: String,
@@ -168,6 +185,7 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Removes the wishlist header shared by a participant. */
   suspend fun removeParticipantWishlist(
     eventId: String,
     uid: String,
@@ -184,6 +202,7 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Retrieves all wishlist items currently shared by a participant. */
   suspend fun fetchParticipantWishlistItems(
     eventId: String,
     uid: String,
@@ -200,6 +219,7 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces a single shared wishlist item for a participant. */
   suspend fun upsertParticipantWishlistItem(
     eventId: String,
     uid: String,
@@ -218,6 +238,7 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Deletes all wishlist items currently shared by a participant. */
   suspend fun removeParticipantWishlistItems(
     eventId: String,
     uid: String,
@@ -239,6 +260,7 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Creates or replaces the metadata of a Secret Santa chat. */
   suspend fun upsertSecretSantaEventChat(
     eventId: String,
     entity: SecretSantaChatEntity
@@ -256,6 +278,7 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Subscribes to the latest messages of a chat in real time. */
   fun subscribeToChat(
     eventId: String,
     chatId: String,
@@ -285,6 +308,7 @@ class SecretSantaRemoteDataSource(
       }
     }
 
+  /** Fetches a paginated batch of older chat messages using a timestamp cursor. */
   suspend fun fetchSecretSantaEventChatMessages(
     eventId: String,
     chatId: String,
@@ -316,6 +340,7 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces a single Secret Santa chat message. */
   suspend fun upsertSecretSantaEventChatMessage(
     eventId: String,
     chatId: String,
@@ -334,6 +359,7 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Joins an event by invoking the shared invitation-link callable. */
   suspend fun addEventParticipantByToken(token: String) {
     try {
       functions
@@ -347,17 +373,20 @@ class SecretSantaRemoteDataSource(
     }
   }
 
+  /** Returns the assignments subcollection for the given event. */
   private fun assignmentsOf(id: String) =
     secretSanta
       .document(id)
       .secretSantaAssignments
 
+  /** Returns the shared wishlist document of a participant within an event. */
   private fun participantsWishlistOf(id: String, uid: String) =
     secretSanta
       .document(id)
       .secretSantaParticipantsWishlist
       .document(uid)
 
+  /** Returns the shared wishlist items subcollection of a participant. */
   private fun participantsWishlistItemOf(id: String, uid: String) =
     secretSanta
       .document(id)
@@ -365,11 +394,13 @@ class SecretSantaRemoteDataSource(
       .document(uid)
       .secretSantaParticipantsWishlistItems
 
+  /** Returns the chats subcollection for the given event. */
   private fun chatsOf(id: String) =
     secretSanta
       .document(id)
       .secretSantaChats
 
+  /** Returns the messages subcollection for the given event chat. */
   private fun chatMessagesOf(id: String, chatId: String) =
     chatsOf(id)
       .document(chatId)

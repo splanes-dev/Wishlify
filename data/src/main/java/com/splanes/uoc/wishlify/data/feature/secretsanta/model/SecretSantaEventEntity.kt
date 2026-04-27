@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.secretsanta.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore persistence model for a Secret Santa event. */
 @Serializable
 data class SecretSantaEventEntity(
   @SerialName("id") val id: String = "",
@@ -20,6 +21,7 @@ data class SecretSantaEventEntity(
   @SerialName("drawStatus") val drawStatus: DrawStatus = DrawStatus.Pending
 ) {
 
+  /** Persisted draw state of the Secret Santa event. */
   @Serializable
   enum class DrawStatus {
     @SerialName("pending")

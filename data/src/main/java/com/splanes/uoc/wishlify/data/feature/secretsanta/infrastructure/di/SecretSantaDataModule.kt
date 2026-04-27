@@ -8,6 +8,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the Secret Santa data-layer components. */
+
 internal val SecretSantaDataModule = module {
   // Data sources
   singleOf(::SecretSantaRemoteDataSource)

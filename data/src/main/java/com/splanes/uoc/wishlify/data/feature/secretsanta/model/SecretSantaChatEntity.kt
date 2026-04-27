@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.secretsanta.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore model for Secret Santa chat metadata. */
 @Serializable
 data class SecretSantaChatEntity(
   @SerialName("id") val id: String = "",

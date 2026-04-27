@@ -16,8 +16,10 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.UpdateSecretSan
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import java.util.Date
 
+/** Maps Secret Santa entities between Firestore persistence and domain models. */
 class SecretSantaDataMapper {
 
+  /** Maps a stored event into its lightweight domain projection. */
   fun map(
     entity: SecretSantaEventEntity,
     assignments: Map<String, User.Basic>
@@ -44,6 +46,7 @@ class SecretSantaDataMapper {
         )
     }
 
+  /** Maps an event creation request into its Firestore persistence model. */
   fun map(
     uid: String,
     media: ImageMedia?,
@@ -74,6 +77,7 @@ class SecretSantaDataMapper {
       drawStatus = SecretSantaEventEntity.DrawStatus.Pending,
     )
 
+  /** Maps an event update request into its Firestore persistence model. */
   fun map(
     uid: String,
     media: ImageMedia?,
@@ -104,6 +108,10 @@ class SecretSantaDataMapper {
       drawStatus = SecretSantaEventEntity.DrawStatus.Pending,
     )
 
+  /**
+   * Maps a stored event into its detailed domain projection using resolved
+   * users, group metadata and assignment context.
+   */
   fun mapDetail(
     entity: SecretSantaEventEntity,
     group: Group.Basic?,
@@ -169,6 +177,7 @@ class SecretSantaDataMapper {
         )
     }
 
+  /** Builds the chat metadata that becomes available after a successful draw. */
   fun createChatsFromAssignments(assignments: Map<String, String>): List<SecretSantaChatEntity> =
     assignments.map { (giver, receiver) ->
       SecretSantaChatEntity(
@@ -179,6 +188,7 @@ class SecretSantaDataMapper {
       )
     }
 
+  /** Maps a persisted chat message into its domain representation. */
   fun mapMessage(
     entity: SecretSantaChatMessageEntity,
     chatId: String,
@@ -194,6 +204,7 @@ class SecretSantaDataMapper {
       isCurrentUserMessage = entity.sender == uid
     )
 
+  /** Builds the persistence model for a newly sent chat message. */
   fun mapMessage(uid: String, text: String): SecretSantaChatMessageEntity =
     SecretSantaChatMessageEntity(
       id = newUuid(),
