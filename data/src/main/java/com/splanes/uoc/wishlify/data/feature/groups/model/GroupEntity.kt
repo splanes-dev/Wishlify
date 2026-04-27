@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.groups.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore persistence model for groups. */
 @Serializable
 data class GroupEntity(
   @SerialName("id") val id: String = "",

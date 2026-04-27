@@ -10,12 +10,18 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.net.UnknownHostException
 
+/**
+ * Firestore-backed data source for group persistence and retrieval.
+ *
+ * It translates Firestore and connectivity failures into domain-facing generic errors.
+ */
 class GroupsRemoteDataSource(
   private val db: FirebaseFirestore
 ) {
 
   private val groups by lazy { db.groups }
 
+  /** Retrieves all groups where the given [uid] is a member. */
   suspend fun fetchGroups(uid: String): List<GroupEntity> =
     try {
       groups
@@ -30,6 +36,7 @@ class GroupsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Retrieves a single group by its identifier, or `null` when it does not exist. */
   suspend fun fetchGroupById(id: String): GroupEntity? =
     try {
       groups
@@ -44,6 +51,7 @@ class GroupsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces the persisted state of a group entity. */
   suspend fun upsertGroup(entity: GroupEntity) {
     try {
       groups
@@ -58,6 +66,7 @@ class GroupsRemoteDataSource(
     }
   }
 
+  /** Deletes the group identified by [id] from Firestore. */
   suspend fun deleteGroup(id: String) {
     try {
       groups

@@ -15,6 +15,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
+/**
+ * Data-layer implementation of [GroupsRepository].
+ *
+ * It combines raw group persistence with cross-feature lookups to derive group activity state.
+ */
 class GroupsRepositoryImpl(
   private val groupsRemoteDataSource: GroupsRemoteDataSource,
   private val sharedWishlistsRemoteDataSource: SharedWishlistsRemoteDataSource,
@@ -24,6 +29,10 @@ class GroupsRepositoryImpl(
   private val mapper: GroupsDataMapper,
 ) : GroupsRepository {
 
+  /**
+   * Retrieves the current user's groups and derives whether each one is active
+   * by checking related shared wishlists and Secret Santa events.
+   */
   override suspend fun fetchGroups(uid: String): Result<List<Group.Basic>> =
     runCatching {
       val entities = groupsRemoteDataSource.fetchGroups(uid)
@@ -51,6 +60,7 @@ class GroupsRepositoryImpl(
       }
     }
 
+  /** Persists a newly created group. */
   override suspend fun addGroup(
     uid: String,
     imageMedia: ImageMedia?,
@@ -61,6 +71,10 @@ class GroupsRepositoryImpl(
       groupsRemoteDataSource.upsertGroup(entity)
     }
 
+  /**
+   * Retrieves a detailed group view, enriching the persisted entity with
+   * resolved member profiles and cross-feature activity information.
+   */
   override suspend fun fetchGroup(
     uid: String,
     groupId: String
@@ -103,6 +117,7 @@ class GroupsRepositoryImpl(
       }
     }
 
+  /** Persists the updated state of an existing group. */
   override suspend fun updateGroup(
     uid: String,
     imageMedia: ImageMedia?,
@@ -113,6 +128,7 @@ class GroupsRepositoryImpl(
       groupsRemoteDataSource.upsertGroup(entity)
     }
 
+  /** Deletes the persisted group identified by [groupId]. */
   override suspend fun deleteGroup(
     groupId: String
   ): Result<Unit> =

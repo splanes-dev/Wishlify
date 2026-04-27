@@ -8,6 +8,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the groups data-layer components. */
 internal val GroupsDataModule = module {
   // Data source
   singleOf(::GroupsRemoteDataSource)

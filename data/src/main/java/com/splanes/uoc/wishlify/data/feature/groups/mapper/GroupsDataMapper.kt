@@ -8,8 +8,10 @@ import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.groups.model.UpdateGroupRequest
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 
+/** Maps group entities between Firestore persistence and domain projections. */
 class GroupsDataMapper {
 
+  /** Maps a persisted group entity into the lightweight domain group projection. */
   fun mapToBasic(entity: GroupEntity, isActive: Boolean): Group.Basic =
     Group.Basic(
       id = entity.id,
@@ -19,6 +21,7 @@ class GroupsDataMapper {
       state = if (isActive) Group.State.Active else Group.State.Inactive
     )
 
+  /** Maps a group creation request into the Firestore persistence model. */
   fun mapFromRequest(uid: String, imageMedia: ImageMedia?, request: CreateGroupRequest): GroupEntity =
     GroupEntity(
       id = request.id,
@@ -32,6 +35,7 @@ class GroupsDataMapper {
       createdAt = nowInMillis()
     )
 
+  /** Maps a group update request into the Firestore persistence model. */
   fun mapFromRequest(
     uid: String,
     imageMedia: ImageMedia?,
@@ -53,6 +57,10 @@ class GroupsDataMapper {
       createdAt = nowInMillis()
     )
 
+  /**
+   * Maps a persisted group entity into the detailed domain projection using
+   * resolved member profiles and external activity flags.
+   */
   fun mapToDetail(
     uid: String,
     entity: GroupEntity,
