@@ -8,6 +8,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the shared-wishlists data-layer components. */
+
 internal val SharedWishlistsDataModule = module {
   // Data source
   singleOf(::SharedWishlistsRemoteDataSource)

@@ -18,8 +18,10 @@ import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.request.ShareWishlistRequest
 import java.sql.Date
 
+/** Maps shared-wishlist entities between Firestore persistence and domain models. */
 class SharedWishlistsDataMapper {
 
+  /** Builds the persistence model created when a private wishlist becomes shared. */
   fun sharedWishlistFromRequest(request: ShareWishlistRequest): SharedWishlistEntity =
     SharedWishlistEntity(
       id = newUuid(),
@@ -34,6 +36,10 @@ class SharedWishlistsDataMapper {
       sharedAt = nowInMillis(),
     )
 
+  /**
+   * Builds the persisted shared-item state after applying a domain state-change
+   * request such as reserving, purchasing or joining a shared request.
+   */
   fun sharedItemEntityFromRequest(
     uid: String,
     request: SharedWishlistItemUpdateStateRequest
@@ -144,6 +150,10 @@ class SharedWishlistsDataMapper {
       )
     }
 
+  /**
+   * Maps a stored shared wishlist into the appropriate domain projection for
+   * the current user.
+   */
   fun mapWishlist(
     uid: String,
     entity: SharedWishlistEntity,
@@ -192,6 +202,7 @@ class SharedWishlistsDataMapper {
       )
     }
 
+  /** Merges the base wishlist item with its optional shared-state document. */
   fun mapItem(
     uid: String,
     linkedItem: SharedWishlistItem.LinkedItem,
@@ -208,6 +219,7 @@ class SharedWishlistsDataMapper {
       }
     )
 
+  /** Maps a persisted chat message into its domain representation. */
   fun mapMessage(
     uid: String,
     message: SharedWishlistChatMessageEntity,
@@ -231,6 +243,7 @@ class SharedWishlistsDataMapper {
         )
     }
 
+  /** Builds the persistence model for a newly sent shared-wishlist chat message. */
   fun mapMessage(
     uid: String,
     request: SharedWishlistSendMessageRequest
@@ -243,6 +256,7 @@ class SharedWishlistsDataMapper {
       createdAt = nowInMillis()
     )
 
+  /** Maps the persisted shared-item state into the matching domain state. */
   private fun mapItemState(
     uid: String,
     sharedItem: SharedWishlistItemEntity,

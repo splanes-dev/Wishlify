@@ -28,6 +28,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+/**
+ * Data-layer implementation of [SharedWishlistsRepository].
+ *
+ * It composes shared-wishlist persistence with the linked base wishlist,
+ * groups, users and media cleanup to produce the domain projections used by
+ * the app.
+ */
 class SharedWishlistsRepositoryImpl(
   private val sharedWishlistsRemoteDataSource: SharedWishlistsRemoteDataSource,
   private val groupsRemoteDataSource: GroupsRemoteDataSource,
@@ -41,6 +48,10 @@ class SharedWishlistsRepositoryImpl(
   private val mediaDataMapper: ImageMediaDataMapper
 ) : SharedWishlistsRepository {
 
+  /**
+   * Fetches the visible shared wishlists for the user and enriches them with
+   * linked wishlist, group, users and item-count metadata.
+   */
   override suspend fun fetchSharedWishlists(uid: String): Result<List<SharedWishlist>> =
     runCatching {
       val groups = groupsRemoteDataSource
@@ -122,6 +133,7 @@ class SharedWishlistsRepositoryImpl(
       }
     }
 
+  /** Fetches one shared wishlist and resolves all linked group, users and item counts. */
   override suspend fun fetchSharedWishlist(
     uid: String,
     sharedWishlistId: String
@@ -188,6 +200,10 @@ class SharedWishlistsRepositoryImpl(
       }
     }
 
+  /**
+   * Reverts a shared wishlist back to private, deletes shared persistence and
+   * removes purchased copied items and their media from the base wishlist.
+   */
   override suspend fun unshareSharedWishlist(
     wishlistId: String
   ): Result<Unit> =
@@ -232,6 +248,10 @@ class SharedWishlistsRepositoryImpl(
       }
     }
 
+  /**
+   * Fetches the base wishlist items and merges them with the persisted shared
+   * state and resolved participant users.
+   */
   override suspend fun fetchSharedWishlistItems(
     uid: String,
     sharedWishlistId: String
@@ -288,6 +308,62 @@ class SharedWishlistsRepositoryImpl(
       }
     }
 
+  /**
+   * Subscribes to shared item-state updates and combines them with the static
+   * base wishlist items to emit domain items in real time.
+   */
+  override suspend fun subscribeToSharedWishlistItems(
+    uid: String,
+    sharedWishlistId: String
+  ): Flow<List<SharedWishlistItem>> {
+    val sharedWishlist =
+      sharedWishlistsRemoteDataSource.fetchSharedWishlistById(sharedWishlistId)
+        ?: throw GenericError.Unknown()
+
+    val baseItems = wishlistsRemoteDataSource.fetchWishlistItems(sharedWishlist.wishlist)
+
+    return sharedWishlistsRemoteDataSource
+      .subscribeToSharedWishlistItems(sharedWishlistId)
+      .map { sharedItems ->
+        coroutineScope {
+          val usersToFetch = sharedItems.flatMap { entity ->
+            buildList {
+              entity.reservation?.reservedBy?.let(::add)
+              entity.reservation?.reservedByGroup?.let(::addAll)
+              entity.purchased?.purchasedBy?.let(::add)
+              entity.purchased?.purchasedByGroup?.let(::addAll)
+              entity.shareRequest?.requestedBy?.let(::add)
+              entity.shareRequest?.participantsJoined?.let(::addAll)
+            }
+          }.distinct()
+
+          val usersById = usersToFetch
+            .map { uid -> async { userRemoteDataSource.fetchUserById(uid) } }
+            .awaitAll()
+            .filterNotNull()
+            .map { entity -> userDataMapper.mapToBasic(entity) }
+            .map { basic -> userDataMapper.map(basic) }
+            .associateBy { user -> user.uid }
+
+          val sharedItemById = sharedItems.associateBy { it.item }
+
+          baseItems
+            .filter { entity -> entity.purchased == null }
+            .map { entity -> wishlistsDataMapper.mapToLinkedItem(entity) }
+            .map { linkedItem ->
+              mapper.mapItem(
+                uid = uid,
+                linkedItem = linkedItem,
+                sharedItem = sharedItemById[linkedItem.id],
+                users = usersById
+              )
+            }
+        }
+      }
+  }
+
+
+  /** Fetches one shared item by combining its base item data and shared state. */
   override suspend fun fetchSharedWishlistItem(
     uid: String,
     sharedWishlistId: String,
@@ -340,6 +416,7 @@ class SharedWishlistsRepositoryImpl(
       }
     }
 
+  /** Persists a new collaborative state for a shared wishlist item. */
   override suspend fun updateSharedWishlistItemState(
     uid: String,
     request: SharedWishlistItemUpdateStateRequest
@@ -352,6 +429,10 @@ class SharedWishlistsRepositoryImpl(
       )
     }
 
+  /**
+   * Subscribes to chat messages in real time and enriches user-authored ones
+   * with the resolved sender profile.
+   */
   override fun subscribeToWishlistsChatMessages(
     uid: String,
     sharedWishlistId: String,
@@ -379,6 +460,7 @@ class SharedWishlistsRepositoryImpl(
         }
       }
 
+  /** Fetches a paginated chat page and maps it into shared-wishlist messages. */
   override suspend fun fetchSharedWishlistMessages(
     uid: String,
     wishlistId: String,
@@ -415,6 +497,7 @@ class SharedWishlistsRepositoryImpl(
       )
     }
 
+  /** Persists a new user message in the shared-wishlist chat. */
   override suspend fun sendMessageToChat(
     uid: String,
     request: SharedWishlistSendMessageRequest
@@ -425,6 +508,7 @@ class SharedWishlistsRepositoryImpl(
         .upsertSharedWishlistMessage(request.wishlist, entity)
     }
 
+  /** Joins a shared wishlist using an invitation token. */
   override suspend fun addParticipantByToken(token: String): Result<Unit> =
     runCatching {
       sharedWishlistsRemoteDataSource.addParticipantByToken(token)

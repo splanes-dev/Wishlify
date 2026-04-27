@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.shared.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore model for the shared state associated with a wishlist item. */
 @Serializable
 data class SharedWishlistItemEntity(
   @SerialName("id") val id: String = "",
@@ -13,6 +14,7 @@ data class SharedWishlistItemEntity(
   @SerialName("purchased") val purchased: Purchased? = null,
 ) {
 
+  /** Persisted collaborative state of the shared wishlist item. */
   @Serializable
   enum class State {
     @SerialName("available") Available,
@@ -21,6 +23,7 @@ data class SharedWishlistItemEntity(
     @SerialName("share_request") ShareRequest
   }
 
+  /** Persisted reservation metadata for an item locked by one or more users. */
   @Serializable
   data class Lock(
     @SerialName("reservedBy") val reservedBy: String = "",
@@ -29,6 +32,7 @@ data class SharedWishlistItemEntity(
     @SerialName("expiresAt") val expiresAt: Long = 0L,
   )
 
+  /** Persisted metadata for an item currently proposed as a split purchase. */
   @Serializable
   data class ShareRequest(
     @SerialName("requestedBy") val requestedBy: String = "",
@@ -38,6 +42,7 @@ data class SharedWishlistItemEntity(
     @SerialName("expiresAt") val expiresAt: Long = 0L
   )
 
+  /** Persisted purchase metadata for an item already marked as bought. */
   @Serializable
   data class Purchased(
     @SerialName("purchasedAt") val purchasedAt: Long = 0L,

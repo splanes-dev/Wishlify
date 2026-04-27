@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.data.feature.shared.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/** Serializable Firestore persistence model for a shared wishlist header. */
 @Serializable
 data class SharedWishlistEntity(
   @SerialName("id") val id: String = "",

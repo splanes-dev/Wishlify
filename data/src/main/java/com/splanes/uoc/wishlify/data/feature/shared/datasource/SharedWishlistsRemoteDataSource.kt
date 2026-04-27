@@ -25,6 +25,12 @@ import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.net.UnknownHostException
 
+/**
+ * Firestore and callable-functions backed data source for shared wishlists.
+ *
+ * It encapsulates wishlist headers, shared item states and chat persistence,
+ * translating infrastructure failures into domain-facing generic errors.
+ */
 class SharedWishlistsRemoteDataSource(
   private val db: FirebaseFirestore,
   private val functions: FirebaseFunctions,
@@ -32,6 +38,10 @@ class SharedWishlistsRemoteDataSource(
 
   private val sharedWishlists by lazy { db.sharedWishlists }
 
+  /**
+   * Retrieves the shared wishlists visible to the user as editor, participant
+   * or member of a linked group.
+   */
   suspend fun fetchSharedWishlists(uid: String, groups: List<String>): List<SharedWishlistEntity> =
     try {
       val filters = buildList {
@@ -53,6 +63,7 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Retrieves a shared wishlist by id, or `null` when it does not exist. */
   suspend fun fetchSharedWishlistById(id: String): SharedWishlistEntity? =
     try {
       sharedWishlists
@@ -67,6 +78,7 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces a shared wishlist document. */
   suspend fun upsertSharedWishlist(entity: SharedWishlistEntity) {
     try {
       sharedWishlists
@@ -81,6 +93,7 @@ class SharedWishlistsRemoteDataSource(
     }
   }
 
+  /** Counts the shared wishlists currently linked to the given group. */
   suspend fun countSharedWishlistsByGroup(groupId: String) =
     try {
       sharedWishlists
@@ -95,6 +108,10 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /**
+   * Deletes a shared wishlist together with its stored chat messages and shared
+   * item state documents.
+   */
   suspend fun removeWishlist(id: String, items: List<String>) {
     try {
       val chat = wishlistChatOf(id)
@@ -121,6 +138,7 @@ class SharedWishlistsRemoteDataSource(
     }
   }
 
+  /** Retrieves the persisted shared state of all items in the given wishlist. */
   suspend fun fetchSharedWishlistItems(wishlist: String): List<SharedWishlistItemEntity> =
     try {
       wishlistItemsOf(wishlist)
@@ -134,6 +152,29 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Subscribes in real time to the shared state of the wishlist items. */
+  fun subscribeToSharedWishlistItems(wishlist: String): Flow<List<SharedWishlistItemEntity>> =
+    callbackFlow {
+      val registration = wishlistItemsOf(wishlist)
+        .addSnapshotListener { snapshots, exception ->
+          if (exception != null) {
+            close(exception)
+            return@addSnapshotListener
+          }
+
+          val items = snapshots
+            ?.readAll<SharedWishlistItemEntity>()
+            .orEmpty()
+
+          trySend(items)
+        }
+
+      awaitClose {
+        registration.remove()
+      }
+    }.distinctUntilChanged()
+
+  /** Retrieves the persisted shared state of a single wishlist item. */
   suspend fun fetchSharedWishlistItemById(
     wishlist: String,
     item: String
@@ -151,6 +192,7 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces the shared state document of one wishlist item. */
   suspend fun upsertSharedWishlistItem(wishlist: String, entity: SharedWishlistItemEntity) {
     try {
       wishlistItemsOf(wishlist)
@@ -165,6 +207,7 @@ class SharedWishlistsRemoteDataSource(
     }
   }
 
+  /** Fetches a paginated batch of older shared-wishlist chat messages. */
   suspend fun fetchSharedWishlistChatMessages(
     wishlist: String,
     from: Long,
@@ -195,6 +238,7 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /** Creates or replaces a shared-wishlist chat message. */
   suspend fun upsertSharedWishlistMessage(
     wishlist: String,
     entity: SharedWishlistChatMessageEntity
@@ -212,6 +256,7 @@ class SharedWishlistsRemoteDataSource(
     }
   }
 
+  /** Subscribes in real time to the latest messages of the shared-wishlist chat. */
   fun subscribeToChat(wishlist: String, limit: Int): Flow<List<SharedWishlistChatMessageEntity>> =
     callbackFlow {
 
@@ -238,6 +283,7 @@ class SharedWishlistsRemoteDataSource(
       }
     }.distinctUntilChanged()
 
+  /** Joins a shared wishlist by invoking the shared invitation-link callable. */
   suspend fun addParticipantByToken(token: String) {
     try {
       functions
@@ -251,9 +297,11 @@ class SharedWishlistsRemoteDataSource(
     }
   }
 
+  /** Returns the shared items subcollection for the given shared wishlist. */
   private fun wishlistItemsOf(id: String) =
     db.sharedWishlists.document(id).sharedWishlistItems
 
+  /** Returns the chat messages subcollection for the given shared wishlist. */
   private fun wishlistChatOf(id: String) =
     db.sharedWishlists.document(id).sharedWishlistChatMessages
 }
