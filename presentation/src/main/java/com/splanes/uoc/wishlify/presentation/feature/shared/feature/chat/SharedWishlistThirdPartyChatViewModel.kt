@@ -17,6 +17,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+/**
+ * Coordinates the third-party shared wishlist chat, including real-time updates and paginated
+ * history.
+ */
 class SharedWishlistThirdPartyChatViewModel(
   private val sharedWishlistId: String,
   sharedWishlistName: String,
@@ -41,6 +45,9 @@ class SharedWishlistThirdPartyChatViewModel(
     subscribeToChat()
   }
 
+  /**
+   * Sends a new message to the shared wishlist chat.
+   */
   fun onSendMessage(text: String) {
     viewModelScope.launch {
       val request = SharedWishlistSendMessageRequest(wishlist = sharedWishlistId, text = text)
@@ -48,6 +55,9 @@ class SharedWishlistThirdPartyChatViewModel(
     }
   }
 
+  /**
+   * Loads older chat messages using the current cursor when pagination is available.
+   */
   fun onLoadOlderMessages() {
     val currentState = viewModelState.value
     if (currentState.isLoading || currentState.nextCursor == null) {
@@ -74,6 +84,9 @@ class SharedWishlistThirdPartyChatViewModel(
     }
   }
 
+  /**
+   * Starts observing the real-time shared wishlist chat stream.
+   */
   private fun subscribeToChat() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     subscribeSharedWishlistChatUseCase(sharedWishlistId)
@@ -124,6 +137,9 @@ class SharedWishlistThirdPartyChatViewModel(
     val error: Throwable? = null
   ) {
 
+    /**
+     * Maps internal state to the chat UI contract.
+     */
     fun toUiState(): SharedWishlistThirdPartyChatUiState =
       when {
         isLoadingFullscreen ->

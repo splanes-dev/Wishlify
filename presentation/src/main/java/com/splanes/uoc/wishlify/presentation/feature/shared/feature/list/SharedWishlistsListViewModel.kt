@@ -18,6 +18,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * Coordinates the shared wishlists list, including invitation-link joins and list refreshes.
+ */
 class SharedWishlistsListViewModel(
   private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase,
   private val isPermissionModalVisibleUseCase: IsPermissionModalVisibleUseCase,
@@ -36,6 +39,9 @@ class SharedWishlistsListViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
+  /**
+   * Adds the current user to a shared wishlist using an invitation token and refreshes the list.
+   */
   fun onJoinToParticipantsByToken(token: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     viewModelScope.launch {
@@ -44,14 +50,24 @@ class SharedWishlistsListViewModel(
     }
   }
 
+  /**
+   * Reloads the shared wishlists list.
+   */
   fun onReloadWishlists() {
     fetchSharedWishlists()
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Returns the shared wishlist already loaded in memory, waiting briefly until the initial fetch
+   * completes.
+   */
   suspend fun fetchSharedWishlistById(id: String): SharedWishlist {
     val currentState = viewModelState.value
     if (currentState.wishlists.isNotEmpty()) {
@@ -62,6 +78,10 @@ class SharedWishlistsListViewModel(
     }
   }
 
+  /**
+   * Loads the current shared wishlists and resolves whether the notification permission modal
+   * should be displayed.
+   */
   private fun fetchSharedWishlists() {
     viewModelState.update { state ->
       state.copy(isLoadingFullscreen = true)
@@ -97,6 +117,9 @@ class SharedWishlistsListViewModel(
     val error: Throwable? = null
   ) {
 
+    /**
+     * Maps internal state to the screen representation shown by the list UI.
+     */
     fun toUiState(errorUiMapper: ErrorUiMapper): SharedWishlistsListUiState =
       when {
         isLoadingFullscreen ->
@@ -114,6 +137,9 @@ class SharedWishlistsListViewModel(
           )
       }
 
+    /**
+     * Sorts wishlists by deadline so the closest ones appear first.
+     */
     private fun List<SharedWishlist>.sorted() = sortedWith(
       compareByDescending { it.deadline }
     )

@@ -28,12 +28,24 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Home navigation graph that hosts the shared wishlists flows.
+ */
 class SharedWishlistsNavGraph : FeatureHomeNavGraph {
+  /**
+   * Position of the shared wishlists tab in the home navigation bar.
+   */
   override val position: Int = 1
 
+  /**
+   * Keeps the bottom navigation visible only on the shared wishlists list.
+   */
   override fun isNavigationBarVisible(destination: NavDestination?): Boolean =
     destination?.hasRoute(SharedWishlists.List::class) == true
 
+  /**
+   * Renders the shared wishlists item in the home navigation bar.
+   */
   @Composable
   override fun RowScope.NavigationBarItem(
     current: NavDestination?,
@@ -66,6 +78,9 @@ class SharedWishlistsNavGraph : FeatureHomeNavGraph {
     )
   }
 
+  /**
+   * Registers the shared wishlists feature graph, including third-party detail and chat flows.
+   */
   override fun NavGraphBuilder.buildNavGraph(
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,

@@ -3,6 +3,9 @@ package com.splanes.uoc.wishlify.presentation.feature.shared.feature.list
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 
+/**
+ * UI state for the shared wishlists list screen.
+ */
 sealed interface SharedWishlistsListUiState {
 
   data object Loading : SharedWishlistsListUiState

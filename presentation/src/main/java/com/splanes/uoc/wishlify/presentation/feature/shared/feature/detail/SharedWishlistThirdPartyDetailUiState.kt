@@ -6,6 +6,9 @@ import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterPro
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.shared.model.SharedWishlistItemStateAction
 
+/**
+ * UI state for the third-party shared wishlist detail flow.
+ */
 sealed interface SharedWishlistThirdPartyDetailUiState {
   data class Error(
     val wishlistName: String,

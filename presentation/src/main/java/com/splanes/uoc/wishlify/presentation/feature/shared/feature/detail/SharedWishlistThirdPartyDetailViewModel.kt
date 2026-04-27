@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
-import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistItemUseCase
-import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistUseCase
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.SubscribeSharedWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.UpdateSharedWishlistItemUseCase
 import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
@@ -17,17 +16,22 @@ import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.model
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.detail.model.SharedWishlistItemStateRequestError
 import com.splanes.uoc.wishlify.presentation.feature.shared.model.SharedWishlistItemStateAction
 import com.splanes.uoc.wishlify.presentation.feature.shared.model.SharedWishlistState
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates the third-party shared wishlist detail flow, including real-time item updates,
+ * item state transitions and filtering.
+ */
 class SharedWishlistThirdPartyDetailViewModel(
   sharedWishlistName: String,
   target: String,
@@ -53,6 +57,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     )
 
 
+  /**
+   * Dispatches an item interaction to the corresponding detail or state-update flow.
+   */
   fun onItemAction(item: SharedWishlistItem, action: SharedWishlistItemAction) {
     when (action) {
       SharedWishlistItemAction.Open -> onOpenDetail(item)
@@ -63,6 +70,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  /**
+   * Opens the bottom sheet used to update the selected item state.
+   */
   fun onOpenItemStateModal(item: SharedWishlistItem) {
     viewModelState.update { state ->
       state.copy(
@@ -72,6 +82,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  /**
+   * Closes the currently open item detail modal.
+   */
   fun onCloseItemDetailModal() {
     viewModelState.update { state ->
       state.copy(
@@ -83,6 +96,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  /**
+   * Closes the item state modal and clears any share request validation error.
+   */
   fun onCloseItemStateModal() {
     viewModelState.update { state ->
       state.copy(
@@ -93,10 +109,16 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  /**
+   * Clears the validation error associated with the share request participants input.
+   */
   fun onClearShareRequestError() {
     viewModelState.update { state -> state.copy(shareRequestError = null) }
   }
 
+  /**
+   * Updates the selected item state using the item-state modal flow.
+   */
   fun onUpdateItemState(item: SharedWishlistItem, action: SharedWishlistItemAction.UpdateState) {
     val wishlist = viewModelState.value.sharedWishlist
 
@@ -140,23 +162,35 @@ class SharedWishlistThirdPartyDetailViewModel(
                 error = error
               )
             }
-          }
+        }
       }
     }
   }
 
+  /**
+   * Updates the active product filters used to derive the visible items list.
+   */
   fun onChangeProductFilters(filters: List<FilterProduct>) {
     viewModelState.update { state -> state.copy(filters = filters) }
   }
 
+  /**
+   * Hides the informational banner shown at the top of the wishlist.
+   */
   fun onDismissBanner() {
     viewModelState.update { state -> state.copy(isInfoBannerVisible = false) }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Opens the item detail modal and resolves the actions available for the selected item state.
+   */
   private fun onOpenDetail(item: SharedWishlistItem) {
     val wishlist = viewModelState.value.sharedWishlist
     val actions = wishlist?.let {
@@ -172,6 +206,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  /**
+   * Updates the selected item state directly from the item detail modal.
+   */
   private fun onUpdateState(
     item: SharedWishlistItem,
     action: SharedWishlistItemAction.UpdateState
@@ -228,6 +265,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  /**
+   * Loads the shared wishlist header and starts observing its items in real time.
+   */
   private suspend fun fetchSharedWishlistAndItems(id: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     coroutineScope {
@@ -245,6 +285,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  /**
+   * Resolves the item state actions allowed for the current viewer and item state.
+   */
   private fun buildSelectedItemStateActions(
     wishlist: SharedWishlist.ThirdParty,
     currentState: SharedWishlistItem.State
@@ -284,6 +327,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     }
   }
 
+  /**
+   * Validates additional inputs required by certain state transitions, such as share requests.
+   */
   private fun validateForm(action: SharedWishlistItemAction, maxNumOfParticipants: Int): Boolean =
     when (action) {
       is SharedWishlistItemAction.ShareRequest -> {
@@ -320,6 +366,9 @@ class SharedWishlistThirdPartyDetailViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the detail UI contract.
+     */
     fun toUiState(
       itemStateErrorMapper: SharedWishlistItemStateErrorMapper,
       errorUiMapper: ErrorUiMapper
@@ -350,11 +399,17 @@ class SharedWishlistThirdPartyDetailViewModel(
         SharedWishlistThirdPartyDetailUiState.Error(sharedWishlistName, target)
     }
 
+    /**
+     * Sorts items by collaborative state and prioritises those involving the current user.
+     */
     private fun List<SharedWishlistItem>.sorted() = sortedWith(
       compareBy<SharedWishlistItem> { it.state }
         .thenByDescending { it.state.isCurrentUserParticipant }
     )
 
+    /**
+     * Applies the product filters configured from the detail screen.
+     */
     private fun List<SharedWishlistItem>.applyFilters(filters: List<FilterProduct>) =
       if (filters.isEmpty()) {
         this
