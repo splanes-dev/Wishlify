@@ -13,8 +13,15 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
+/**
+ * Application entry point responsible for bootstrapping global app services.
+ *
+ * It initializes logging, Firebase App Check, notification channels and the
+ * Koin dependency graph used across the app.
+ */
 class WishlifyApplication : Application() {
 
+  /** Performs the global initialization required before any screen is shown. */
   override fun onCreate() {
     super.onCreate()
 

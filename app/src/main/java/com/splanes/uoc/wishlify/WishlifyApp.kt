@@ -11,6 +11,12 @@ import androidx.navigation.compose.NavHost
 import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.FeatureMainNavGraph
 import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 
+/**
+ * Root Compose entry point of the application.
+ *
+ * It hosts the main navigation graph set and applies the shared window
+ * insets and background expected by the app shell.
+ */
 @Composable
 fun WishlifyApp(
   navController: NavHostController,
