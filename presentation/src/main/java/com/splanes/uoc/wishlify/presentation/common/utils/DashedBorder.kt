@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/** Draws a rounded dashed border around the receiver modifier. */
 fun Modifier.dashedBorder(
   color: Color,
   strokeWidth: Dp = 1.dp,

@@ -6,6 +6,7 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.actions.E
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+/** Koin module that wires the shared presentation-layer infrastructure. */
 val CommonPresentationModule = module {
   singleOf(::ErrorUiMapper)
   singleOf(::DeeplinkMapper)
