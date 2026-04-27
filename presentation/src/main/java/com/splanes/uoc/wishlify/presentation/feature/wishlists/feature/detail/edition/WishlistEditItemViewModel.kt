@@ -31,6 +31,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates wishlist item edition, including link autofill and local form validation.
+ */
 class WishlistEditItemViewModel(
   private val wishlistId: String,
   private val itemId: String,
@@ -64,6 +67,9 @@ class WishlistEditItemViewModel(
   private val uiSideEffectChannel = Channel<WishlistEditItemUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Validates the form and updates the current wishlist item.
+   */
   fun onEdit(form: WishlistItemForm) {
     if (validateForm(form)) {
       val request = formUiMapper.editionRequestOf(
@@ -85,11 +91,14 @@ class WishlistEditItemViewModel(
                 error = error
               )
             }
-          }
+        }
       }
     }
   }
 
+  /**
+   * Attempts to auto-complete the item form by extracting metadata from the provided link.
+   */
   fun onAutocomplete(link: String) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -110,6 +119,9 @@ class WishlistEditItemViewModel(
     }
   }
 
+  /**
+   * Clears the validation error associated with a specific form input.
+   */
   fun onClearInputError(input: WishlistItemForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -139,10 +151,16 @@ class WishlistEditItemViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the current wishlist item and projects it into the editable form model.
+   */
   private suspend fun fetchWishlistItem() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchWishlistItemUseCase(wishlistId, itemId)
@@ -156,6 +174,9 @@ class WishlistEditItemViewModel(
     }
   }
 
+  /**
+   * Validates the wishlist item form.
+   */
   private fun validateForm(form: WishlistItemForm): Boolean = with(form) {
     val nameError = when {
       name.count() !in 3..50 -> NameWishlistItemFormError.Length
@@ -228,6 +249,9 @@ class WishlistEditItemViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the wishlist item edition UI contract.
+     */
     fun toUiState(
       formErrorMapper: WishlistItemFormErrorMapper,
       errorUiMapper: ErrorUiMapper,

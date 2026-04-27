@@ -2,14 +2,30 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.mod
 
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category as CategoryModel
 
+/**
+ * Filter values that can be applied to the wishlists list.
+ */
 sealed interface WishlistsFilter {
-  // Main filters
+  /**
+   * Filters by wishlist ownership.
+   */
   sealed interface Target : WishlistsFilter
+
+  /**
+   * Filters by wishlist category.
+   */
   sealed interface Category : WishlistsFilter
+
+  /**
+   * Filters by sharing state.
+   */
   sealed interface ShareStatus : WishlistsFilter
+
+  /**
+   * Filters by remaining available items.
+   */
   sealed interface Availability : WishlistsFilter
 
-  // Options
   data object TargetUnselected : Target
   data object Own : Target
   data object ThirdParty : Target

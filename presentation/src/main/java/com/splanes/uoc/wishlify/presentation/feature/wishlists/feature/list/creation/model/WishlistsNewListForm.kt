@@ -2,6 +2,9 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.cre
 
 import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 
+/**
+ * Form data collected during wishlist creation and edition.
+ */
 data class WishlistsNewListForm(
   val image: ImagePicker.Resource?,
   val name: String,
@@ -10,6 +13,9 @@ data class WishlistsNewListForm(
   val description: String?,
 ) {
 
+  /**
+   * Inputs whose validation errors can be cleared independently.
+   */
   enum class Input {
     Name,
     Target,

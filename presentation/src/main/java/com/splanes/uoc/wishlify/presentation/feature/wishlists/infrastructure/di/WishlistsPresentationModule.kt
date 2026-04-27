@@ -29,6 +29,9 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/**
+ * Koin module that wires the presentation-layer dependencies for the wishlists feature.
+ */
 internal val WishlistsPresentationModule = module {
   // Navigation
   single(named(HomeNavStartRoute)) { Wishlists } bind Any::class

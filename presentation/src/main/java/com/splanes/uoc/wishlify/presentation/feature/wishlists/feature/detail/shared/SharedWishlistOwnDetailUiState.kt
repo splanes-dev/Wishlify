@@ -5,6 +5,9 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 
+/**
+ * UI state for the detail of a wishlist currently shared by its owner.
+ */
 sealed interface SharedWishlistOwnDetailUiState {
   data class Error(
     val wishlistName: String,
@@ -29,6 +32,9 @@ sealed interface SharedWishlistOwnDetailUiState {
   ) : SharedWishlistOwnDetailUiState
 }
 
+/**
+ * One-off effects emitted by the own shared wishlist detail flow.
+ */
 sealed interface SharedWishlistOwnDetailUiSideEffect {
   data object WishlistUnshared : SharedWishlistOwnDetailUiSideEffect
 }

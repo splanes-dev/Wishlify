@@ -4,6 +4,9 @@ import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.WishlistItemForm
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.WishlistItemUiFormErrors
 
+/**
+ * UI state for the wishlist item edition flow.
+ */
 sealed interface WishlistEditItemUiState {
 
   data object Loading : WishlistEditItemUiState
@@ -18,6 +21,9 @@ sealed interface WishlistEditItemUiState {
   ) : WishlistEditItemUiState
 }
 
+/**
+ * One-off effects emitted by the wishlist item edition flow.
+ */
 sealed interface WishlistEditItemUiSideEffect {
   data object ItemEdited : WishlistEditItemUiSideEffect
 }

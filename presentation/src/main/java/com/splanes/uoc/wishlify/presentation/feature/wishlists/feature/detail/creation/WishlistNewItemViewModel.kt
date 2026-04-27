@@ -30,6 +30,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates wishlist item creation, including link autofill and local form validation.
+ */
 class WishlistNewItemViewModel(
   wishlistId: String,
   private val link: String?,
@@ -73,6 +76,9 @@ class WishlistNewItemViewModel(
   private val uiSideEffectChannel = Channel<WishlistNewItemUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Validates the form and creates a new wishlist item.
+   */
   fun onCreate(form: WishlistItemForm) {
     if (validateForm(form)) {
       val currentState = viewModelState.value
@@ -94,15 +100,21 @@ class WishlistNewItemViewModel(
                 error = error
               )
             }
-          }
+        }
       }
     }
   }
 
+  /**
+   * Attempts to auto-complete the item form by extracting metadata from the provided link.
+   */
   fun onAutocomplete(link: String) {
     viewModelScope.launch { tryAutofillByLink(link) }
   }
 
+  /**
+   * Clears the validation error associated with a specific form input.
+   */
   fun onClearInputError(input: WishlistItemForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -132,10 +144,16 @@ class WishlistNewItemViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Tries to enrich the form with metadata extracted from the provided product link.
+   */
   private suspend fun tryAutofillByLink(link: String) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     val data = fetchAllLinkDataUseCase(link).getOrNull()
@@ -154,6 +172,9 @@ class WishlistNewItemViewModel(
     }
   }
 
+  /**
+   * Validates the wishlist item form.
+   */
   private fun validateForm(form: WishlistItemForm): Boolean = with(form) {
     val nameError = when {
       name.count() !in 3..50 -> NameWishlistItemFormError.Length
@@ -225,6 +246,9 @@ class WishlistNewItemViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the wishlist item creation UI contract.
+     */
     fun toUiState(
       formErrorMapper: WishlistItemFormErrorMapper,
       errorUiMapper: ErrorUiMapper,

@@ -6,6 +6,9 @@ import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistNewItemByShare
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.model.WishlistsFilter
 
+/**
+ * UI state for the main wishlists list screen.
+ */
 sealed interface WishlistsListUiState {
 
   data object Loading : WishlistsListUiState
@@ -32,12 +35,18 @@ sealed interface WishlistsListUiState {
   ): WishlistsListUiState
 }
 
+/**
+ * Set of active filters applied to the wishlists list.
+ */
 data class WishlistsFiltersState(
   val target: WishlistsFilter.Target? = null,
   val category: WishlistsFilter.Category? = null,
   val shareStatus: WishlistsFilter.ShareStatus? = null,
   val availability: WishlistsFilter.Availability? = null
 ) {
+  /**
+   * Indicates whether any filter is currently applied.
+   */
   fun hasFilters() =
     target != null || category != null || shareStatus != null || availability != null
 }

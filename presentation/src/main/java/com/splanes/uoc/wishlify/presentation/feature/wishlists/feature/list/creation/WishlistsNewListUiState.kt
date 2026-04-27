@@ -3,6 +3,9 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.list.cre
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.model.CategoryUiModel
 
+/**
+ * UI state for the wishlist creation flow.
+ */
 data class WishlistsNewListUiState(
   val categories: List<CategoryUiModel>,
   val isOwnWishlist: Boolean,
@@ -16,6 +19,9 @@ data class WishlistsNewListUiState(
   val error: ErrorUiModel?,
 )
 
+/**
+ * One-off effects emitted by the wishlist creation flow.
+ */
 sealed interface WishlistsNewListUiSideEffect {
   data object WishlistCreated : WishlistsNewListUiSideEffect
 }

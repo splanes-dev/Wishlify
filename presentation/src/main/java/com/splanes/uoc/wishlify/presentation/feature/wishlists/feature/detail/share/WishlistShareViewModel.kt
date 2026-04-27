@@ -28,6 +28,9 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 
+/**
+ * Coordinates wishlist sharing, including group loading and deadline validation.
+ */
 class WishlistShareViewModel(
   private val wishlistId: String,
   private val fetchWishlistUseCase: FetchWishlistUseCase,
@@ -60,6 +63,9 @@ class WishlistShareViewModel(
   private val uiSideEffectChannel = Channel<WishlistShareUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Validates the deadline and shares the current wishlist with the selected configuration.
+   */
   fun onShare(
     group: Group?,
     editorsCanSeeUpdates: Boolean,
@@ -91,11 +97,14 @@ class WishlistShareViewModel(
                 isLoading = false
               )
             }
-          }
+        }
       }
     }
   }
 
+  /**
+   * Refreshes the groups list after returning from group creation.
+   */
   fun onGroupCreationResult(created: Boolean) {
     if (created) {
       viewModelState.update { state -> state.copy(isLoading = true) }
@@ -112,14 +121,23 @@ class WishlistShareViewModel(
     }
   }
 
+  /**
+   * Clears the current deadline validation error.
+   */
   fun onClearDateError() {
     viewModelState.update { state -> state.copy(inputDateError = null) }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the wishlist to share together with the available groups.
+   */
   private suspend fun fetchWishlistAndGroups(id: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     coroutineScope {
@@ -138,6 +156,9 @@ class WishlistShareViewModel(
     }
   }
 
+  /**
+   * Validates the share deadline field.
+   */
   private fun validateForm(deadline: Long): Boolean {
     val error = when {
       deadline == 0L -> DateWishlistShareFormError.Blank
@@ -152,6 +173,9 @@ class WishlistShareViewModel(
     return error == null
   }
 
+  /**
+   * Ensures the selected share deadline is between today and six months from now.
+   */
   private fun isValidDate(millis: Long): Boolean {
     val zone = ZoneId.systemDefault()
 
@@ -174,6 +198,9 @@ class WishlistShareViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
+    /**
+     * Maps internal state to the wishlist sharing UI contract.
+     */
     fun toUiState(
       formUiMapper: WishlistShareFormUiMapper,
       errorUiMapper: ErrorUiMapper

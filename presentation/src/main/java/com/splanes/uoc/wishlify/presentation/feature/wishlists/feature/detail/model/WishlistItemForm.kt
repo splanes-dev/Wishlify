@@ -3,6 +3,9 @@ package com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.m
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 
+/**
+ * Form data collected during wishlist item creation and edition.
+ */
 data class WishlistItemForm(
   val photo: ImagePicker.Resource? = null,
   val name: String = "",
@@ -15,6 +18,9 @@ data class WishlistItemForm(
   val tags: String = "",
 ) {
 
+  /**
+   * Inputs whose validation errors can be cleared independently.
+   */
   enum class Input {
     Name,
     Store,
@@ -27,6 +33,9 @@ data class WishlistItemForm(
   }
 }
 
+/**
+ * Typed validation errors produced while validating a wishlist item form.
+ */
 data class WishlistItemFormErrors(
   val name: NameWishlistItemFormError? = null,
   val description: DescriptionWishlistItemFormError? = null,

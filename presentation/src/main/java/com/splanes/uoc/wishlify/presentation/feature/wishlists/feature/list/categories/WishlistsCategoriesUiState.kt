@@ -4,6 +4,9 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Category
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.model.CategoryUiModel
 
+/**
+ * UI state for the wishlist categories administration flow.
+ */
 sealed interface WishlistsCategoriesUiState {
 
   data object Loading : WishlistsCategoriesUiState

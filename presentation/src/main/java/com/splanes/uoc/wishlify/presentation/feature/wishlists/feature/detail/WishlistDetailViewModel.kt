@@ -27,6 +27,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates the wishlist detail flow, including item actions, filters and wishlist deletion.
+ */
 class WishlistDetailViewModel(
   private val wishlistId: String,
   wishlistName: String,
@@ -59,6 +62,9 @@ class WishlistDetailViewModel(
   private val uiSideEffectChannel = Channel<WishlistDetailUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Reloads the wishlist after returning from the wishlist edition flow.
+   */
   fun onEditWishlistResult(updated: Boolean) {
     if (updated) {
       viewModelScope.launch {
@@ -67,12 +73,19 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Refreshes the items list after returning from item creation.
+   */
   fun onNewItemResult(created: Boolean) {
     if (created) {
       fetchItems()
     }
   }
 
+  /**
+   * Refreshes the selected item after returning from item edition, keeping the detail modal in
+   * sync when needed.
+   */
   fun onEditItemResult(updated: Boolean) {
     if (updated) {
       val item = viewModelState.value.itemSelected
@@ -102,6 +115,9 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Deletes the current wishlist.
+   */
   fun onDeleteWishlist(wishlist: Wishlist) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -121,6 +137,9 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Dispatches an item interaction to the matching detail action.
+   */
   fun onItemAction(item: WishlistItem, action: WishlistItemAction) {
     when (action) {
       WishlistItemAction.Open -> onOpenItem(item)
@@ -131,6 +150,9 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Closes the item detail modal.
+   */
   fun onCloseItemDetailModal() {
     viewModelState.update { state ->
       state.copy(
@@ -140,12 +162,18 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Updates the active product filters used to derive the visible items list.
+   */
   fun onChangeProductFilters(filters: List<FilterProduct>) {
     viewModelState.update { state ->
       state.copy(filters = filters)
     }
   }
 
+  /**
+   * Opens or closes the modal used to create a new item from a link.
+   */
   fun onChangeItemByLinkModalVisibility(visible: Boolean) {
     viewModelState.update { state ->
       state.copy(
@@ -155,6 +183,9 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Clears the validation error associated with a specific item form input.
+   */
   fun onClearInputError(input: WishlistItemForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -164,10 +195,16 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the wishlist header and its items in parallel.
+   */
   private suspend fun fetchWishlistAndItems(wishlistId: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
 
@@ -189,6 +226,9 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Reloads only the wishlist items list.
+   */
   private fun fetchItems() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     viewModelScope.launch {
@@ -203,6 +243,9 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Opens the item detail modal for the selected item.
+   */
   private fun onOpenItem(item: WishlistItem) {
     viewModelState.update { state ->
       state.copy(
@@ -212,6 +255,9 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Deletes the selected wishlist item.
+   */
   private fun onDeleteItem(item: WishlistItem) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -236,11 +282,17 @@ class WishlistDetailViewModel(
     }
   }
 
+  /**
+   * Requests navigation to the item edition flow.
+   */
   private fun onEditItem(item: WishlistItem) {
     viewModelState.update { state -> state.copy(isItemDetailModalOpen = false) }
     uiSideEffectChannel.trySend(WishlistDetailUiSideEffect.NavToEdit(item.id))
   }
 
+  /**
+   * Toggles the purchase state of the selected item and refreshes its latest persisted snapshot.
+   */
   private fun onTogglePurchase(item: WishlistItem) {
     viewModelState.update { state -> state.copy(isItemDetailButtonLoading = true) }
     viewModelScope.launch {
@@ -282,6 +334,9 @@ class WishlistDetailViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
+    /**
+     * Maps internal state to the wishlist detail UI contract.
+     */
     fun toUiState(
       errorUiMapper: ErrorUiMapper
     ): WishlistDetailUiState =
@@ -319,9 +374,15 @@ class WishlistDetailViewModel(
           )
       }
 
+    /**
+     * Indicates whether the current filtered list has visible items.
+     */
     private fun List<WishlistItem>.isEmpty(filters: List<FilterProduct>) =
       isEmpty() || applyFilters(filters).isEmpty()
 
+    /**
+     * Applies the product filters configured from the detail screen.
+     */
     private fun List<WishlistItem>.applyFilters(filters: List<FilterProduct>) =
       if (filters.isEmpty()) {
         this
@@ -351,6 +412,9 @@ class WishlistDetailViewModel(
           }
       }
 
+    /**
+     * Sorts items by purchase status, priority and creation time.
+     */
     private fun List<WishlistItem>.sorted() = sortedWith(
       compareBy<WishlistItem> { it.purchased != null }
         .thenByDescending { it.priority.weight }

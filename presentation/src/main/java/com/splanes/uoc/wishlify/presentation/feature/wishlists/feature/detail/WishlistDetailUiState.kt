@@ -5,6 +5,9 @@ import com.splanes.uoc.wishlify.domain.feature.wishlists.model.WishlistItem
 import com.splanes.uoc.wishlify.presentation.common.components.filters.FilterProduct
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 
+/**
+ * UI state for the wishlist detail screen.
+ */
 sealed interface WishlistDetailUiState {
 
   data class Error(
@@ -39,11 +42,16 @@ sealed interface WishlistDetailUiState {
     val error: ErrorUiModel?
   ) : WishlistDetailUiState {
 
+    /**
+     * Indicates whether the current wishlist can still be shared based on its remaining items.
+     */
     fun isShareable() = items.any { item -> item.purchased == null }
   }
 }
 
-
+/**
+ * One-off effects emitted from the wishlist detail screen.
+ */
 sealed interface WishlistDetailUiSideEffect {
   data object WishlistDeleted : WishlistDetailUiSideEffect
   data class NavToEdit(val itemId: String) : WishlistDetailUiSideEffect

@@ -4,6 +4,9 @@ import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.wishlists.model.Wishlist
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiModel
 
+/**
+ * UI state for the wishlist sharing flow.
+ */
 sealed interface WishlistShareUiState {
   data object Loading : WishlistShareUiState
 
@@ -19,6 +22,9 @@ sealed interface WishlistShareUiState {
   ) : WishlistShareUiState
 }
 
+/**
+ * One-off effects emitted by the wishlist sharing flow.
+ */
 sealed interface WishlistShareUiSideEffect {
   data class WishlistShared(val wishlistName: String) : WishlistShareUiSideEffect
 }

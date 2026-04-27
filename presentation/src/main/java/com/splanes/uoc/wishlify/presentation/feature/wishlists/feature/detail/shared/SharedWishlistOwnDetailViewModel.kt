@@ -22,6 +22,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates the detail of a wishlist currently shared by its owner, including filters and the
+ * back-to-private flow.
+ */
 class SharedWishlistOwnDetailViewModel(
   private val wishlistId: String,
   wishlistName: String,
@@ -53,6 +57,9 @@ class SharedWishlistOwnDetailViewModel(
   private val uiSideEffectChannel = Channel<SharedWishlistOwnDetailUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /**
+   * Opens the item detail modal for the selected item.
+   */
   fun onOpenItemDetail(item: WishlistItem) {
     viewModelState.update { state ->
       state.copy(
@@ -62,10 +69,16 @@ class SharedWishlistOwnDetailViewModel(
     }
   }
 
+  /**
+   * Updates the active product filters used to derive the visible items list.
+   */
   fun onChangeProductFilters(filters: List<FilterProduct>) {
     viewModelState.update { state -> state.copy(filters = filters) }
   }
 
+  /**
+   * Converts the shared wishlist back to a private wishlist.
+   */
   fun onBackToPrivate() {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -85,6 +98,9 @@ class SharedWishlistOwnDetailViewModel(
     }
   }
 
+  /**
+   * Closes the item detail modal.
+   */
   fun onCloseItemDetailModal() {
     viewModelState.update { state ->
       state.copy(
@@ -94,10 +110,16 @@ class SharedWishlistOwnDetailViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the shared wishlist header and its items in parallel.
+   */
   private suspend fun fetchWishlistAndItems(wishlistId: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
 
@@ -132,6 +154,9 @@ class SharedWishlistOwnDetailViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
+    /**
+     * Maps internal state to the own shared wishlist detail UI contract.
+     */
     fun toUiState(
       errorUiMapper: ErrorUiMapper
     ): SharedWishlistOwnDetailUiState =
@@ -162,12 +187,18 @@ class SharedWishlistOwnDetailViewModel(
           )
       }
 
+    /**
+     * Sorts items by purchase status, priority and creation time.
+     */
     private fun List<WishlistItem>.sorted() = sortedWith(
       compareBy<WishlistItem> { it.purchased != null }
         .thenByDescending { it.priority.weight }
         .thenBy { it.createdAt }
     )
 
+    /**
+     * Applies the product filters configured from the detail screen.
+     */
     private fun List<WishlistItem>.applyFilters(filters: List<FilterProduct>) =
       if (filters.isEmpty()) {
         this

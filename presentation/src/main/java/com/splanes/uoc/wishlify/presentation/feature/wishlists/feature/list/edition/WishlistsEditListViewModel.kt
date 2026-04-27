@@ -32,6 +32,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates wishlist edition, including category loading, category creation and local form
+ * validation.
+ */
 class WishlistsEditListViewModel(
   private val wishlistId: String,
   private val fetchCategoriesUseCase: FetchCategoriesUseCase,
@@ -71,8 +75,9 @@ class WishlistsEditListViewModel(
   private val uiSideEffectChannel = Channel<WishlistsEditListUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
-
-
+  /**
+   * Validates the form and updates the current wishlist.
+   */
   fun onUpdate(form: WishlistsNewListForm, isOwnWishlist: Boolean) {
     if (validateForm(form, isOwnWishlist)) {
       val currentState = viewModelState.value
@@ -99,11 +104,14 @@ class WishlistsEditListViewModel(
                 error = error
               )
             }
-          }
+        }
       }
     }
   }
 
+  /**
+   * Creates a new category from inside the wishlist edition flow.
+   */
   fun onCreateCategory(name: String, color: Category.CategoryColor) {
     if (validateNewCategory(name)) {
       viewModelScope.launch {
@@ -131,6 +139,9 @@ class WishlistsEditListViewModel(
     }
   }
 
+  /**
+   * Opens or closes the new category modal.
+   */
   fun onChangeNewCategoryModalVisibility(visible: Boolean) {
     viewModelState.update { state ->
       state.copy(
@@ -140,10 +151,16 @@ class WishlistsEditListViewModel(
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Clears the validation error associated with a specific form input.
+   */
   fun onClearInputError(input: WishlistsNewListForm.Input) {
     when (input) {
       WishlistsNewListForm.Input.Name ->
@@ -160,6 +177,9 @@ class WishlistsEditListViewModel(
     }
   }
 
+  /**
+   * Loads the wishlist and categories required by the edition form.
+   */
   private suspend fun fetchWishlistAndCategories(wishlistId: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     coroutineScope {
@@ -178,6 +198,9 @@ class WishlistsEditListViewModel(
     }
   }
 
+  /**
+   * Validates the wishlist edition form.
+   */
   private fun validateForm(form: WishlistsNewListForm, isOwnWishlist: Boolean): Boolean {
     val nameError = when {
       form.name.count() !in 3..20 -> NameWishlistFormError.Length
@@ -207,6 +230,9 @@ class WishlistsEditListViewModel(
     return nameError == null && targetError == null && descriptionError == null
   }
 
+  /**
+   * Validates the category form shown from inside the wishlist edition flow.
+   */
   private fun validateNewCategory(name: String): Boolean {
     val currentState = viewModelState.value
     val error = when {
@@ -237,6 +263,9 @@ class WishlistsEditListViewModel(
     val isNewCategoryModalOpen: Boolean = false,
     val error: Throwable? = null
   ) {
+    /**
+     * Maps internal state to the wishlist edition UI contract.
+     */
     fun toUiState(
       categoryUiMapper: CategoryUiMapper,
       wishlistFormErrorMapper: WishlistFormErrorMapper,

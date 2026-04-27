@@ -24,6 +24,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates the main wishlists list, including filters, deeplink actions and category creation
+ * from the list flow.
+ */
 class WishlistsListViewModel(
   private val fetchWishlistsUseCase: FetchWishlistsUseCase,
   private val deleteWishlistUseCase: DeleteWishlistUseCase,
@@ -47,6 +51,9 @@ class WishlistsListViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
+  /**
+   * Creates a category from the list flow and appends it to the currently loaded categories.
+   */
   fun onCreateCategory(name: String, color: Category.CategoryColor) {
     if (validateCategoryForm(name)) {
       viewModelScope.launch {
@@ -75,6 +82,9 @@ class WishlistsListViewModel(
     }
   }
 
+  /**
+   * Joins the current user as editor from an invitation token and refreshes the wishlists list.
+   */
   fun onAddToEditorsDeeplinkOpened(token: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     viewModelScope.launch {
@@ -84,20 +94,32 @@ class WishlistsListViewModel(
     }
   }
 
+  /**
+   * Stores a shared URL so the user can choose which wishlist should receive the new item.
+   */
   fun onNewItemByUrl(url: String) {
     itemByShare = WishlistNewItemByShare.Url(url)
     viewModelScope.launch { fetchWishlistsAndCategories() }
   }
 
+  /**
+   * Stores a shared image URI so the user can choose which wishlist should receive the new item.
+   */
   fun onNewItemByUri(uri: String) {
     itemByShare = WishlistNewItemByShare.Uri(uri)
     viewModelScope.launch { fetchWishlistsAndCategories() }
   }
 
+  /**
+   * Updates the currently active filters for the wishlists list.
+   */
   fun onUpdateFilters(filtersState: WishlistsFiltersState) {
     viewModelState.update { state -> state.copy(filtersState = filtersState) }
   }
 
+  /**
+   * Refreshes the list after returning from wishlist creation.
+   */
   fun onNewWishlistResult(created: Boolean) {
     if (created) {
       viewModelScope.launch {
@@ -106,6 +128,9 @@ class WishlistsListViewModel(
     }
   }
 
+  /**
+   * Refreshes the list after returning from a wishlist update flow.
+   */
   fun onUpdateWishlistResult(updated: Boolean) {
     if (updated) {
       viewModelScope.launch {
@@ -114,10 +139,16 @@ class WishlistsListViewModel(
     }
   }
 
+  /**
+   * Stores the feedback message shown after sharing a wishlist.
+   */
   fun onWishlistShared(name: String) {
     viewModelState.update { state -> state.copy(sharedWishlistFeedback = name) }
   }
 
+  /**
+   * Deletes the selected wishlist from the list flow.
+   */
   fun onDeleteWishlist(wishlist: Wishlist) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -138,6 +169,10 @@ class WishlistsListViewModel(
     }
   }
 
+  /**
+   * Converts a shared wishlist back to a private wishlist and removes the shared projection from
+   * the current list.
+   */
   fun onSharedBackToPrivate(wishlist: Wishlist) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -161,6 +196,9 @@ class WishlistsListViewModel(
     }
   }
 
+  /**
+   * Closes the wishlist selection modal used when creating a new item from a shared payload.
+   */
   fun onCloseWishlistSelectionModal() {
     itemByShare = null
     viewModelState.update { state ->
@@ -171,6 +209,9 @@ class WishlistsListViewModel(
     }
   }
 
+  /**
+   * Clears the validation error associated with the new category name field.
+   */
   fun onClearNewCategoryNameError() {
     viewModelState.update { state -> state.copy(newCategoryNameError = null) }
   }
@@ -179,10 +220,16 @@ class WishlistsListViewModel(
     viewModelState.update { state -> state.copy(sharedWishlistFeedback = null) }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Validates the category form shown from the list flow.
+   */
   private fun validateCategoryForm(name: String): Boolean {
     val currentState = viewModelState.value
     val error = when {
@@ -200,6 +247,9 @@ class WishlistsListViewModel(
     return error == null
   }
 
+  /**
+   * Loads the current wishlists.
+   */
   private suspend fun fetchWishlists() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     fetchWishlistsUseCase()
@@ -221,6 +271,10 @@ class WishlistsListViewModel(
       }
   }
 
+  /**
+   * Loads wishlists and categories together, also resolving whether a shared payload should open
+   * the wishlist selection modal.
+   */
   private suspend fun fetchWishlistsAndCategories() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val wishlistsResult = fetchWishlistsUseCase()
@@ -250,6 +304,9 @@ class WishlistsListViewModel(
     val error: Throwable? = null,
   ) {
 
+    /**
+     * Maps internal state to the list UI contract.
+     */
     fun toUiState(
       errorUiMapper: ErrorUiMapper,
       categoryFormErrorMapper: CategoryFormErrorMapper,
@@ -284,6 +341,9 @@ class WishlistsListViewModel(
   }
 }
 
+/**
+ * Applies the currently selected filters to the wishlists list.
+ */
 private fun List<Wishlist>.withFilters(filters: WishlistsFiltersState) =
   this
     .filter { wishlist ->
@@ -315,6 +375,9 @@ private fun List<Wishlist>.withFilters(filters: WishlistsFiltersState) =
       }
     }
 
+/**
+ * Sorts wishlists by completion status and then by creation date.
+ */
 private fun List<Wishlist>.sort() = sortedWith(
   compareBy<Wishlist> { it.isFinished() }
     .thenByDescending { it.createdAt }

@@ -22,6 +22,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * Coordinates category administration for wishlists, including creation, edition and deletion.
+ */
 class WishlistsCategoriesViewModel(
   private val fetchCategoriesUseCase: FetchCategoriesUseCase,
   private val createCategoryUseCase: CreateCategoryUseCase,
@@ -53,6 +56,9 @@ class WishlistsCategoriesViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
+  /**
+   * Dispatches the selected category action to the matching flow.
+   */
   fun onCategoryAction(action: CategoryAction) {
     when (action) {
       is CategoryAction.Delete -> onDeleteCategory(action.category.id)
@@ -61,6 +67,9 @@ class WishlistsCategoriesViewModel(
     }
   }
 
+  /**
+   * Creates a new category or updates the selected one, depending on the current modal mode.
+   */
   fun onCreateOrUpdateCategory(name: String, color: Category.CategoryColor) {
     if (validateForm(name)) {
       viewModelScope.launch {
@@ -100,6 +109,9 @@ class WishlistsCategoriesViewModel(
     }
   }
 
+  /**
+   * Confirms deletion of the currently selected category.
+   */
   fun onDeleteCategoryConfirmed() {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -133,6 +145,9 @@ class WishlistsCategoriesViewModel(
     }
   }
 
+  /**
+   * Closes the create or edit category modal.
+   */
   fun onCloseCategoryModal() {
     viewModelState.update { state ->
       state.copy(
@@ -142,6 +157,9 @@ class WishlistsCategoriesViewModel(
     }
   }
 
+  /**
+   * Closes the delete confirmation dialog.
+   */
   fun onCloseDeleteCategoryDialog() {
     viewModelState.update { state ->
       state.copy(
@@ -151,16 +169,25 @@ class WishlistsCategoriesViewModel(
     }
   }
 
+  /**
+   * Clears the current category name validation error.
+   */
   fun onClearInputError() {
     viewModelState.update { state ->
       state.copy(categoryNameInputError = null)
     }
   }
 
+  /**
+   * Clears the current UI error.
+   */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /**
+   * Loads the available wishlist categories.
+   */
   private suspend fun fetchCategories() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     fetchCategoriesUseCase()
@@ -182,12 +209,18 @@ class WishlistsCategoriesViewModel(
       }
   }
 
+  /**
+   * Opens the category modal in creation mode.
+   */
   private fun onStartCreation() {
     viewModelState.update { state ->
       state.copy(isCategoryModalVisible = true)
     }
   }
 
+  /**
+   * Opens the category modal in edition mode for the selected category.
+   */
   private fun onStartEdit(id: String) {
     viewModelState.update { state ->
       state.copy(
@@ -197,6 +230,9 @@ class WishlistsCategoriesViewModel(
     }
   }
 
+  /**
+   * Opens the delete confirmation dialog for the selected category.
+   */
   private fun onDeleteCategory(id: String) {
     viewModelState.update { state ->
       state.copy(
@@ -206,6 +242,9 @@ class WishlistsCategoriesViewModel(
     }
   }
 
+  /**
+   * Validates the category form.
+   */
   private fun validateForm(name: String): Boolean {
     val currentState = viewModelState.value
     val error = when {
@@ -233,6 +272,9 @@ class WishlistsCategoriesViewModel(
     val isLoading: Boolean = false,
     val error: Throwable? = null,
   ) {
+    /**
+     * Maps internal state to the categories UI contract.
+     */
     fun toUiState(
       categoryUiMapper: CategoryUiMapper,
       categoryFormErrorMapper: CategoryFormErrorMapper,
