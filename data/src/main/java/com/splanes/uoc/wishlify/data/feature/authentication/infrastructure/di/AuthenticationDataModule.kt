@@ -10,6 +10,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the authentication data-layer components. */
 internal val AuthenticationDataModule = module {
   // DataSource
   singleOf(::AuthRemoteDataSource)

@@ -14,14 +14,22 @@ import com.splanes.uoc.wishlify.domain.feature.authentication.error.SignUpError
 import timber.log.Timber
 import java.security.SecureRandom
 
+/**
+ * Data source that retrieves Google ID token credentials through Android Credential Manager.
+ */
 class GoogleAuthDataSource(private val context: Context) {
 
   private val credentialsManager by lazy { CredentialManager.create(context) }
 
+  /** Retrieves credentials for a Google sign-up flow. */
   suspend fun getSignUpCredentials(): GoogleCredentials {
     return getCredentials(filterByAuthorizedAccounts = false)
   }
 
+  /**
+   * Retrieves credentials for a Google sign-in flow, preferring already
+   * authorized accounts and falling back to the generic chooser if needed.
+   */
   suspend fun getSignInCredentials(): GoogleCredentials {
     return try {
       getCredentials(filterByAuthorizedAccounts = true)
@@ -31,6 +39,7 @@ class GoogleAuthDataSource(private val context: Context) {
     }
   }
 
+  /** Performs the actual Credential Manager request and maps the result. */
   private suspend fun getCredentials(filterByAuthorizedAccounts: Boolean): GoogleCredentials {
     val googleIdOption = GetGoogleIdOption.Builder()
       .setServerClientId(context.getString(R.string.google_web_client_id))
@@ -66,6 +75,7 @@ class GoogleAuthDataSource(private val context: Context) {
     }
   }
 
+  /** Generates a URL-safe random nonce for the Google credential request. */
   private fun generateSecureRandomNonce(byteLength: Int = 32): String {
     val randomBytes = ByteArray(byteLength)
     SecureRandom().nextBytes(randomBytes)

@@ -14,13 +14,24 @@ import com.splanes.uoc.wishlify.domain.feature.authentication.error.SignUpError
 import kotlinx.coroutines.tasks.await
 import java.net.UnknownHostException
 
+/**
+ * Firebase Auth-backed data source for remote authentication operations.
+ *
+ * It translates Firebase-specific failures into domain-facing authentication
+ * and generic errors.
+ */
 class AuthRemoteDataSource(
   private val firebaseAuth: FirebaseAuth
 ) {
 
+  /** Returns whether there is a currently authenticated Firebase user. */
   fun isLogged(): Boolean =
     firebaseAuth.currentUser != null
 
+  /**
+   * Returns the current authenticated email together with whether it belongs
+   * to a social account, or `null` when no email-backed user is available.
+   */
   fun currentUserEmail(): Email? {
     val user = firebaseAuth.currentUser
     val email = user?.email
@@ -36,6 +47,7 @@ class AuthRemoteDataSource(
     }
   }
 
+  /** Creates a new Firebase email/password account and returns its uid. */
   suspend fun signUp(email: String, password: String): String {
     try {
       val uid = firebaseAuth
@@ -55,6 +67,7 @@ class AuthRemoteDataSource(
     }
   }
 
+  /** Signs in with a Google ID token and returns the authenticated uid. */
   suspend fun signIn(token: String): String {
     try {
       val credential = GoogleAuthProvider.getCredential(token, null)
@@ -73,6 +86,7 @@ class AuthRemoteDataSource(
     }
   }
 
+  /** Signs in an existing Firebase user with email and password. */
   suspend fun signIn(email: String, password: String) {
     try {
       val user = firebaseAuth
@@ -92,6 +106,7 @@ class AuthRemoteDataSource(
     }
   }
 
+  /** Reauthenticates the current Firebase user with email/password credentials. */
   suspend fun reauthenticate(email: String, password: String) {
     try {
       val user = firebaseAuth.currentUser ?: error("Cannot re-auth, user=null")
@@ -107,6 +122,7 @@ class AuthRemoteDataSource(
     }
   }
 
+  /** Starts Firebase's email update flow for the current authenticated user. */
   suspend fun updateEmail(email: String) {
     try {
       val user = firebaseAuth.currentUser ?: error("Cannot update email, user=null")
@@ -122,6 +138,7 @@ class AuthRemoteDataSource(
     }
   }
 
+  /** Updates the password of the current authenticated Firebase user. */
   suspend fun updatePassword(password: String) {
     try {
       val user = firebaseAuth.currentUser ?: error("Cannot update email, user=null")
@@ -137,6 +154,7 @@ class AuthRemoteDataSource(
     }
   }
 
+  /** Signs out the current Firebase user. */
   fun signOut() {
     firebaseAuth.signOut()
   }
