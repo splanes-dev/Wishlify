@@ -13,6 +13,10 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
+/**
+ * Firebase Messaging service that bridges incoming FCM events into the app's
+ * domain notification and token update flows.
+ */
 class WishlifyMessagingService : FirebaseMessagingService(), KoinComponent {
 
   private val scope = CoroutineScope(Dispatchers.Default)
@@ -22,6 +26,10 @@ class WishlifyMessagingService : FirebaseMessagingService(), KoinComponent {
   private val handler: PushNotificationHandler by inject()
   private val mapper: PushNotificationDataMapper by inject()
 
+  /**
+   * Persists the refreshed FCM token locally and synchronizes it remotely when
+   * an authenticated user is available.
+   */
   override fun onNewToken(token: String) {
     super.onNewToken(token)
     Timber.tag("PushNotifications").d("onNewToken: $token")
@@ -34,6 +42,7 @@ class WishlifyMessagingService : FirebaseMessagingService(), KoinComponent {
     }
   }
 
+  /** Maps the incoming FCM message and forwards it to the domain notification handler. */
   override fun onMessageReceived(message: RemoteMessage) {
     super.onMessageReceived(message)
     Timber.tag("PushNotifications").d("onMessageReceived: ${message.data}")

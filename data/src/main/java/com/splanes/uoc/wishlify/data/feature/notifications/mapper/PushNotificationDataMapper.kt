@@ -3,8 +3,17 @@ package com.splanes.uoc.wishlify.data.feature.notifications.mapper
 import com.google.firebase.messaging.RemoteMessage
 import com.splanes.uoc.wishlify.domain.feature.notifications.model.PushNotification
 
+/**
+ * Maps Firebase Cloud Messaging payloads into domain push notification models.
+ */
 class PushNotificationDataMapper {
 
+  /**
+   * Maps a [RemoteMessage] into the corresponding domain push notification.
+   *
+   * The mapper prefers explicit data payload fields and falls back to the
+   * notification payload for title and body when needed.
+   */
   fun map(message: RemoteMessage): PushNotification {
     val data = message.data
 
@@ -49,6 +58,7 @@ class PushNotificationDataMapper {
   }
 }
 
+/** Supported push notification types encoded in FCM data payloads. */
 private enum class PushType(val value: String) {
   Chat("chat"),
   Reminder("reminder"),
@@ -56,6 +66,7 @@ private enum class PushType(val value: String) {
   ;
 
   companion object {
+    /** Resolves the push type from its serialized payload value. */
     fun from(value: String) = entries.first { type -> type.value.equals(value, ignoreCase = true) }
   }
 }
