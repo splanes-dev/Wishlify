@@ -17,6 +17,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel that drives the groups list flow.
+ *
+ * It loads the current groups, refreshes them after nested flows and handles
+ * the leave-group action from the list itself.
+ */
 class GroupsListViewModel(
   private val fetchGroupsUseCase: FetchGroupsUseCase,
   private val updateGroupUseCase: UpdateGroupUseCase,
@@ -34,6 +40,7 @@ class GroupsListViewModel(
       started = SharingStarted.WhileSubscribed(5_000)
     )
 
+  /** Reloads the groups list after returning from the creation flow. */
   fun onCreateGroupResult(created: Boolean) {
     if (created) {
       viewModelScope.launch {
@@ -42,12 +49,14 @@ class GroupsListViewModel(
     }
   }
 
+  /** Reloads the groups list after a nested update flow finishes successfully. */
   fun onGroupUpdated() {
     viewModelScope.launch {
       fetchGroups()
     }
   }
 
+  /** Removes the current user from the provided group and refreshes the list. */
   fun onLeaveGroup(group: Group) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -75,10 +84,12 @@ class GroupsListViewModel(
     }
   }
 
+  /** Clears the currently displayed error dialog. */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /** Fetches the current list of groups and updates the fullscreen state. */
   private suspend fun fetchGroups() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchGroupsUseCase()

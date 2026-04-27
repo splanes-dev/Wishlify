@@ -35,13 +35,17 @@ import com.splanes.uoc.wishlify.presentation.infrastructure.navigation.popBackSt
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/** Home navigation graph that hosts the groups feature and its subflows. */
 class GroupsNavGraph : FeatureHomeNavGraph {
 
+  /** Position of the groups tab inside the home navigation bar. */
   override val position: Int = 3
 
+  /** Keeps the bottom bar visible only on the groups list root destination. */
   override fun isNavigationBarVisible(destination: NavDestination?): Boolean =
     destination?.hasRoute(Groups.List::class) == true
 
+  /** Renders the navigation bar item that enters the groups root graph. */
   @Composable
   override fun RowScope.NavigationBarItem(
     current: NavDestination?,
@@ -68,6 +72,7 @@ class GroupsNavGraph : FeatureHomeNavGraph {
     )
   }
 
+  /** Registers the groups destinations and the result-based navigation wiring between them. */
   override fun NavGraphBuilder.buildNavGraph(
     navController: NavHostController,
     onLogout: (NavOptionsBuilder.() -> Unit) -> Unit,

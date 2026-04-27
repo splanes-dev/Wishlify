@@ -15,6 +15,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/** Koin module that wires the groups presentation-layer dependencies. */
 internal val GroupsPresentationModule = module {
   // Navigation
   singleOf(::GroupsNavGraph) bind FeatureHomeNavGraph::class

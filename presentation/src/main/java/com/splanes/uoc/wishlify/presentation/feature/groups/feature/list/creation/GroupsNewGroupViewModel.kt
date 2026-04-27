@@ -24,6 +24,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel that drives the group creation flow.
+ *
+ * It owns the reusable group form state, resolves users returned by the search
+ * flow and submits the resulting group creation request.
+ */
 class GroupsNewGroupViewModel(
   private val createGroupUseCase: CreateGroupUseCase,
   private val fetchUserByIdUseCase: FetchUserByIdUseCase,
@@ -50,6 +56,7 @@ class GroupsNewGroupViewModel(
   private val uiSideEffectChannel = Channel<GroupsNewGroupUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /** Validates and submits the new-group form. */
   fun onCreate(form: GroupsNewGroupForm) {
     if (validateForm(form)) {
       viewModelState.update { state -> state.copy(isLoading = true) }
@@ -72,10 +79,12 @@ class GroupsNewGroupViewModel(
     }
   }
 
+  /** Persists the current in-progress form locally in the ViewModel state. */
   fun onSaveCurrentForm(form: GroupsNewGroupForm) {
     viewModelState.update { state -> state.copy(form = form) }
   }
 
+  /** Resolves users returned by the search flow and adds them to the form. */
   fun onUserSearchResult(users: List<String>) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -96,6 +105,7 @@ class GroupsNewGroupViewModel(
     }
   }
 
+  /** Clears the validation error associated with the edited input field. */
   fun onClearInputError(input: GroupsNewGroupForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -108,10 +118,12 @@ class GroupsNewGroupViewModel(
     }
   }
 
+  /** Clears the currently displayed error dialog. */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /** Applies presentation-layer validation rules before group creation. */
   fun validateForm(form: GroupsNewGroupForm): Boolean {
     val nameError = when {
       form.name.isBlank() -> NameNewGroupFormError.Blank

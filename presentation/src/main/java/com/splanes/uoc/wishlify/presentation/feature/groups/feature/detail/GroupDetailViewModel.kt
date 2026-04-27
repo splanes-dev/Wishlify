@@ -23,6 +23,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel that drives the group detail flow.
+ *
+ * It resolves the selected group, handles leave-group actions and lazily loads
+ * the shared wishlists and Secret Santa events linked to the same group.
+ */
 class GroupDetailViewModel(
   private val groupId: String,
   groupName: String,
@@ -46,12 +52,14 @@ class GroupDetailViewModel(
   private val uiSideEffectChannel = Channel<GroupDetailUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /** Reloads the group after returning from a nested edit flow. */
   fun onGroupUpdated() {
     viewModelScope.launch {
       fetchGroup()
     }
   }
 
+  /** Removes the current user from the provided group. */
   fun onLeaveGroup(group: Group) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -79,6 +87,7 @@ class GroupDetailViewModel(
     }
   }
 
+  /** Opens the shared-wishlists modal, loading its data on first use. */
   fun onOpenWishlistsByGroupModal() {
     val currentState = viewModelState.value
     if (currentState.wishlistsByGroup.isEmpty()) {
@@ -108,6 +117,7 @@ class GroupDetailViewModel(
     }
   }
 
+  /** Opens the Secret Santa events modal, loading its data on first use. */
   fun onOpenSecretSantaEventsByGroupModal() {
     val currentState = viewModelState.value
     if (currentState.secretSantaEventsByGroup.isEmpty()) {
@@ -137,18 +147,22 @@ class GroupDetailViewModel(
     }
   }
 
+  /** Closes the shared-wishlists modal. */
   fun onCloseWishlistsByGroupModal() {
     viewModelState.update { state -> state.copy(isWishlistsByGroupsModalOpen = false) }
   }
 
+  /** Closes the Secret Santa events modal. */
   fun onCloseSecretSantaEventsByGroupModal() {
     viewModelState.update { state -> state.copy(isSecretSantaEventsByGroupsModalOpen = false) }
   }
 
+  /** Clears the currently displayed error dialog. */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /** Fetches the current group and updates the fullscreen state accordingly. */
   private suspend fun fetchGroup() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchGroupUseCase(groupId)

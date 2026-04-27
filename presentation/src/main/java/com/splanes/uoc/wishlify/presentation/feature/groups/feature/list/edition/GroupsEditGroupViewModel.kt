@@ -27,6 +27,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel that drives the group edition flow.
+ *
+ * It loads the selected group into the reusable group form, resolves users
+ * returned by the search flow and submits the resulting update request.
+ */
 class GroupsEditGroupViewModel(
   private val groupId: String,
   groupName: String,
@@ -57,6 +63,7 @@ class GroupsEditGroupViewModel(
   private val uiSideEffectChannel = Channel<GroupsEditGroupUiSideEffect>()
   val uiSideEffect = uiSideEffectChannel.receiveAsFlow()
 
+  /** Validates and submits the edited group form. */
   fun onUpdateGroup(form: GroupsNewGroupForm) {
     if (validateForm(form)) {
       viewModelState.update { state -> state.copy(isLoading = true) }
@@ -79,10 +86,12 @@ class GroupsEditGroupViewModel(
     }
   }
 
+  /** Persists the current in-progress form locally in the ViewModel state. */
   fun onSaveCurrentForm(form: GroupsNewGroupForm) {
     viewModelState.update { state -> state.copy(form = form) }
   }
 
+  /** Resolves users returned by the search flow and adds them to the form. */
   fun onUserSearchResult(users: List<String>) {
     viewModelState.update { state -> state.copy(isLoading = true) }
     viewModelScope.launch {
@@ -103,6 +112,7 @@ class GroupsEditGroupViewModel(
     }
   }
 
+  /** Clears the validation error associated with the edited input field. */
   fun onClearInputError(input: GroupsNewGroupForm.Input) {
     viewModelState.update { state ->
       when (input) {
@@ -115,10 +125,12 @@ class GroupsEditGroupViewModel(
     }
   }
 
+  /** Clears the currently displayed error dialog. */
   fun onDismissError() {
     viewModelState.update { state -> state.copy(error = null) }
   }
 
+  /** Applies presentation-layer validation rules before group update. */
   fun validateForm(form: GroupsNewGroupForm): Boolean {
     val nameError = when {
       form.name.isBlank() -> NameNewGroupFormError.Blank
@@ -143,6 +155,7 @@ class GroupsEditGroupViewModel(
     return nameError == null && membersError == null
   }
 
+  /** Fetches the current group and pre-fills the reusable form state. */
   private suspend fun fetchGroup() {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     val result = fetchGroupUseCase(groupId)
