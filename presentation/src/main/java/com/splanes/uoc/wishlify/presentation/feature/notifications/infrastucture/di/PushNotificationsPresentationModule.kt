@@ -7,6 +7,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+/**
+ * Koin module that wires the presentation-layer dependencies used to display push notifications.
+ */
 internal val PushNotificationsPresentationModule = module {
   singleOf(::PushNotificationHandlerImpl) bind PushNotificationHandler::class
   singleOf(::PushNotificationPendingIntentFactory)

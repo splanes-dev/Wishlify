@@ -24,6 +24,10 @@ import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 
+/**
+ * Presentation-layer implementation of [PushNotificationHandler] responsible for rendering
+ * domain push notifications as Android system notifications.
+ */
 class PushNotificationHandlerImpl(
   private val context: Context,
   private val pendingIntentFactory: PushNotificationPendingIntentFactory,
@@ -31,12 +35,18 @@ class PushNotificationHandlerImpl(
 
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+  /**
+   * Displays the received push notification when the app has notification permission.
+   */
   override fun handle(push: PushNotification) {
     if (context.isPermissionGranted()) {
       show(push)
     }
   }
 
+  /**
+   * Builds and posts the system notification, downloading the remote image when available.
+   */
   @SuppressLint("MissingPermission")
   private fun show(push: PushNotification) {
     scope.launch {
@@ -76,21 +86,33 @@ class PushNotificationHandlerImpl(
     }
   }
 
+  /**
+   * Maps each push type to the notification channel used to publish it.
+   */
   private fun channelIdOf(push: PushNotification) =
     when (push) {
       is PushNotification.Chat -> PushNotificationChannel.CHAT
       else -> PushNotificationChannel.GENERAL
     }
 
+  /**
+   * Maps each push type to the system priority that best matches its urgency.
+   */
   private fun priorityOf(push: PushNotification) =
     when (push) {
       is PushNotification.Chat -> NotificationCompat.PRIORITY_HIGH
       else -> NotificationCompat.PRIORITY_DEFAULT
     }
 
+  /**
+   * Generates a stable notification id from the push type and deeplink destination.
+   */
   private fun notificationIdOf(push: PushNotification) =
     "${push::class.simpleName}:${push.deeplink}".hashCode()
 
+  /**
+   * Checks whether the app can publish notifications on the current Android version.
+   */
   private fun Context.isPermissionGranted() = when {
     Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
       ActivityCompat.checkSelfPermission(
@@ -100,6 +122,10 @@ class PushNotificationHandlerImpl(
     else -> true
   }
 
+  /**
+   * Downloads the image referenced by this URL and decodes it as a [Bitmap], or returns `null`
+   * when the download fails.
+   */
   suspend fun String.toBitmapOrNull(): Bitmap? = withContext(Dispatchers.IO) {
     runCatching {
       val connection = URL(this@toBitmapOrNull).openConnection() as HttpURLConnection
