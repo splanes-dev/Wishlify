@@ -37,13 +37,14 @@ class SharedWishlistThirdPartyDetailViewModel(
   target: String,
   private val sharedWishlistId: String,
   private val fetchSharedWishlistUseCase: FetchSharedWishlistUseCase,
-  private val fetchSharedWishlistItemsUseCase: FetchSharedWishlistItemsUseCase,
-  private val fetchSharedWishlistItemUseCase: FetchSharedWishlistItemUseCase,
+  private val subscribeToSharedWishlistItemsUseCase: SubscribeSharedWishlistItemsUseCase,
   private val updateSharedWishlistItemUseCase: UpdateSharedWishlistItemUseCase,
   private val itemUiMapper: SharedWishlistItemUiMapper,
   private val itemStateErrorMapper: SharedWishlistItemStateErrorMapper,
   private val errorUiMapper: ErrorUiMapper
 ) : ViewModel() {
+
+  private var observerJob: Job? = null
 
   private val viewModelState = MutableStateFlow(ViewModelState(sharedWishlistName, target))
 
@@ -135,18 +136,10 @@ class SharedWishlistThirdPartyDetailViewModel(
 
       viewModelState.update { state -> state.copy(isLoading = true) }
       viewModelScope.launch {
-        val result = updateSharedWishlistItemUseCase(request)
-        result
-          .mapCatching {
-            fetchSharedWishlistItemUseCase(
-              sharedWishlistId = wishlist.id,
-              sharedWishlistItemId = item.id
-            ).getOrThrow()
-          }
-          .onSuccess { itemUpdated ->
+        updateSharedWishlistItemUseCase(request)
+          .onSuccess {
             viewModelState.update { state ->
               state.copy(
-                items = (state.items - item) + itemUpdated,
                 itemSelectedToUpdateState = null,
                 isWishlistItemStateModalOpen = false,
                 isLoading = false,
@@ -234,33 +227,13 @@ class SharedWishlistThirdPartyDetailViewModel(
       }
       viewModelScope.launch {
         val result = updateSharedWishlistItemUseCase(request)
-        result
-          .mapCatching {
-            fetchSharedWishlistItemUseCase(
-              sharedWishlistId = wishlist.id,
-              sharedWishlistItemId = item.id
-            ).getOrThrow()
-          }
-          .onSuccess { itemUpdated ->
-            viewModelState.update { state ->
-              state.copy(
-                items = (state.items - item) + itemUpdated,
-                itemSelected = itemUpdated,
-                itemStateActions = buildSelectedItemStateActions(wishlist, itemUpdated.state),
-                isItemDetailButtonLoading = false,
-                isLoading = false,
-              )
-            }
-          }
-          .onFailure { error ->
-            viewModelState.update { state ->
-              state.copy(
-                isItemDetailButtonLoading = false,
-                isLoading = false,
-                error = error
-              )
-            }
-          }
+        viewModelState.update { state ->
+          state.copy(
+            isItemDetailButtonLoading = false,
+            isLoading = false,
+            error = result.exceptionOrNull()
+          )
+        }
       }
     }
   }
@@ -271,17 +244,55 @@ class SharedWishlistThirdPartyDetailViewModel(
   private suspend fun fetchSharedWishlistAndItems(id: String) {
     viewModelState.update { state -> state.copy(isLoadingFullscreen = true) }
     coroutineScope {
-      val wishlistDeferred = async { fetchSharedWishlistUseCase(id) }
-      val itemsDeferred = async { fetchSharedWishlistItemsUseCase(id) }
-      val wishlist = wishlistDeferred.await()
-      val items = itemsDeferred.await()
+      val wishlist = fetchSharedWishlistUseCase(id)
+
       viewModelState.update { state ->
-        state.copy(
-          sharedWishlist = wishlist.getOrNull() as? SharedWishlist.ThirdParty,
-          items = items.getOrDefault(emptyList()),
-          isLoadingFullscreen = false
-        )
+        state.copy(sharedWishlist = wishlist.getOrNull() as? SharedWishlist.ThirdParty)
       }
+
+      subscribeToSharedWishlistItemsUseCase(id)
+        .onSuccess { flow ->
+          observerJob?.cancel()
+          observerJob = viewModelScope.launch {
+            flow
+              .catch { error ->
+                viewModelState.update { state ->
+                  state.copy(
+                    sharedWishlist = wishlist.getOrNull() as? SharedWishlist.ThirdParty,
+                    isLoadingFullscreen = false,
+                    error = error
+                  )
+                }
+              }
+              .collect { items ->
+                viewModelState.update { state ->
+                  val sharedWishlist = state.sharedWishlist
+                  val itemSelected = state.itemSelected
+                  val itemSelectedUpdated = itemSelected?.let { old -> items.find { it.id == old.id } }
+                  state.copy(
+                    sharedWishlist = sharedWishlist,
+                    items = items,
+                    itemSelected = itemSelectedUpdated,
+                    itemStateActions = if(sharedWishlist != null && itemSelectedUpdated != null) {
+                      buildSelectedItemStateActions(sharedWishlist, itemSelectedUpdated.state)
+                    } else {
+                      emptyList()
+                    },
+                    isLoadingFullscreen = false
+                  )
+                }
+              }
+          }
+        }
+        .onFailure { error ->
+          viewModelState.update { state ->
+            state.copy(
+              sharedWishlist = wishlist.getOrNull() as? SharedWishlist.ThirdParty,
+              isLoadingFullscreen = false,
+              error = error
+            )
+          }
+        }
     }
   }
 

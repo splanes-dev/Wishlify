@@ -225,22 +225,36 @@ fun WishlistsListScreen(
           )
         }
 
-        items(
-          items = wishlists.filter { !it.isFinished() },
-          key = { item -> item.id }
-        ) { wishlist ->
-          WishlistCard(
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(horizontal = 16.dp)
-              .animateItem(),
-            wishlist = wishlist,
-            onSettingsClick = {
-              wishlistSelected = wishlist
-              isWishlistSettingsModalOpen = true
-            },
-            onClick = { onWishlistClick(wishlist) }
-          )
+        if (wishlists.any { !it.isFinished() }) {
+          items(
+            items = wishlists.filter { !it.isFinished() },
+            key = { item -> item.id }
+          ) { wishlist ->
+            WishlistCard(
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .animateItem(),
+              wishlist = wishlist,
+              onSettingsClick = {
+                wishlistSelected = wishlist
+                isWishlistSettingsModalOpen = true
+              },
+              onClick = { onWishlistClick(wishlist) }
+            )
+          }
+        } else {
+          item {
+            EmptyState(
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 4.dp),
+              image = painterResource(R.drawable.wishlists_list_empty_state),
+              title = stringResource(R.string.secret_santa_list_empty_state_title),
+              description = stringResource(R.string.wishlists_list_own_all_finished_empty_state_description),
+              descriptionStyle = WishlifyTheme.typography.titleMedium
+            )
+          }
         }
 
         if (existsWishlistsFinished) {

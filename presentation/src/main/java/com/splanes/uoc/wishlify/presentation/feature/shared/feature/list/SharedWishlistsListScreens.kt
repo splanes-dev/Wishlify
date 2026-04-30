@@ -43,6 +43,7 @@ import com.splanes.uoc.wishlify.presentation.common.utils.htmlString
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistCard
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistsFinishedHeader
 import com.splanes.uoc.wishlify.presentation.feature.shared.feature.list.components.SharedWishlistsSearchBottomSheet
+import com.splanes.uoc.wishlify.presentation.infrastructure.theme.WishlifyTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -98,18 +99,32 @@ fun SharedWishlistsListScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
       ) {
 
-        items(
-          items = wishlists.filter { !it.isFinished() },
-          key = { item -> item.id }
-        ) { wishlist ->
-          SharedWishlistCard(
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(horizontal = 16.dp)
-              .animateItem(),
-            sharedWishlist = wishlist,
-            onClick = { onWishlistClick(wishlist) }
-          )
+        if (wishlists.any { !it.isFinished() }) {
+          items(
+            items = wishlists.filter { !it.isFinished() },
+            key = { item -> item.id }
+          ) { wishlist ->
+            SharedWishlistCard(
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .animateItem(),
+              sharedWishlist = wishlist,
+              onClick = { onWishlistClick(wishlist) }
+            )
+          }
+        } else {
+          item {
+            EmptyState(
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 4.dp),
+              image = painterResource(R.drawable.wishlists_list_empty_state),
+              title = stringResource(R.string.secret_santa_list_empty_state_title),
+              description = stringResource(R.string.shared_wishlists_list_others_all_finished_empty_state_description),
+              descriptionStyle = WishlifyTheme.typography.titleMedium
+            )
+          }
         }
 
         if (existsWishlistsFinished) {

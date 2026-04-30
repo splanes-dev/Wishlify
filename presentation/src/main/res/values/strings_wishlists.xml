@@ -6,6 +6,7 @@
     <string name="wishlists_list_empty_state_title">Oooh…</string>
     <string name="wishlists_list_filters_empty_state_description">No hi ha resultats amb els filtres aplicats, prova de canviar-los per actualitzar el llistat.</string>
     <string name="wishlists_list_own_empty_state_description">Encara no tens cap llista disponible.\nNo dubtis més i comença a gestionar els teus desitjos.</string>
+    <string name="wishlists_list_own_all_finished_empty_state_description">Tots els llistats han finalitzat.\nNo dubtis més i comença a gestionar els teus desitjos.</string>
     <string name="wishlists_list_others_empty_state_description">No tens llistes creades pels altres.\nNo esperis a l\'últim moment i comença a guardar desitjos pels teus amics i familiars.</string>
     <string name="wishlists_list_tab_own">Meves</string>
     <string name="wishlists_list_tab_others">Pels altres</string>

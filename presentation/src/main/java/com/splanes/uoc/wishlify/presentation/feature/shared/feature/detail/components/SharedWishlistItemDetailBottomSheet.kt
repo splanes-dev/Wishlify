@@ -168,6 +168,7 @@ fun SharedWishlistItemDetailBottomSheet(
           onClick = {
             if (!isButtonLoading) {
               actionSelected?.run(onAction)
+              actionSelected = null
             }
           }
         ) {

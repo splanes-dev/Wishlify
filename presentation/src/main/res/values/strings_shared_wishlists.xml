@@ -4,6 +4,7 @@
     <string name="shared_wishlists_list_tab_own">Meves</string>
     <string name="shared_wishlists_list_tab_third_party">Dels altres</string>
     <string name="shared_wishlists_list_own_empty_state_description">Encara no has compartit cap llista.\nComparteix-ne una per començar a organitzar-te amb els altres.</string>
+    <string name="shared_wishlists_list_others_all_finished_empty_state_description">Tots els esdeveniments han finalitzat. Demana als teus amics o familiars que comparteixin els seus llistats!</string>
     <string name="shared_wishlists_list_others_empty_state_description">Encara no t’han compartit cap llista.\nDemana als teus amics o familiars que en comparteixin una per poder coordinar-vos millor.</string>
     <plurals name="shared_wishlists_list_participants_card">
         <item quantity="zero">Sense participants</item>
