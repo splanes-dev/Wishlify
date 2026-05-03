@@ -94,7 +94,7 @@ class UserRepositoryImpl(
             null
           }
         }
-        val resultsByCodeDeferred = async { remoteDataSource.searchByCode(query) }
+        val resultsByCodeDeferred = async { remoteDataSource.searchByCode(query.uppercase()) }
         val resultsByEmail = resultsByEmailDeferred.await()
         val resultsByCode = resultsByCodeDeferred.await()
         val results = (resultsByCode + resultsByEmail).filterNotNull()

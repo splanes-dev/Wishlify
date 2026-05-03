@@ -33,6 +33,7 @@ class UpdateGroupUseCase(
 
         // Leaving group && group members = 2
         if (request.members.count() == 2 && !request.includeCurrentUser) {
+          imageMediaOf(request.id, null)
           repository.deleteGroup(request.id).getOrThrow()
         } else {
           val imageMedia = imageMediaOf(
