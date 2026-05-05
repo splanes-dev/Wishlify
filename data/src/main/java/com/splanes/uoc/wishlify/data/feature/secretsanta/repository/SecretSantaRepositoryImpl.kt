@@ -327,7 +327,7 @@ class SecretSantaRepositoryImpl(
         val assignment = secretSantaRemoteDataSource.fetchAssignment(uid, eventId)
           ?: error("No assignment found for eventId=$eventId and user=$uid")
 
-        val usersToFetch = listOf(assignment.giver, assignment.receiver)
+        val usersToFetch = listOf(uid, assignment.giver, assignment.receiver)
         val users = usersToFetch
           .map { uid -> async { userRemoteDataSource.fetchUserById(uid) } }
           .awaitAll()
@@ -363,7 +363,11 @@ class SecretSantaRepositoryImpl(
         val assignment = secretSantaRemoteDataSource.fetchAssignment(uid, eventId)
           ?: error("No assignment found for eventId=$eventId and user=$uid")
 
-        val usersToFetch = listOf(assignment.giver, assignment.receiver)
+        val usersToFetch = listOf(
+          uid,
+          assignment.giver,
+          assignment.receiver
+        )
 
         val pageDeferred = async {
           secretSantaRemoteDataSource.fetchSecretSantaEventChatMessages(
