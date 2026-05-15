@@ -10,16 +10,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -27,19 +25,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.splanes.uoc.wishlify.presentation.R
 import com.splanes.uoc.wishlify.presentation.common.components.EmptyState
+import com.splanes.uoc.wishlify.presentation.common.components.ErrorDialog
 import com.splanes.uoc.wishlify.presentation.common.components.Loader
-import com.splanes.uoc.wishlify.presentation.common.components.SmokeFeatureDialog
 import com.splanes.uoc.wishlify.presentation.common.components.button.IconButtonShape
+import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.hobbies.components.AiSuggestionsBottomSheet
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.hobbies.components.SecretSantaAISuggestionsSection
 import com.splanes.uoc.wishlify.presentation.feature.secretsanta.feature.hobbies.components.SecretSantaHobbiesSection
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SecretSantaHobbiesScreen(
   uiState: SecretSantaHobbiesUiState.Hobbies,
+  onGenerateSuggestions: () -> Unit,
+  onCloseSuggestionModal: () -> Unit,
+  onDismissError: () -> Unit,
   onCancel: () -> Unit,
 ) {
 
-  var isDialogVisible by remember { mutableStateOf(false) }
+  val aiSuggestionsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
   Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
@@ -80,15 +83,26 @@ fun SecretSantaHobbiesScreen(
           modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp),
-          onGenerateSuggestions = { isDialogVisible = true }
+          onGenerateSuggestions = onGenerateSuggestions
         )
       }
     }
 
-    if (isDialogVisible) {
-      SmokeFeatureDialog(
-        onDismiss = { isDialogVisible = false },
-        onAnswer = { interested -> /* TODO: collect data */ }
+    AiSuggestionsBottomSheet(
+      visible = uiState.isSuggestionsModalOpen,
+      sheetState = aiSuggestionsSheetState,
+      onDismiss = onCloseSuggestionModal,
+      suggestions = uiState.suggestions
+    )
+
+    if (uiState.isLoading) {
+      Loader(modifier = Modifier.fillMaxSize())
+    }
+
+    uiState.error?.let { error ->
+      ErrorDialog(
+        uiModel = error,
+        onDismiss = onDismissError,
       )
     }
   }

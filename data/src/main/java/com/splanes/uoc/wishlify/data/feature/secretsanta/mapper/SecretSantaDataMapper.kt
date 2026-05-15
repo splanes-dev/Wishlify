@@ -9,11 +9,13 @@ import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.common.utils.newUuid
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.CreateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.GiftSuggestionsAiContext
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaChatMessage
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEventDetail
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.UpdateSecretSantaEventRequest
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
+import org.json.JSONObject
 import java.util.Date
 
 /** Maps Secret Santa entities between Firestore persistence and domain models. */
@@ -212,4 +214,26 @@ class SecretSantaDataMapper {
       text = text,
       createdAt = nowInMillis()
     )
+
+  fun mapSuggestionsAiContext(data: Map<*, *>): GiftSuggestionsAiContext {
+    val obj = JSONObject(data.toMutableMap())
+    return GiftSuggestionsAiContext(
+      aiContext = obj.getString("aiContext"),
+      budget = obj.optDouble("budget").takeUnless { it.isNaN() }?.toFloat(),
+      deadline = obj.optLong("deadline"),
+      sources = obj.optJSONObject("source")?.let { source ->
+        buildList {
+          if (source.optBoolean("hobbiesIncluded")) {
+            add(GiftSuggestionsAiContext.Source.Hobbies)
+          }
+          if (source.optBoolean("wishlistsIncluded")) {
+            add(GiftSuggestionsAiContext.Source.Wishlists)
+          }
+          if (source.optBoolean("itemsIncluded")) {
+            add(GiftSuggestionsAiContext.Source.WishlistItems)
+          }
+        }
+      } ?: emptyList()
+    )
+  }
 }

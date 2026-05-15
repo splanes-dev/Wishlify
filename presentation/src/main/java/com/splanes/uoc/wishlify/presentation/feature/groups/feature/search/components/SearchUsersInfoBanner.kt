@@ -43,7 +43,7 @@ fun SearchUsersInfoBanner(
       ) {
         Icon(
           imageVector = Icons.Outlined.Info,
-          contentDescription = stringResource(R.string.close),
+          contentDescription = stringResource(R.string.info),
           tint = WishlifyTheme.colorScheme.onInfoContainer
         )
 

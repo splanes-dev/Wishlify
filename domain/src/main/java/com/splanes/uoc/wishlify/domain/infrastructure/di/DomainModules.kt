@@ -2,6 +2,7 @@ package com.splanes.uoc.wishlify.domain.infrastructure.di
 
 import com.splanes.uoc.wishlify.domain.feature.authentication.infrastructure.di.AuthenticationDomainModule
 import com.splanes.uoc.wishlify.domain.feature.groups.infrastructure.di.GroupsDomainModule
+import com.splanes.uoc.wishlify.domain.feature.ia.infrastructure.di.AiDomainModule
 import com.splanes.uoc.wishlify.domain.feature.notifications.infrastructure.di.PushNotificationsDomainModule
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.infrastructure.di.SecretSantaDomainModule
 import com.splanes.uoc.wishlify.domain.feature.session.infrastructure.di.SessionDomainModule
@@ -18,4 +19,5 @@ val DomainModules = listOf(
   SecretSantaDomainModule,
   GroupsDomainModule,
   PushNotificationsDomainModule,
+  AiDomainModule,
 )

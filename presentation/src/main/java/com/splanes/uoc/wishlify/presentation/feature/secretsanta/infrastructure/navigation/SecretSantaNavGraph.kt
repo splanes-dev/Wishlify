@@ -240,8 +240,8 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
             )
             navController.navigate(route)
           },
-          onNavToHobbies = { targetUid ->
-            val route = SecretSanta.Hobbies(targetUid)
+          onNavToHobbies = { eventId, targetUid ->
+            val route = SecretSanta.Hobbies(eventId, targetUid)
             navController.navigate(route)
           },
           onNavBack = {
@@ -335,7 +335,7 @@ class SecretSantaNavGraph : FeatureHomeNavGraph {
       ) { backStackEntry ->
 
         val route = backStackEntry.toRoute<SecretSanta.Hobbies>()
-        val viewModel = koinViewModel<SecretSantaHobbiesViewModel> { parametersOf(route.targetUid) }
+        val viewModel = koinViewModel<SecretSantaHobbiesViewModel> { parametersOf(route.eventId, route.targetUid) }
         SecretSantaHobbiesRoute(
           viewModel = viewModel,
           onCancel = { navController.popBackStack() }

@@ -12,3 +12,4 @@ export {onSharedWishlistChatMessageCreated} from "./onSharedWishlistChatMessageC
 export {onSecretSantaChatMessageCreated} from "./onSecretSantaChatMessageCreated";
 export {onSharedWishlistItemUpdated} from "./onSharedWishlistItemUpdated";
 export {sendDeadlineRemindersDaily} from "./sendDeadlineRemindersDaily";
+export {getGiftSuggestionAiContext} from "./getGiftSuggestionAiContext";

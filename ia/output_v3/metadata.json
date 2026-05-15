@@ -1,0 +1,8 @@
+{
+  "max_tokens": 6000,
+  "sequence_length": 80,
+  "embedding_dim": 64,
+  "num_labels": 39,
+  "pad_token": "<PAD>",
+  "unk_token": "<UNK>"
+}

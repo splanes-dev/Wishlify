@@ -14,6 +14,7 @@ import com.splanes.uoc.wishlify.data.common.firebase.utils.db.secretSantaPartici
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.secretSantaParticipantsWishlistItems
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.withBatch
 import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.JoinByInvitationLinkType
+import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.getGiftSuggestionAiContext
 import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.joinByInvitationLink
 import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaAssignmentEntity
 import com.splanes.uoc.wishlify.data.feature.secretsanta.model.SecretSantaChatEntity
@@ -372,6 +373,20 @@ class SecretSantaRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
   }
+
+  suspend fun getGiftSuggestionsAiContext(target: String, event: String): Map<*, *>? =
+    try {
+      val result = functions
+        .getGiftSuggestionAiContext(target, event)
+        .await()
+
+      result.data as? Map<*, *>
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
 
   /** Returns the assignments subcollection for the given event. */
   private fun assignmentsOf(id: String) =

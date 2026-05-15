@@ -12,7 +12,7 @@ fun SecretSantaDetailRoute(
   viewModel: SecretSantaDetailViewModel,
   externalActionHandler: SecretSantaExternalActionHandler,
   onNavToEdit: (eventId: String) -> Unit,
-  onNavToHobbies: (targetUid: String) -> Unit,
+  onNavToHobbies: (eventId: String, targetUid: String) -> Unit,
   onNavToWishlist: (eventId: String, wishlistOwnerId: String?, isOwnWishlist: Boolean) -> Unit,
   onNavToShareWishlist: (eventId: String) -> Unit,
   onNavToChat: (eventId: String, type: String, otherUid: String) -> Unit,
@@ -69,7 +69,7 @@ fun SecretSantaDetailRoute(
           )
 
         is SecretSantaDetailUiSideEffect.NavToHobbies ->
-          onNavToHobbies(effect.targetUid)
+          onNavToHobbies(effect.eventId, effect.targetUid)
       }
     }
   }

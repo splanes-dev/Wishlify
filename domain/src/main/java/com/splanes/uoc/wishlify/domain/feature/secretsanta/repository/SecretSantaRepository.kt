@@ -3,6 +3,7 @@ package com.splanes.uoc.wishlify.domain.feature.secretsanta.repository
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.common.model.ChatPage
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.CreateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.GiftSuggestionsAiContext
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaChatMessage
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEventDetail
@@ -93,4 +94,6 @@ interface SecretSantaRepository {
 
   /** Adds the current user to an event using an invitation token. */
   suspend fun addEventParticipantByToken(token: String): Result<Unit>
+
+  suspend fun getGiftSuggestionsAiContext(target: String, event: String): Result<GiftSuggestionsAiContext>
 }

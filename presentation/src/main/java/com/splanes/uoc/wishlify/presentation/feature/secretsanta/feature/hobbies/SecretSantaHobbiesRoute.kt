@@ -19,6 +19,9 @@ fun SecretSantaHobbiesRoute(
     is SecretSantaHobbiesUiState.Hobbies ->
       SecretSantaHobbiesScreen(
         uiState = state,
+        onGenerateSuggestions = viewModel::onGenerateSuggestions,
+        onCloseSuggestionModal = viewModel::onCloseSuggestionModal,
+        onDismissError = viewModel::onDismissError,
         onCancel = onCancel
       )
 

@@ -1,0 +1,441 @@
+text,label,source_type,language
+"wishlist: oli essencial, manta suau, diari de gratitud",benestar,wishlist_items,ca
+sol fer plans a l'aire lliure i escapades de cap de setmana,outdoor,phrase,ca
+le gusta cocinar y probar recetas nuevas,cuina,spanish_support,es
+pot valorar un regal en forma d'experiencia o pla especial,experiencies,phrase,ca
+"interessos: entrenament, pilates. wishlist: rellotge esportiu, guants de fitness. li agrada fer esport i mantenir-se actiu",esport,mixed,ca
+concerts,musica,tag,ca
+electronica,tecnologia,tag,ca
+"li agrada: fitness, gimnas, esports",esport,tags_group,ca
+"interessos: piano, instruments. wishlist: entrades concert, targeta regal musica. sol valorar regals relacionats amb so i musica",musica,mixed,ca
+ioga,esport,tag,ca
+"wishlist: figura decorativa gaming, auriculars gaming, joc de taula geek",gaming,wishlist_items,ca
+"interessos: aromaterapia, meditacio. wishlist: oli essencial, set skincare. sol valorar productes per cuidar-se i desconnectar",benestar,mixed,ca
+"interessos: accessoris, cosmetica. wishlist: ulleres de sol, samarreta. li fan il·lusio els regals relacionats amb estil i moda",moda,mixed,ca
+"videojuegos, consolas, gaming",gaming,spanish_support,es
+"gaudeix amb llibres, manga i histories il·lustrades",llibres,phrase,ca
+li fan il·lusio els productes relacionats amb videojocs,gaming,phrase,ca
+"interessos: literatura, fantasia. wishlist: llibre de misteri, comic. te interes en novel·les de fantasia i ciencia ficcio",llibres,mixed,ca
+"interessos: benestar, aromaterapia. wishlist: set skincare, espelma aromatica. busca objectes que ajudin a relaxar-se i millorar el descans",benestar,mixed,ca
+"interessos: novel·les, ciencia ficcio. wishlist: marcapagines, quadern de lectura. gaudeix amb llibres, manga i histories il·lustrades",llibres,mixed,ca
+sol demanar productes relacionats amb tecnologia i electrònica,tecnologia,phrase,ca
+pc gaming,gaming,tag,ca
+"wishlist: tassa termica, motlles de rebosteria, cafetera",cuina,wishlist_items,ca
+"interessos: excursions, trekking, rutes",outdoor,tags_group,ca
+"wishlist: hub usb-c, carregador wireless, power bank",tecnologia,wishlist_items,ca
+"wishlist: dessuadora, ulleres de sol, polsera",moda,wishlist_items,ca
+oci,experiencies,tag,ca
+ciclisme,esport,tag,ca
+li fan il·lusio els regals relacionats amb estil i moda,moda,phrase,ca
+llibres,llibres,tag,ca
+playstation,gaming,tag,ca
+guitarra,musica,tag,ca
+prefereix viure experiencies abans que acumular objectes,experiencies,phrase,ca
+"interessos: xbox, pc gaming. wishlist: joc de taula geek, cadira gaming. busca millorar el seu espai de joc amb accessoris gaming",gaming,mixed,ca
+"interessos: ordinadors, electronica. wishlist: power bank, auriculars bluetooth. sempre esta provant dispositius nous i accessoris electronics",tecnologia,mixed,ca
+li poden agradar regals relacionats amb trekking i aventura,outdoor,phrase,ca
+trekking,outdoor,tag,ca
+"wishlist: manga, novel·la de fantasia, llibre de misteri",llibres,wishlist_items,ca
+equipament esportiu,esport,tag,ca
+"interessos: plans, oci. wishlist: activitat aventura, taller creatiu. gaudeix amb restaurants, escapades i activitats d'oci",experiencies,mixed,ca
+"wishlist: ratoli gaming, comandament, figura decorativa gaming",gaming,wishlist_items,ca
+"preferencies: ciencia ficcio, assaig, biblioteca",llibres,tags_group,ca
+"interessos: relax, benestar. wishlist: set skincare, diari de gratitud. li agraden els regals relacionats amb relax i autocura",benestar,mixed,ca
+le gusta entrenar y hacer actividad fisica,esport,spanish_support,es
+"interessos: entrenament, equipament esportiu. wishlist: banda elastica, guants de fitness. sol utilitzar material esportiu i roba tecnica",esport,mixed,ca
+"interessos: fitness, pilates. wishlist: guants de fitness, llum per bicicleta. sol utilitzar material esportiu i roba tecnica",esport,mixed,ca
+"wishlist: llibre de musica, funda instrument, suport per auriculars",musica,wishlist_items,ca
+outfits,moda,tag,ca
+"interessos: rellotges, cosmetica. wishlist: samarreta, bufanda. li fan il·lusio els regals relacionats amb estil i moda",moda,mixed,ca
+biblioteca,llibres,tag,ca
+"wishlist: polsera, ulleres de sol, samarreta",moda,wishlist_items,ca
+gimnas,esport,tag,ca
+"interessos: playstation, xbox, jocs",gaming,tags_group,ca
+gaudeix fent rutes de muntanya i acampades,outdoor,phrase,ca
+"interessos: meditacio, aromaterapia. wishlist: mascara dormir, manta suau. te interes en benestar, descans i moments tranquils",benestar,mixed,ca
+"interessos: oci, spa. wishlist: entrada teatre, activitat aventura. prefereix viure experiencies abans que acumular objectes",experiencies,mixed,ca
+"preferencies: skincare, meditacio, salut",benestar,tags_group,ca
+cosmetica,moda,tag,ca
+"preferencies: gimnas, ciclisme, equipament esportiu",esport,tags_group,ca
+"wishlist: quadern de lectura, funda per ebook, llum de lectura",llibres,wishlist_items,ca
+te interes en productes relacionats amb cafe i gastronomia,cuina,phrase,ca
+smartphone,tecnologia,tag,ca
+"preferencies: instruments, spotify, vinils",musica,tags_group,ca
+"wishlist: mando, auriculares gaming, tarjeta regalo videojuegos",gaming,spanish_support,es
+videojocs,gaming,tag,ca
+"tags: gimnas, ciclisme, entrenament",esport,tags_group,ca
+consoles,gaming,tag,ca
+li agrada fer esport i mantenir-se actiu,esport,phrase,ca
+"interessos: lectura, llibres. wishlist: funda per ebook, marcapagines. li agrada llegir i descobrir llibres nous",llibres,mixed,ca
+entrades,experiencies,tag,ca
+"interessos: spa, aromaterapia. wishlist: diari de gratitud, difusor d'aromes. te interes en benestar, descans i moments tranquils",benestar,mixed,ca
+"wishlist: llibre de misteri, funda per ebook, llum de lectura",llibres,wishlist_items,ca
+"interessos: accessoris, bosses. wishlist: polsera, mitjons originals. pot valorar accessoris personals o complements de qualitat",moda,mixed,ca
+"preferencies: cuina, barbacoa, te",cuina,tags_group,ca
+"wishlist: tassa termica, davantal, ganivet de cuina",cuina,wishlist_items,ca
+"interessos: equipament esportiu, entrenament. wishlist: tovallola de gimnas, estoreta de ioga. li poden encaixar regals relacionats amb gimnàs o activitat fisica",esport,mixed,ca
+"wishlist: motlles de rebosteria, termometre de cuina, taula de tallar",cuina,wishlist_items,ca
+accessoris,moda,tag,ca
+"tags: fantasia, biblioteca, assaig",llibres,tags_group,ca
+te interes en productes per entrenar millor,esport,phrase,ca
+"interessos: lectura, comic. wishlist: quadern de lectura, llibre de misteri. sol afegir llibres i comics a les seves llistes",llibres,mixed,ca
+"preferencies: comic, novel·les, ciencia ficcio",llibres,tags_group,ca
+"tags: trekking, natura, camping",outdoor,tags_group,ca
+"tags: ordinadors, electronica, programacio",tecnologia,tags_group,ca
+"wishlist: bufanda, reloj, gafas de sol",moda,spanish_support,es
+"li agrada: videojocs, streaming, jocs",gaming,tags_group,ca
+"interessos: gaming, playstation. wishlist: llum rgb, auriculars gaming. passa temps jugant amb consola i ordinador",gaming,mixed,ca
+"preferencies: consoles, playstation, videojocs",gaming,tags_group,ca
+"tags: rellotges, roba, moda",moda,tags_group,ca
+gastronomia,cuina,tag,ca
+menjar,cuina,tag,ca
+"wishlist: estoreta de ioga, banda elastica, motxilla esportiva",esport,wishlist_items,ca
+"te interes en benestar, descans i moments tranquils",benestar,phrase,ca
+"tags: piano, audio, musica",musica,tags_group,ca
+informatica,tecnologia,tag,ca
+"preferencies: cocina, cuina, barbacoa",cuina,tags_group,ca
+domotica,tecnologia,tag,ca
+"interessos: running, equipament esportiu. wishlist: ampolla esportiva, banda elastica. sol utilitzar material esportiu i roba tecnica",esport,mixed,ca
+"wishlist: entrades concert, altaveu portatil, llibre de musica",musica,wishlist_items,ca
+smartwatch,tecnologia,tag,ca
+jocs,gaming,tag,ca
+fantasia,llibres,tag,ca
+"interessos: acampades, rutes. wishlist: tenda de campanya, cantimplora. sol fer plans a l'aire lliure i escapades de cap de setmana",outdoor,mixed,ca
+li agrada escoltar musica i anar a concerts,musica,phrase,ca
+"li agrada: ciclisme, esports, entrenament",esport,tags_group,ca
+te,cuina,tag,ca
+"tags: aventura, senderisme, aire lliure",outdoor,tags_group,ca
+xbox,gaming,tag,ca
+"interessos: aventura, experiencies. wishlist: taller creatiu, activitat aventura. pot valorar un regal en forma d'experiencia o pla especial",experiencies,mixed,ca
+"wishlist: difusor d'aromes, diari de gratitud, infusions",benestar,wishlist_items,ca
+"interessos: entrenament, pilates, esports",esport,tags_group,ca
+"interessos: instruments, auriculars, spotify",musica,tags_group,ca
+"deporte, gimnasio, running",esport,spanish_support,es
+"wishlist: cap de setmana rural, visita guiada, targeta regal experiencia",experiencies,wishlist_items,ca
+"wishlist: entrada teatre, cap de setmana rural, classe de cuina",experiencies,wishlist_items,ca
+"interessos: benestar, descans. wishlist: set skincare, manta suau. busca objectes que ajudin a relaxar-se i millorar el descans",benestar,mixed,ca
+"interessos: spotify, instruments. wishlist: pua de guitarra, targeta regal musica. gaudeix amb festivals i activitats musicals",musica,mixed,ca
+"tags: estil, accessoris, roba",moda,tags_group,ca
+le interesa la ropa y los complementos,moda,spanish_support,es
+"interessos: guitarra, piano. wishlist: altaveu portatil, suport per auriculars. te interes en vinils, instruments i audio",musica,mixed,ca
+"preferencies: novel·les, comic, llibres",llibres,tags_group,ca
+"interessos: senderisme, camping. wishlist: impermeable, cantimplora. te interes en equipament per camping i senderisme",outdoor,mixed,ca
+"wishlist: cena, escape room, sesion spa",experiencies,spanish_support,es
+"wishlist: set skincare, sals de bany, mascara dormir",benestar,wishlist_items,ca
+tecnologia,tecnologia,tag,ca
+"wishlist: bufanda, rellotge, polsera",moda,wishlist_items,ca
+"interessos: nintendo, videojocs. wishlist: joc de taula geek, ratoli gaming. te interes en el mon gaming i els accessoris de setup",gaming,mixed,ca
+running,esport,tag,ca
+"wishlist: ebook reader, comic, quadern de lectura",llibres,wishlist_items,ca
+"sol interessar-se per roba, accessoris i complements",moda,phrase,ca
+"interessos: electronica, informatica, gadgets",tecnologia,tags_group,ca
+"interessos: setup gaming, xbox. wishlist: ratoli gaming, suport per comandaments. li fan il·lusio els productes relacionats amb videojocs",gaming,mixed,ca
+instruments,musica,tag,ca
+prefiere planes y actividades antes que objetos,experiencies,spanish_support,es
+te interes per la informatica i els productes tecnologics,tecnologia,phrase,ca
+li poden encaixar regals per cuinar o preparar postres,cuina,phrase,ca
+comic,llibres,tag,ca
+"interessos: muntanya, aventura. wishlist: bastons de trekking, termo. li poden agradar regals relacionats amb trekking i aventura",outdoor,mixed,ca
+entrenament,esport,tag,ca
+"wishlist: funda instrument, targeta regal musica, suport per auriculars",musica,wishlist_items,ca
+"interessos: receptes, rebosteria. wishlist: cafetera, ganivet de cuina. sol afegir accessoris de cuina a les seves llistes",cuina,mixed,ca
+festivals,musica,tag,ca
+"interessos: receptes, rebosteria, cocina",cuina,tags_group,ca
+aventura,experiencies,tag,ca
+"preferencies: cuina, pastisseria, barbacoa",cuina,tags_group,ca
+sabates,moda,tag,ca
+"interessos: aire lliure, camping, natura",outdoor,tags_group,ca
+"wishlist: suport per portatil, altaveu inteligent, carregador wireless",tecnologia,wishlist_items,ca
+"wishlist: mochila trekking, frontal led, saco de dormir",outdoor,spanish_support,es
+"tags: instruments, vinils, auriculars",musica,tags_group,ca
+"interessos: piano, musica. wishlist: funda instrument, auriculars. gaudeix amb festivals i activitats musicals",musica,mixed,ca
+skincare,benestar,tag,ca
+li agraden els regals relacionats amb relax i autocura,benestar,phrase,ca
+sol utilitzar material esportiu i roba tecnica,esport,phrase,ca
+"wishlist: llum per bicicleta, samarreta tecnica, banda elastica",esport,wishlist_items,ca
+lectura,llibres,tag,ca
+"wishlist: cantimplora, sac de dormir, navalla multiusos",outdoor,wishlist_items,ca
+"interessos: aromaterapia, meditacio, descans",benestar,tags_group,ca
+"interessos: accessoris tecnologics, gadgets. wishlist: auriculars bluetooth, carregador wireless. sempre esta provant dispositius nous i accessoris electronics",tecnologia,mixed,ca
+manga,llibres,tag,ca
+"tags: concerts, piano, instruments",musica,tags_group,ca
+"wishlist: ebook reader, llibre il·lustrat, marcapagines",llibres,wishlist_items,ca
+"preferencies: fantasia, novel·les, comic",llibres,tags_group,ca
+"interessos: piano, festivals. wishlist: targeta regal musica, pua de guitarra. li agrada escoltar musica i anar a concerts",musica,mixed,ca
+"tags: estil, outfits, roba",moda,tags_group,ca
+"interessos: cocina, pastisseria. wishlist: cafetera, set d'especies. li poden encaixar regals per cuinar o preparar postres",cuina,mixed,ca
+"preferencies: aire lliure, trekking, aventura",outdoor,tags_group,ca
+"interessos: running, ciclisme. wishlist: ampolla esportiva, estoreta de ioga. li agrada fer esport i mantenir-se actiu",esport,mixed,ca
+"interessos: restaurants, entrades. wishlist: targeta regal experiencia, classe de cuina. li agraden els plans diferents i les activitats compartides",experiencies,mixed,ca
+"interessos: cafe, gastronomia. wishlist: taula de tallar, motlles de rebosteria. te interes en productes relacionats amb cafe i gastronomia",cuina,mixed,ca
+"wishlist: novel·la de fantasia, llibre de misteri, quadern de lectura",llibres,wishlist_items,ca
+"wishlist: necesser, samarreta, rellotge",moda,wishlist_items,ca
+"wishlist: guants de fitness, rellotge esportiu, estoreta de ioga",esport,wishlist_items,ca
+"interessos: electronica, domotica. wishlist: ratoli ergonomic, suport per portatil. li agraden els accessoris per ordinador i smartphone",tecnologia,mixed,ca
+"preferencies: camping, aire lliure, senderisme",outdoor,tags_group,ca
+"interessos: joieria, accessoris. wishlist: bufanda, samarreta. sol interessar-se per roba, accessoris i complements",moda,mixed,ca
+"interessos: camping, senderisme. wishlist: sac de dormir, bastons de trekking. sol fer plans a l'aire lliure i escapades de cap de setmana",outdoor,mixed,ca
+ciencia ficcio,llibres,tag,ca
+roba,moda,tag,ca
+"li agrada: mindfulness, relax, spa",benestar,tags_group,ca
+descans,benestar,tag,ca
+"wishlist: motxilla urbana, polsera, dessuadora",moda,wishlist_items,ca
+passa temps jugant amb consola i ordinador,gaming,phrase,ca
+"tags: senderisme, natura, rutes",outdoor,tags_group,ca
+audio,musica,tag,ca
+"experiencias, viajes, restaurantes",experiencies,spanish_support,es
+programacio,tecnologia,tag,ca
+"interessos: rutes, aventura. wishlist: frontal led, impermeable. sol fer plans a l'aire lliure i escapades de cap de setmana",outdoor,mixed,ca
+"interessos: spa, relax, aromaterapia",benestar,tags_group,ca
+rutes,outdoor,tag,ca
+"interessos: natacio, ciclisme. wishlist: tovallola de gimnas, motxilla esportiva. te interes en productes per entrenar millor",esport,mixed,ca
+"interessos: fitness, ciclisme. wishlist: samarreta tecnica, motxilla esportiva. li agrada fer esport i mantenir-se actiu",esport,mixed,ca
+"wishlist: tassa termica, llibre de receptes, batedora petita",cuina,wishlist_items,ca
+"interessos: escapades, viatges. wishlist: activitat aventura, cap de setmana rural. gaudeix amb restaurants, escapades i activitats d'oci",experiencies,mixed,ca
+le gustan las rutas y las escapadas al aire libre,outdoor,spanish_support,es
+"wishlist: samarreta tecnica, llum per bicicleta, estoreta de ioga",esport,wishlist_items,ca
+"wishlist: diari de gratitud, set skincare, oli essencial",benestar,wishlist_items,ca
+"li agrada: restaurants, activitats, escapades",experiencies,tags_group,ca
+li agraden els accessoris per ordinador i smartphone,tecnologia,phrase,ca
+"interessos: fantasia, lectura, assaig",llibres,tags_group,ca
+"wishlist: tassa termica, set d'especies, taula de tallar",cuina,wishlist_items,ca
+"interessos: cosmetica, moda. wishlist: polsera, bufanda. sol interessar-se per roba, accessoris i complements",moda,mixed,ca
+sempre esta provant dispositius nous i accessoris electronics,tecnologia,phrase,ca
+"interessos: consoles, nintendo, setup gaming",gaming,tags_group,ca
+esports,esport,tag,ca
+"interessos: cosmetica, bosses. wishlist: ulleres de sol, samarreta. li fan il·lusio els regals relacionats amb estil i moda",moda,mixed,ca
+viatges,experiencies,tag,ca
+"tags: videojocs, jocs, playstation",gaming,tags_group,ca
+pilates,esport,tag,ca
+"wishlist: ampolla esportiva, samarreta tecnica, guants de fitness",esport,wishlist_items,ca
+"tags: accessoris, roba, estil",moda,tags_group,ca
+"preferencies: barbacoa, menjar, pastisseria",cuina,tags_group,ca
+autocura,benestar,tag,ca
+li poden encaixar regals relacionats amb gimnàs o activitat fisica,esport,phrase,ca
+"interessos: pc gaming, videojocs. wishlist: llum rgb, comandament. busca millorar el seu espai de joc amb accessoris gaming",gaming,mixed,ca
+li agrada la moda i cuidar el seu estil personal,moda,phrase,ca
+"wishlist: tenda de campanya, termo, frontal led",outdoor,wishlist_items,ca
+"interessos: entrades, plans, oci",experiencies,tags_group,ca
+te interes en equipament per camping i senderisme,outdoor,phrase,ca
+vinils,musica,tag,ca
+literatura,llibres,tag,ca
+"li poden encaixar regals de spa, aromaterapia o skincare",benestar,phrase,ca
+"interessos: instruments, concerts. wishlist: vinil, pua de guitarra. sol valorar regals relacionats amb so i musica",musica,mixed,ca
+aventura,outdoor,tag,ca
+novel·les,llibres,tag,ca
+"wishlist: llibre de receptes, motlles de rebosteria, set d'especies",cuina,wishlist_items,ca
+"interessos: aventura, escapades. wishlist: activitat aventura, sopar degustacio. li agraden els plans diferents i les activitats compartides",experiencies,mixed,ca
+"wishlist: altaveu portatil, llibre de musica, targeta regal musica",musica,wishlist_items,ca
+"wishlist: cafetera, libro de recetas, moldes de reposteria",cuina,spanish_support,es
+"wishlist: guants de fitness, ampolla esportiva, llum per bicicleta",esport,wishlist_items,ca
+"te interes en vinils, instruments i audio",musica,phrase,ca
+receptes,cuina,tag,ca
+musica,musica,tag,ca
+"interessos: oci, entrades. wishlist: classe de cuina, activitat aventura. gaudeix amb restaurants, escapades i activitats d'oci",experiencies,mixed,ca
+"interessos: autocura, skincare. wishlist: diari de gratitud, set skincare. sol valorar productes per cuidar-se i desconnectar",benestar,mixed,ca
+"tags: autocura, spa, aromaterapia",benestar,tags_group,ca
+rellotges,moda,tag,ca
+"bienestar, relax, autocuidado",benestar,spanish_support,es
+"wishlist: hub usb-c, carregador wireless, smartwatch",tecnologia,wishlist_items,ca
+"moda, ropa, accesorios",moda,spanish_support,es
+"wishlist: oli essencial, mascara dormir, manta suau",benestar,wishlist_items,ca
+"interessos: electronica, domotica, gadgets",tecnologia,tags_group,ca
+"wishlist: rellotge, polsera, dessuadora",moda,wishlist_items,ca
+"interessos: te, pastisseria. wishlist: cafetera, motlles de rebosteria. li agrada cuinar i provar receptes noves",cuina,mixed,ca
+"preferencies: camping, rutes, aire lliure",outdoor,tags_group,ca
+"interessos: programacio, domotica. wishlist: ratoli ergonomic, teclat mecanic. sol demanar productes relacionats amb tecnologia i electrònica",tecnologia,mixed,ca
+"interessos: te, gastronomia. wishlist: termometre de cuina, davantal. li agrada cuinar i provar receptes noves",cuina,mixed,ca
+"interessos: llibres, literatura, biblioteca",llibres,tags_group,ca
+"wishlist: ratoli gaming, joc de taula geek, figura decorativa gaming",gaming,wishlist_items,ca
+benestar,benestar,tag,ca
+"interessos: festivals, vinils. wishlist: altaveu portatil, targeta regal musica. sol valorar regals relacionats amb so i musica",musica,mixed,ca
+te interes en novel·les de fantasia i ciencia ficcio,llibres,phrase,ca
+"interessos: playstation, setup gaming. wishlist: suport per comandaments, comandament. li agrada jugar a videojocs i provar jocs nous",gaming,mixed,ca
+"wishlist: smartwatch, carregador wireless, ratoli ergonomic",tecnologia,wishlist_items,ca
+"wishlist: impermeable, cantimplora, termo",outdoor,wishlist_items,ca
+"li agrada: aventura, experiencies, restaurants",experiencies,tags_group,ca
+"interessos: muntanya, senderisme. wishlist: cantimplora, mapa de rutes. sol fer plans a l'aire lliure i escapades de cap de setmana",outdoor,mixed,ca
+"wishlist: vinil, entrades concert, pua de guitarra",musica,wishlist_items,ca
+aire lliure,outdoor,tag,ca
+barbacoa,cuina,tag,ca
+"interessos: comic, novel·les. wishlist: comic, funda per ebook. sol afegir llibres i comics a les seves llistes",llibres,mixed,ca
+joieria,moda,tag,ca
+"wishlist: metrònom, funda instrument, altaveu portatil",musica,wishlist_items,ca
+"tecnologia, gadgets, informatica",tecnologia,spanish_support,es
+"wishlist: smartwatch, cargador inalambrico, teclado mecanico",tecnologia,spanish_support,es
+li agraden els plans diferents i les activitats compartides,experiencies,phrase,ca
+"preferencies: pastisseria, cafe, barbacoa",cuina,tags_group,ca
+"tags: auriculars, piano, spotify",musica,tags_group,ca
+le gustan los juegos online y los accesorios para consola,gaming,spanish_support,es
+practica running i activitats de fitness,esport,phrase,ca
+"musica, conciertos, vinilos",musica,spanish_support,es
+muntanya,outdoor,tag,ca
+"preferencies: equipament esportiu, entrenament, gimnas",esport,tags_group,ca
+"tags: cosmetica, roba, sabates",moda,tags_group,ca
+"interessos: electronica, informatica. wishlist: suport per portatil, hub usb-c. te interes per la informatica i els productes tecnologics",tecnologia,mixed,ca
+"interessos: rellotges, outfits. wishlist: ulleres de sol, polsera. sol interessar-se per roba, accessoris i complements",moda,mixed,ca
+acampades,outdoor,tag,ca
+gaming,gaming,tag,ca
+"interessos: accessoris tecnologics, informatica. wishlist: smartwatch, teclat mecanic. sempre esta provant dispositius nous i accessoris electronics",tecnologia,mixed,ca
+"wishlist: set skincare, diari de gratitud, oli essencial",benestar,wishlist_items,ca
+spotify,musica,tag,ca
+bosses,moda,tag,ca
+"preferencies: cuina, te, cafe",cuina,tags_group,ca
+cuina,cuina,tag,ca
+"interessos: barbacoa, rebosteria. wishlist: cafetera, tassa termica. te interes en productes relacionats amb cafe i gastronomia",cuina,mixed,ca
+"wishlist: classe de cuina, activitat aventura, visita guiada",experiencies,wishlist_items,ca
+"tags: accessoris tecnologics, smartphone, tecnologia",tecnologia,tags_group,ca
+sol afegir accessoris de cuina a les seves llistes,cuina,phrase,ca
+"wishlist: oli essencial, set skincare, coixi cervical",benestar,wishlist_items,ca
+"wishlist: metrònom, targeta regal musica, funda instrument",musica,wishlist_items,ca
+"wishlist: llum led smart, power bank, ratoli ergonomic",tecnologia,wishlist_items,ca
+busca objectes que ajudin a relaxar-se i millorar el descans,benestar,phrase,ca
+"preferencies: festivals, piano, instruments",musica,tags_group,ca
+li agrada cuinar i provar receptes noves,cuina,phrase,ca
+"interessos: salut, meditacio. wishlist: sals de bany, oli essencial. sol valorar productes per cuidar-se i desconnectar",benestar,mixed,ca
+"li agrada: guitarra, spotify, piano",musica,tags_group,ca
+aromaterapia,benestar,tag,ca
+"wishlist: set d'especies, cafetera, batedora petita",cuina,wishlist_items,ca
+"interessos: gastronomia, cuina. wishlist: davantal, termometre de cuina. sol afegir accessoris de cuina a les seves llistes",cuina,mixed,ca
+sol valorar productes per cuidar-se i desconnectar,benestar,phrase,ca
+le gustan los regalos para descansar y desconectar,benestar,spanish_support,es
+"wishlist: pua de guitarra, suport per auriculars, metrònom",musica,wishlist_items,ca
+"preferencies: te, menjar, rebosteria",cuina,tags_group,ca
+spa,experiencies,tag,ca
+li agraden els gadgets i la tecnologia practica,tecnologia,phrase,ca
+"wishlist: botella deportiva, camiseta tecnica, esterilla de yoga",esport,spanish_support,es
+"interessos: oci, plans. wishlist: sopar degustacio, escape room. pot valorar un regal en forma d'experiencia o pla especial",experiencies,mixed,ca
+ordinadors,tecnologia,tag,ca
+excursions,outdoor,tag,ca
+"interessos: accessoris, bosses, cosmetica",moda,tags_group,ca
+"interessos: literatura, llibres. wishlist: llibre de misteri, comic. li agrada llegir i descobrir llibres nous",llibres,mixed,ca
+"wishlist: sessio spa, activitat aventura, escape room",experiencies,wishlist_items,ca
+"camping, excursiones, montaña",outdoor,spanish_support,es
+li agrada jugar a videojocs i provar jocs nous,gaming,phrase,ca
+"interessos: gadgets, electronica, ordinadors",tecnologia,tags_group,ca
+"tags: streaming, videojocs, jocs",gaming,tags_group,ca
+assaig,llibres,tag,ca
+natacio,esport,tag,ca
+meditacio,benestar,tag,ca
+"wishlist: targeta regal videojocs, estora gran, llum rgb",gaming,wishlist_items,ca
+"interessos: streaming, pc gaming. wishlist: figura decorativa gaming, ratoli gaming. li agrada jugar a videojocs i provar jocs nous",gaming,mixed,ca
+"wishlist: entrada teatre, escape room, activitat aventura",experiencies,wishlist_items,ca
+gadgets,tecnologia,tag,ca
+"interessos: spa, activitats, entrades",experiencies,tags_group,ca
+"interessos: videojocs, gaming. wishlist: ratoli gaming, auriculars gaming. li agrada jugar a videojocs i provar jocs nous",gaming,mixed,ca
+camping,outdoor,tag,ca
+"interessos: mindfulness, meditacio. wishlist: mascara dormir, difusor d'aromes. sol valorar productes per cuidar-se i desconnectar",benestar,mixed,ca
+sol afegir llibres i comics a les seves llistes,llibres,phrase,ca
+spa,benestar,tag,ca
+"wishlist: llum de lectura, marcapagines, llibre de misteri",llibres,wishlist_items,ca
+"interessos: musica, audio. wishlist: funda instrument, pua de guitarra. te interes en vinils, instruments i audio",musica,mixed,ca
+"interessos: tecnologia, domotica. wishlist: hub usb-c, smartwatch. li agraden els gadgets i la tecnologia practica",tecnologia,mixed,ca
+"wishlist: novel·la de fantasia, llibre de misteri, marcapagines",llibres,wishlist_items,ca
+estil,moda,tag,ca
+"wishlist: targeta regal videojocs, joc de taula geek, estora gran",gaming,wishlist_items,ca
+fitness,esport,tag,ca
+natura,outdoor,tag,ca
+"wishlist: carregador wireless, hub usb-c, smartwatch",tecnologia,wishlist_items,ca
+"tags: gadgets, tecnologia, smartphone",tecnologia,tags_group,ca
+"wishlist: bufanda, necesser, ulleres de sol",moda,wishlist_items,ca
+"interessos: bosses, outfits. wishlist: bufanda, ulleres de sol. li agrada la moda i cuidar el seu estil personal",moda,mixed,ca
+experiencies,experiencies,tag,ca
+li agrada llegir i descobrir llibres nous,llibres,phrase,ca
+"preferencies: aventura, oci, experiencies",experiencies,tags_group,ca
+"cocina, gastronomia, recetas",cuina,spanish_support,es
+mindfulness,benestar,tag,ca
+"wishlist: suport per comandaments, auriculars gaming, cadira gaming",gaming,wishlist_items,ca
+"interessos: assaig, fantasia, comic",llibres,tags_group,ca
+"wishlist: samarreta tecnica, ampolla esportiva, motxilla esportiva",esport,wishlist_items,ca
+le gusta escuchar musica y asistir a conciertos,musica,spanish_support,es
+"interessos: accessoris tecnologics, domotica. wishlist: teclat mecanic, power bank. te interes per la informatica i els productes tecnologics",tecnologia,mixed,ca
+"wishlist: cantimplora, tenda de campanya, sac de dormir",outdoor,wishlist_items,ca
+escapades,experiencies,tag,ca
+"interessos: guitarra, concerts. wishlist: altaveu portatil, suport per auriculars. li agrada escoltar musica i anar a concerts",musica,mixed,ca
+le gustan las novelas de fantasia y los comics,llibres,spanish_support,es
+"wishlist: classe de cuina, sessio spa, escape room",experiencies,wishlist_items,ca
+"interessos: entrades, aventura. wishlist: entrada teatre, taller creatiu. li poden encaixar activitats, tallers o entrades per esdeveniments",experiencies,mixed,ca
+"wishlist: motxilla trekking, termo, tenda de campanya",outdoor,wishlist_items,ca
+"li agrada: relax, descans, autocura",benestar,tags_group,ca
+"interessos: experiencies, activitats. wishlist: cap de setmana rural, activitat aventura. li agraden els plans diferents i les activitats compartides",experiencies,mixed,ca
+"wishlist: batedora petita, davantal, termometre de cuina",cuina,wishlist_items,ca
+li fan il·lusio els regals relacionats amb lectura,llibres,phrase,ca
+salut,benestar,tag,ca
+"wishlist: taller creatiu, visita guiada, cap de setmana rural",experiencies,wishlist_items,ca
+"tags: programacio, domotica, smartphone",tecnologia,tags_group,ca
+"wishlist: banda elastica, llum per bicicleta, tovallola de gimnas",esport,wishlist_items,ca
+pastisseria,cuina,tag,ca
+te interes en peces practiques i boniques per vestir,moda,phrase,ca
+piano,musica,tag,ca
+setup gaming,gaming,tag,ca
+plans,experiencies,tag,ca
+rebosteria,cuina,tag,ca
+"interessos: pc gaming, videojocs. wishlist: auriculars gaming, estora gran. te interes en el mon gaming i els accessoris de setup",gaming,mixed,ca
+"preferencies: outfits, bosses, rellotges",moda,tags_group,ca
+cocina,cuina,tag,ca
+li poden agradar accessoris per escoltar musica millor,musica,phrase,ca
+"gaudeix amb restaurants, escapades i activitats d'oci",experiencies,phrase,ca
+"interessos: plans, entrades, viatges",experiencies,tags_group,ca
+"wishlist: frontal led, motxilla trekking, cantimplora",outdoor,wishlist_items,ca
+"wishlist: ebook reader, manga, luz de lectura",llibres,spanish_support,es
+"interessos: trekking, aventura. wishlist: termo, bastons de trekking. sol fer plans a l'aire lliure i escapades de cap de setmana",outdoor,mixed,ca
+te interes en el mon gaming i els accessoris de setup,gaming,phrase,ca
+sol valorar regals relacionats amb so i musica,musica,phrase,ca
+"interessos: novel·les, assaig. wishlist: llibre de misteri, comic. gaudeix amb llibres, manga i histories il·lustrades",llibres,mixed,ca
+streaming,gaming,tag,ca
+"wishlist: set skincare, espelma aromatica, diari de gratitud",benestar,wishlist_items,ca
+auriculars,musica,tag,ca
+"interessos: running, equipament esportiu. wishlist: mitjons tecnics, guants de fitness. te interes en productes per entrenar millor",esport,mixed,ca
+"wishlist: power bank, smartwatch, auriculars bluetooth",tecnologia,wishlist_items,ca
+"wishlist: carregador wireless, auriculars bluetooth, ratoli ergonomic",tecnologia,wishlist_items,ca
+busca millorar el seu espai de joc amb accessoris gaming,gaming,phrase,ca
+"wishlist: auriculars gaming, llum rgb, targeta regal videojocs",gaming,wishlist_items,ca
+cafe,cuina,tag,ca
+activitats,experiencies,tag,ca
+"interessos: gimnas, fitness. wishlist: estoreta de ioga, ampolla esportiva. sol utilitzar material esportiu i roba tecnica",esport,mixed,ca
+"li poden encaixar activitats, tallers o entrades per esdeveniments",experiencies,phrase,ca
+"interessos: pastisseria, cocina. wishlist: motlles de rebosteria, llibre de receptes. gaudeix amb la pastisseria i els estris de cuina",cuina,mixed,ca
+"interessos: joieria, bosses. wishlist: bossa, dessuadora. li agrada la moda i cuidar el seu estil personal",moda,mixed,ca
+"interessos: electronica, smartphone. wishlist: carregador wireless, teclat mecanic. sol demanar productes relacionats amb tecnologia i electrònica",tecnologia,mixed,ca
+restaurants,experiencies,tag,ca
+"interessos: biblioteca, fantasia. wishlist: quadern de lectura, novel·la de fantasia. gaudeix amb llibres, manga i histories il·lustrades",llibres,mixed,ca
+"wishlist: samarreta, bufanda, motxilla urbana",moda,wishlist_items,ca
+senderisme,outdoor,tag,ca
+moda,moda,tag,ca
+pot valorar accessoris personals o complements de qualitat,moda,phrase,ca
+"interessos: smartwatch, programacio, tecnologia",tecnologia,tags_group,ca
+"interessos: cocina, barbacoa. wishlist: tassa termica, ganivet de cuina. li agrada cuinar i provar receptes noves",cuina,mixed,ca
+"interessos: manga, lectura. wishlist: ebook reader, manga. sol afegir llibres i comics a les seves llistes",llibres,mixed,ca
+"wishlist: vinilo, altavoz portatil, entradas concierto",musica,spanish_support,es
+"tags: xbox, gaming, jocs",gaming,tags_group,ca
+li agraden les excursions i les activitats a la natura,outdoor,phrase,ca
+"interessos: estil, joieria. wishlist: necesser, ulleres de sol. te interes en peces practiques i boniques per vestir",moda,mixed,ca
+"interessos: natura, senderisme. wishlist: frontal led, bastons de trekking. sol fer plans a l'aire lliure i escapades de cap de setmana",outdoor,mixed,ca
+"tags: roba, outfits, bosses",moda,tags_group,ca
+"preferencies: natacio, running, ciclisme",esport,tags_group,ca
+"libros, lectura, novelas",llibres,spanish_support,es
+"interessos: benestar, mindfulness, meditacio",benestar,tags_group,ca
+"li agrada: entrades, restaurants, escapades",experiencies,tags_group,ca
+"wishlist: impermeable, mapa de rutes, tenda de campanya",outdoor,wishlist_items,ca
+gaudeix amb la pastisseria i els estris de cuina,cuina,phrase,ca
+"wishlist: cadira gaming, suport per comandaments, figura decorativa gaming",gaming,wishlist_items,ca
+gaudeix amb festivals i activitats musicals,musica,phrase,ca
+"preferencies: ciclisme, esports, fitness",esport,tags_group,ca
+accessoris tecnologics,tecnologia,tag,ca
+"interessos: senderisme, camping. wishlist: navalla multiusos, termo. li poden agradar regals relacionats amb trekking i aventura",outdoor,mixed,ca
+"interessos: meditacio, spa. wishlist: manta suau, set skincare. te interes en benestar, descans i moments tranquils",benestar,mixed,ca
+nintendo,gaming,tag,ca
+"wishlist: mapa de rutes, tenda de campanya, termo",outdoor,wishlist_items,ca
+"interessos: instruments, audio. wishlist: suport per auriculars, auriculars. li agrada escoltar musica i anar a concerts",musica,mixed,ca
+"wishlist: vela aromatica, difusor, mascarilla dormir",benestar,spanish_support,es
+"interessos: excursions, muntanya. wishlist: frontal led, tenda de campanya. sol fer plans a l'aire lliure i escapades de cap de setmana",outdoor,mixed,ca
+"interessos: oci, experiencies, aventura",experiencies,tags_group,ca
+relax,benestar,tag,ca
+"wishlist: sessio spa, entrada teatre, activitat aventura",experiencies,wishlist_items,ca
+"interessos: ciencia ficcio, fantasia. wishlist: manga, ebook reader. sol afegir llibres i comics a les seves llistes",llibres,mixed,ca
+"preferencies: autocura, mindfulness, relax",benestar,tags_group,ca
+"interessos: xbox, streaming. wishlist: suport per comandaments, auriculars gaming. passa temps jugant amb consola i ordinador",gaming,mixed,ca
+"interessos: ordinadors, smartwatch. wishlist: smartwatch, hub usb-c. sol demanar productes relacionats amb tecnologia i electrònica",tecnologia,mixed,ca
+"interessos: cafe, te. wishlist: llibre de receptes, cafetera. gaudeix amb la pastisseria i els estris de cuina",cuina,mixed,ca
+"interessos: setup gaming, nintendo, xbox",gaming,tags_group,ca
+le gustan los auriculares bluetooth y los accesorios para ordenador,tecnologia,spanish_support,es

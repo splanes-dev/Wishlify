@@ -1,0 +1,17 @@
+{
+  "max_tokens": 3000,
+  "sequence_length": 40,
+  "labels": [
+    "benestar",
+    "cuina",
+    "esport",
+    "experiencies",
+    "gaming",
+    "llibres",
+    "moda",
+    "musica",
+    "outdoor",
+    "tecnologia"
+  ],
+  "test_accuracy": 0.9090909361839294
+}

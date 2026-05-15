@@ -197,7 +197,7 @@ class SecretSantaDetailViewModel(
     val e = event as? SecretSantaEventDetail.DrawDone
       ?: error("Tyring to open hobbies of secret santa event (${event.id}) but draw is not done...")
 
-    val effect = SecretSantaDetailUiSideEffect.NavToHobbies(e.receiver.uid)
+    val effect = SecretSantaDetailUiSideEffect.NavToHobbies(e.id, e.receiver.uid)
     uiSideEffectChannel.trySend(effect)
   }
 

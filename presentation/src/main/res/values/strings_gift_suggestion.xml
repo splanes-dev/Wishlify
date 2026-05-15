@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- BottomSheet -->
+    <string name="gift_suggestion_bottom_sheet_title">Suggerències per IA</string>
+    <string name="gift_suggestion_bottom_sheet_info_banner">Els suggeriments generats per IA són orientatius i poden no coincidir completament amb els gustos reals de la persona. Utilitza’ls com a inspiració per trobar el regal ideal.</string>
+    <string name="gift_suggestion_bottom_sheet_empty">Oops… No ha estat possible generar suggeriments a partir de les dades obtingudes.\nÉs possible que falti informació per a inferir una resposta de qualitat, sentim les molèsties.</string>
+    <string name="gift_suggestion_confidence_high">(Molt recomanat)</string>
+    <string name="gift_suggestion_confidence_med">(Recomanat)</string>
+    <string name="gift_suggestion_confidence_low">(Possible interès)</string>
+
+    <!-- Technology -->
+    <string name="gift_suggestion_tech_audio_accessories">Accessoris d’àudio i so, com altaveus, micròfons o DACs</string>
+    <string name="gift_suggestion_tech_headphones">Auriculars i dispositius d’àudio per música, gaming o feina</string>
+    <string name="gift_suggestion_tech_gadgets">Gadgets tecnològics útils i curiosos per al dia a dia</string>
+    <string name="gift_suggestion_tech_useful_devices">Dispositius tecnològics pràctics per casa o ús personal</string>
+    <string name="gift_suggestion_tech_mobile_accessories">Accessoris per al mòbil, com fundes o suports</string>
+    <string name="gift_suggestion_tech_chargers_and_cables">Carregadors, cables o accessoris de càrrega</string>
+    <string name="gift_suggestion_tech_productivity_setup">Accessoris per al setup, com teclats o suports de portàtil</string>
+    <string name="gift_suggestion_tech_office_accessories">Accessoris d’oficina i escriptori per treballar més còmodament</string>
+    <string name="gift_suggestion_tech_smart_home_devices">Dispositius intel·ligents per a la llar</string>
+    <string name="gift_suggestion_tech_home_automation">Productes de domòtica i automatització de casa</string>
+
+    <!-- Gaming -->
+    <string name="gift_suggestion_gaming_games">Videojocs, expansions o novetats gaming</string>
+    <string name="gift_suggestion_gaming_gift_cards">Targetes regal per Steam, PlayStation, Nintendo o Xbox</string>
+    <string name="gift_suggestion_gaming_accessories">Accessoris gaming per millorar l’experiència de joc</string>
+    <string name="gift_suggestion_gaming_peripherals">Perifèrics gaming, com teclats, ratolins o comandaments</string>
+    <string name="gift_suggestion_gaming_collectibles">Figures i objectes de col·lecció relacionats amb videojocs</string>
+    <string name="gift_suggestion_gaming_special_editions">Edicions especials i col·leccionista de videojocs</string>
+    <string name="gift_suggestion_gaming_merchandising">Marxandatge gaming, com samarretes o tasses</string>
+    <string name="gift_suggestion_gaming_decor">Decoració inspirada en videojocs i setups gaming</string>
+
+    <!-- Books -->
+    <string name="gift_suggestion_books_novels">Novel·les i llibres de ficció per gaudir llegint</string>
+    <string name="gift_suggestion_books_reading_accessories">Accessoris per llegir, com punts de llibre o llums</string>
+    <string name="gift_suggestion_books_technical">Llibres tècnics i especialitzats per aprendre</string>
+    <string name="gift_suggestion_books_learning">Llibres i recursos relacionats amb l’aprenentatge</string>
+    <string name="gift_suggestion_books_comics_manga">Còmics, manga i lectures il·lustrades</string>
+    <string name="gift_suggestion_books_graphic_novels">Novel·les gràfiques i edicions especials</string>
+    <string name="gift_suggestion_books_essays">Assaigs, divulgació i llibres de reflexió</string>
+    <string name="gift_suggestion_books_non_fiction">Llibres de no-ficció i temàtiques reals</string>
+
+    <!-- Outdoor -->
+    <string name="gift_suggestion_outdoor_hiking_accessories">Accessoris de senderisme, com motxilles o bastons</string>
+    <string name="gift_suggestion_outdoor_mountain_gear">Equipament de muntanya per excursions i trekking</string>
+    <string name="gift_suggestion_outdoor_camping_gear">Material de càmping, com frontal, cantimplora o sac</string>
+    <string name="gift_suggestion_outdoor_basic_kit">Kit outdoor bàsic per escapades i natura</string>
+    <string name="gift_suggestion_outdoor_travel_accessories">Accessoris útils per viatjar i fer escapades</string>
+    <string name="gift_suggestion_outdoor_weekend_trip">Idees per una escapada o cap de setmana especial</string>
+
+    <!-- Sports -->
+    <string name="gift_suggestion_sports_gym_accessories">Accessoris de gimnàs i entrenament personal</string>
+    <string name="gift_suggestion_sports_training_material">Material esportiu per entrenar i mantenir-se actiu</string>
+    <string name="gift_suggestion_sports_running_gear">Equipament de running, com mitjons o armilles</string>
+    <string name="gift_suggestion_sports_technical_clothing">Roba esportiva tècnica i còmoda</string>
+    <string name="gift_suggestion_sports_swimming_accessories">Accessoris de natació, com ulleres o casquets</string>
+    <string name="gift_suggestion_sports_pool_gear">Material útil per piscina i entrenament aquàtic</string>
+    <string name="gift_suggestion_sports_team_merch">Marxandatge i productes del seu equip esportiu</string>
+    <string name="gift_suggestion_sports_match_experience">Entrades i experiències relacionades amb partits</string>
+    <string name="gift_suggestion_sports_cycling_accessories">Accessoris de ciclisme per sortir en bici</string>
+    <string name="gift_suggestion_sports_bike_gear">Equipament i complements per bicicleta</string>
+
+    <!-- Fashion -->
+    <string name="gift_suggestion_fashion_clothing">Roba i peces de vestir per renovar l’estil</string>
+    <string name="gift_suggestion_fashion_style_items">Articles relacionats amb la moda i l’estil personal</string>
+    <string name="gift_suggestion_fashion_accessories">Accessoris de moda, com bosses o bufandes</string>
+    <string name="gift_suggestion_fashion_personal_complements">Complements personals per al dia a dia</string>
+    <string name="gift_suggestion_fashion_sneakers">Sneakers i calçat casual o esportiu</string>
+    <string name="gift_suggestion_fashion_shoe_care">Productes per cuidar i mantenir el calçat</string>
+    <string name="gift_suggestion_fashion_jewelry">Joieria i petits complements elegants</string>
+    <string name="gift_suggestion_fashion_small_details">Petits detalls relacionats amb la moda</string>
+
+    <!-- Cooking -->
+    <string name="gift_suggestion_cooking_kitchen_tools">Estris i eines de cuina útils</string>
+    <string name="gift_suggestion_cooking_useful_accessories">Accessoris pràctics per cuinar millor</string>
+    <string name="gift_suggestion_cooking_gourmet_products">Productes gourmet i delicatessen</string>
+    <string name="gift_suggestion_cooking_food_experience">Experiències gastronòmiques i degustacions</string>
+
+    <!-- Music -->
+    <string name="gift_suggestion_music_instrument_accessories">Accessoris per instruments musicals</string>
+    <string name="gift_suggestion_music_learning_material">Material per aprendre o practicar música</string>
+    <string name="gift_suggestion_music_live_events">Concerts i experiències de música en directe</string>
+    <string name="gift_suggestion_music_experiences">Experiències relacionades amb la música</string>
+
+    <!-- Wellbeing -->
+    <string name="gift_suggestion_wellbeing_relaxation">Productes de relaxació, com espelmes o difusors</string>
+    <string name="gift_suggestion_wellbeing_rest">Idees per descansar i desconnectar millor</string>
+    <string name="gift_suggestion_wellbeing_selfcare">Productes d’autocura i benestar personal</string>
+    <string name="gift_suggestion_wellbeing_routine">Rutines i hàbits saludables per al dia a dia</string>
+    <string name="gift_suggestion_wellbeing_fitness">Accessoris fitness i de salut activa</string>
+    <string name="gift_suggestion_wellbeing_active_care">Productes per cuidar-se físicament i mentalment</string>
+
+    <!-- Experiences -->
+    <string name="gift_suggestion_experiences_cultural">Experiències culturals i activitats originals</string>
+    <string name="gift_suggestion_experiences_museum_theatre_cinema">Entrades per museus, teatre o cinema</string>
+    <string name="gift_suggestion_experiences_adventure">Experiències d’aventura i adrenalina</string>
+    <string name="gift_suggestion_experiences_outdoor_activity">Activitats outdoor i escapades actives</string>
+    <string name="gift_suggestion_experiences_food">Experiències relacionades amb gastronomia</string>
+    <string name="gift_suggestion_experiences_tasting_or_dinner">Tasts, brunchs o sopars especials</string>
+    <string name="gift_suggestion_experiences_romantic">Experiències romàntiques per compartir</string>
+    <string name="gift_suggestion_experiences_couple_plan">Plans especials per fer en parella</string>
+
+    <!-- Entertainment -->
+    <string name="gift_suggestion_entertainment_merch">Marxandatge d’anime, sèries o cinema</string>
+    <string name="gift_suggestion_entertainment_collectibles">Figures i objectes col·leccionables</string>
+    <string name="gift_suggestion_entertainment_events">Esdeveniments relacionats amb entreteniment</string>
+    <string name="gift_suggestion_entertainment_conventions">Convencions, comic-cons i salons temàtics</string>
+
+    <!-- Art -->
+    <string name="gift_suggestion_art_creative_material">Material creatiu per dibuix o manualitats</string>
+    <string name="gift_suggestion_art_craft_kit">Kits creatius i activitats DIY</string>
+
+    <!-- Generic -->
+    <string name="gift_suggestion_generic_practical">Detalls pràctics i útils per al dia a dia</string>
+    <string name="gift_suggestion_generic_experience">Experiències per compartir i recordar</string>
+    <string name="gift_suggestion_generic_flexible_detail">Detalls versàtils i fàcils d’adaptar</string>
+
+</resources>

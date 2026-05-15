@@ -43,4 +43,7 @@ dependencies {
   implementation(libs.google.firebase.messaging)
   // Timber
   implementation(libs.timber)
+  // TensorFlow Lite
+  implementation(libs.tensorflow.lite)
+
 }

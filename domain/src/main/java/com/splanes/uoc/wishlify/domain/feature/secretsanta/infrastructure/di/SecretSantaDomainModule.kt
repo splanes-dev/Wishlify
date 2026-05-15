@@ -10,6 +10,7 @@ import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSa
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaEventsUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaWishlistItemsUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.FetchSecretSantaWishlistUseCase
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.GetAiGiftSuggestionsUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.SendMessageSecretSantaChatUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.ShareWishlistSecretSantaUseCase
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.usecase.SubscribeSecretSantaChatUseCase
@@ -38,4 +39,5 @@ internal val SecretSantaDomainModule = module {
   singleOf(::SubscribeSecretSantaChatUseCase)
   singleOf(::SendMessageSecretSantaChatUseCase)
   singleOf(::AddEventParticipantFromLinkUseCase)
+  singleOf(::GetAiGiftSuggestionsUseCase)
 }

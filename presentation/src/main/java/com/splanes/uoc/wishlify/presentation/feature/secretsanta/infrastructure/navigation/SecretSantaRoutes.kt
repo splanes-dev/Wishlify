@@ -63,6 +63,7 @@ data object SecretSanta {
    */
   @Serializable
   data class Hobbies(
+    val eventId: String,
     val targetUid: String,
   )
 }

@@ -11,6 +11,9 @@ fun FirebaseFunctions.joinByInvitationLink(token: String, type: JoinByInvitation
   getHttpsCallable(Callables.JOIN_BY_INVITATION_LINK)
     .call(mapOf("token" to token, "actionId" to type.value))
 
+fun FirebaseFunctions.getGiftSuggestionAiContext(targetUid: String, eventId: String) =
+  getHttpsCallable(Callables.GET_GIFT_SUGGESTION_AI_CONTEXT)
+    .call(mapOf("targetUserId" to targetUid, "secretSantaId" to eventId))
 
 /** Supported invitation actions handled by the shared join callable. */
 enum class JoinByInvitationLinkType(val value: String) {
@@ -22,4 +25,5 @@ enum class JoinByInvitationLinkType(val value: String) {
 private object Callables {
   const val EXTRACT_LINK_METADATA = "extractLinkMetadata"
   const val JOIN_BY_INVITATION_LINK = "joinByInvitationLink"
+  const val GET_GIFT_SUGGESTION_AI_CONTEXT = "getGiftSuggestionAiContext"
 }

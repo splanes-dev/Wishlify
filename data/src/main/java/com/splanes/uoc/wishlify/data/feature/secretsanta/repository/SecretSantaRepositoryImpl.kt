@@ -11,9 +11,11 @@ import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSourc
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.wishlists.mapper.WishlistsDataMapper
+import com.splanes.uoc.wishlify.domain.common.error.GenericError
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMedia
 import com.splanes.uoc.wishlify.domain.common.model.ChatPage
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.CreateSecretSantaEventRequest
+import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.GiftSuggestionsAiContext
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaChatMessage
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEvent
 import com.splanes.uoc.wishlify.domain.feature.secretsanta.model.SecretSantaEventDetail
@@ -427,5 +429,11 @@ class SecretSantaRepositoryImpl(
   override suspend fun addEventParticipantByToken(token: String): Result<Unit> =
     runCatching {
       secretSantaRemoteDataSource.addEventParticipantByToken(token)
+    }
+
+  override suspend fun getGiftSuggestionsAiContext(target: String, event: String): Result<GiftSuggestionsAiContext> =
+    runCatching {
+      val result = secretSantaRemoteDataSource.getGiftSuggestionsAiContext(target, event)
+      result?.let(mapper::mapSuggestionsAiContext) ?: throw GenericError.Unknown()
     }
 }

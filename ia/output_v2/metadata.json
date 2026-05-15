@@ -1,0 +1,20 @@
+{
+  "max_tokens": 3000,
+  "sequence_length": 40,
+  "embedding_dim": 32,
+  "labels": [
+    "benestar",
+    "cuina",
+    "esport",
+    "experiencies",
+    "gaming",
+    "llibres",
+    "moda",
+    "musica",
+    "outdoor",
+    "tecnologia"
+  ],
+  "test_accuracy": 0.9659090638160706,
+  "pad_token": "<PAD>",
+  "unk_token": "<UNK>"
+}

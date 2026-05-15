@@ -43,6 +43,7 @@ sealed interface SecretSantaDetailUiSideEffect {
   ) : SecretSantaDetailUiSideEffect
 
   data class NavToHobbies(
+    val eventId: String,
     val targetUid: String
   ) : SecretSantaDetailUiSideEffect
 }

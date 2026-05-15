@@ -34,6 +34,9 @@ google-firebase-bom = "34.12.0"
 # Coil
 coil = "2.7.0"
 
+# AI
+tensorflow = "2.17.0"
+
 # Logger
 timber = "5.0.1"
 
@@ -94,6 +97,9 @@ google-firebase-messaging = { group = "com.google.firebase", name = "firebase-me
 
 # Logger
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+# TensorFlow
+tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflow" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
