@@ -25,3 +25,4 @@ functions/.runtimeconfig.json
 *.p12
 serviceAccountKey.json
 /scripts
+/app/release
