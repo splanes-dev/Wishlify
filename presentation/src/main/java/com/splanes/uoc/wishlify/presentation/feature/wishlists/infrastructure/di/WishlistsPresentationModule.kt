@@ -5,6 +5,7 @@ import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.cr
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.edition.WishlistEditItemViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemSuggestedTagsUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.WishlistShareViewModel
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.mapper.WishlistShareFormUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.share.mapper.WishlistShareUiMapper
@@ -87,6 +88,8 @@ internal val WishlistsPresentationModule = module {
       imageUri = imageUrl,
       createWishlistItemUseCase = get(),
       fetchAllLinkDataUseCase = get(),
+      getAiWishlistItemTagsUseCase = get(),
+      wishlistItemSuggestedTagsUiMapper = get(),
       formErrorMapper = get(),
       formUiMapper = get(),
       errorUiMapper = get(),
@@ -135,4 +138,5 @@ internal val WishlistsPresentationModule = module {
   singleOf(::WishlistItemFormUiMapper)
   singleOf(::WishlistShareFormUiMapper)
   singleOf(::WishlistShareUiMapper)
+  singleOf(::WishlistItemSuggestedTagsUiMapper)
 }

@@ -25,6 +25,7 @@ fun WishlistNewItemRoute(
     uiState = uiState,
     onCreate = viewModel::onCreate,
     onAutocompleteByLink = viewModel::onAutocomplete,
+    onAutocompleteTagsClick = viewModel::onAutocompleteTags,
     onClearInputError = viewModel::onClearInputError,
     onDismissError = viewModel::onDismissError,
     onCancel = { onFinish(false) }

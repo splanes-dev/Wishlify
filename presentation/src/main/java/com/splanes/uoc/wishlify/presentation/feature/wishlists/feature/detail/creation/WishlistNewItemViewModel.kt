@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.CreateWishlistItemUseCase
 import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.FetchAllLinkDataUseCase
+import com.splanes.uoc.wishlify.domain.feature.wishlists.usecase.GetAiWishlistItemTagsUseCase
 import com.splanes.uoc.wishlify.presentation.common.components.ImagePicker
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormErrorMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemFormUiMapper
+import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.mapper.WishlistItemSuggestedTagsUiMapper
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.AmountWishlistItemFormError
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.DescriptionWishlistItemFormError
 import com.splanes.uoc.wishlify.presentation.feature.wishlists.feature.detail.model.LinkWishlistItemFormError
@@ -39,7 +41,9 @@ class WishlistNewItemViewModel(
   imageUri: String?,
   private val fetchAllLinkDataUseCase: FetchAllLinkDataUseCase,
   private val createWishlistItemUseCase: CreateWishlistItemUseCase,
+  private val getAiWishlistItemTagsUseCase: GetAiWishlistItemTagsUseCase,
   private val formErrorMapper: WishlistItemFormErrorMapper,
+  private val wishlistItemSuggestedTagsUiMapper: WishlistItemSuggestedTagsUiMapper,
   private val formUiMapper: WishlistItemFormUiMapper,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
@@ -110,6 +114,22 @@ class WishlistNewItemViewModel(
    */
   fun onAutocomplete(link: String) {
     viewModelScope.launch { tryAutofillByLink(link) }
+  }
+
+  fun onAutocompleteTags(name: String, tags: String) {
+    viewModelState.update { state -> state.copy(isLoading = true) }
+    viewModelScope.launch {
+      val result = getAiWishlistItemTagsUseCase(name, tags)
+      viewModelState.update { state ->
+        state.copy(
+          form = state.form.copy(
+            tags = result.getOrNull()?.let(wishlistItemSuggestedTagsUiMapper::map) ?: tags,
+          ),
+          isLoading = false,
+          error = result.exceptionOrNull()
+        )
+      }
+    }
   }
 
   /**

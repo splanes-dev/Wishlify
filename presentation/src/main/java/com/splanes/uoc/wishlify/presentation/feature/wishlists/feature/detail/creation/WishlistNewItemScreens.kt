@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -68,6 +69,7 @@ fun WishlistNewItemScreen(
   uiState: WishlistNewItemUiState,
   onCreate: (WishlistItemForm) -> Unit,
   onAutocompleteByLink: (url: String) -> Unit,
+  onAutocompleteTagsClick: (name: String, tags: String) -> Unit,
   onClearInputError: (WishlistItemForm.Input) -> Unit,
   onDismissError: () -> Unit,
   onCancel: () -> Unit,
@@ -118,6 +120,10 @@ fun WishlistNewItemScreen(
 
   var imageSelected: ImagePicker.Resource? by remember(uiState.form.photo) {
     mutableStateOf(uiState.form.photo)
+  }
+
+  val isAutocompleteTagsVisible by remember(uiState.form) {
+    derivedStateOf { nameState.text.isNotBlank() }
   }
 
   val isButtonEnabled by remember(uiState.form) {
@@ -272,7 +278,6 @@ fun WishlistNewItemScreen(
 
         Row(
           modifier = Modifier.fillMaxWidth(),
-          verticalAlignment = Alignment.CenterVertically,
           horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
           TextInput(
@@ -285,6 +290,7 @@ fun WishlistNewItemScreen(
 
           AnimatedVisibility(visible = linkState.text.isNotBlank()) {
             FilledTonalButton(
+              modifier = Modifier.heightIn(min = 56.dp),
               shapes = ButtonShape,
               onClick = { onAutocompleteByLink(linkState.text) }
             ) {
@@ -298,13 +304,31 @@ fun WishlistNewItemScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextInput(
+        Row(
           modifier = Modifier.fillMaxWidth(),
-          state = tagsState,
-          label = stringResource(R.string.wishlists_new_item_tags_input),
-          leadingIcon = Icons.Outlined.Tag,
-          singleLine = true,
-        )
+          horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+          TextInput(
+            modifier = Modifier.weight(1f),
+            state = tagsState,
+            label = stringResource(R.string.wishlists_new_item_tags_input),
+            leadingIcon = Icons.Outlined.Tag,
+            singleLine = true,
+          )
+
+          AnimatedVisibility(visible = isAutocompleteTagsVisible) {
+            FilledTonalButton(
+              modifier = Modifier.heightIn(min = 56.dp),
+              shapes = ButtonShape,
+              onClick = { onAutocompleteTagsClick(nameState.text, tagsState.text) }
+            ) {
+              Icon(
+                painter = painterResource(R.drawable.ic_autocomplete),
+                contentDescription = null
+              )
+            }
+          }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
