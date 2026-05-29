@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.Flow
 interface SharedWishlistsRepository {
   /** Retrieves the shared wishlists visible to the given user. */
   suspend fun fetchSharedWishlists(uid: String): Result<List<SharedWishlist>>
+  /** Subscribes to real-time updates of the shared wishlists visible to the given user. */
+  suspend fun subscribeToSharedWishlists(uid: String): Flow<List<SharedWishlist>>
   /** Retrieves a single shared wishlist for the given user. */
   suspend fun fetchSharedWishlist(uid: String, sharedWishlistId: String): Result<SharedWishlist>
   /** Converts a shared wishlist back into a private wishlist flow. */

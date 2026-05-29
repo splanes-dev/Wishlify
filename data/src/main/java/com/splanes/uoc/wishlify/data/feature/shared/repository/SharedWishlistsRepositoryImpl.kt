@@ -7,6 +7,7 @@ import com.splanes.uoc.wishlify.data.feature.groups.mapper.GroupsDataMapper
 import com.splanes.uoc.wishlify.data.feature.shared.datasource.SharedWishlistsRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.shared.mapper.SharedWishlistsDataMapper
 import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistChatMessageEntity
+import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistEntity
 import com.splanes.uoc.wishlify.data.feature.user.datasource.UserRemoteDataSource
 import com.splanes.uoc.wishlify.data.feature.user.mapper.UserDataMapper
 import com.splanes.uoc.wishlify.data.feature.wishlists.datasource.WishlistsRemoteDataSource
@@ -15,6 +16,7 @@ import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.domain.common.error.GenericError
 import com.splanes.uoc.wishlify.domain.common.media.model.ImageMediaPath
 import com.splanes.uoc.wishlify.domain.common.model.ChatPage
+import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistChatMessage
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlistItem
@@ -65,73 +67,28 @@ class SharedWishlistsRepositoryImpl(
         uid !in wishlists.editors || wishlists.editorsCanSeeUpdates
       }
 
-      val groupsToFetch = entities
-        .mapNotNull { entity -> entity.group }
-        .filter { id -> id !in groupsId }
-        .distinct()
-      val wishlistsToFetch = entities
-        .map { entity -> entity.wishlist }
-      val usersToFetch = entities
-        .flatMap { entity -> entity.participants + entity.owner + entity.editors }
-        .distinct()
-
-      coroutineScope {
-        val groupsByIdDeferred = async {
-          groupsToFetch
-            .map { id -> async { groupsRemoteDataSource.fetchGroupById(id) } }
-            .awaitAll()
-            .filterNotNull()
-            .map { groupsMapper.mapToBasic(it, true) }
-            .associateBy { it.id }
-        }
-        val wishlistsByIdDeferred = async {
-          wishlistsToFetch
-            .map { id -> async { wishlistsRemoteDataSource.fetchWishlist(id) } }
-            .awaitAll()
-            .map { wishlist -> wishlistsDataMapper.mapToLinkedWishlist(wishlist) }
-            .associateBy { it.id }
-        }
-        val usersByIdDeferred = async {
-          usersToFetch
-            .map { id -> async { userRemoteDataSource.fetchUserById(id) } }
-            .awaitAll()
-            .filterNotNull()
-            .map { user -> userDataMapper.mapToBasic(user) }
-            .map { basic -> userDataMapper.map(basic) }
-            .associateBy { it.uid }
-        }
-        val numOfItemsDeferred = async {
-          entities
-            .map { entity ->
-              async {
-                entity.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(
-                  entity.wishlist,
-                  excludePurchased = true
-                )
-              }
-            }
-            .awaitAll()
-            .toMap()
-        }
-
-        val groupsById = groupsByIdDeferred.await() + groups.associateBy { it.id }
-        val wishlistsById = wishlistsByIdDeferred.await()
-        val usersById = usersByIdDeferred.await()
-        val numOfItemsById = numOfItemsDeferred.await()
-
-        entities.map { entity ->
-          mapper.mapWishlist(
-            uid = uid,
-            entity = entity,
-            groups = groupsById,
-            wishlists = wishlistsById,
-            users = usersById,
-            numOfItemsMap = numOfItemsById,
-            pendingNotificationsMap = emptyMap() // TODO
-          )
-        }
-      }
+      mapSharedWishlists(uid, groups, entities)
     }
+
+  /**
+   * Subscribes to shared wishlist header updates and enriches each emission
+   * with the linked wishlist, group, users and item-count metadata.
+   */
+  override suspend fun subscribeToSharedWishlists(uid: String): Flow<List<SharedWishlist>> {
+    val groups = groupsRemoteDataSource
+      .fetchGroups(uid)
+      .map { groupsMapper.mapToBasic(it, true) }
+    val groupsId = groups.map { it.id }
+
+    return sharedWishlistsRemoteDataSource
+      .subscribeToSharedWishlists(uid = uid, groups = groupsId)
+      .map { entities ->
+        val visibleEntities = entities.filter { wishlist ->
+          uid !in wishlist.editors || wishlist.editorsCanSeeUpdates
+        }
+        mapSharedWishlists(uid, groups, visibleEntities)
+      }
+  }
 
   /** Fetches one shared wishlist and resolves all linked group, users and item counts. */
   override suspend fun fetchSharedWishlist(
@@ -513,4 +470,79 @@ class SharedWishlistsRepositoryImpl(
     runCatching {
       sharedWishlistsRemoteDataSource.addParticipantByToken(token)
     }
+
+  /** Maps shared wishlist headers to domain models after resolving linked metadata. */
+  private suspend fun mapSharedWishlists(
+    uid: String,
+    groups: List<Group.Basic>,
+    entities: List<SharedWishlistEntity>
+  ): List<SharedWishlist> {
+    val groupsId = groups.map { it.id }
+    val groupsToFetch = entities
+      .mapNotNull { entity -> entity.group }
+      .filter { id -> id !in groupsId }
+      .distinct()
+    val wishlistsToFetch = entities
+      .map { entity -> entity.wishlist }
+    val usersToFetch = entities
+      .flatMap { entity -> entity.participants + entity.owner + entity.editors }
+      .distinct()
+
+    return coroutineScope {
+      val groupsByIdDeferred = async {
+        groupsToFetch
+          .map { id -> async { groupsRemoteDataSource.fetchGroupById(id) } }
+          .awaitAll()
+          .filterNotNull()
+          .map { groupsMapper.mapToBasic(it, true) }
+          .associateBy { it.id }
+      }
+      val wishlistsByIdDeferred = async {
+        wishlistsToFetch
+          .map { id -> async { wishlistsRemoteDataSource.fetchWishlist(id) } }
+          .awaitAll()
+          .map { wishlist -> wishlistsDataMapper.mapToLinkedWishlist(wishlist) }
+          .associateBy { it.id }
+      }
+      val usersByIdDeferred = async {
+        usersToFetch
+          .map { id -> async { userRemoteDataSource.fetchUserById(id) } }
+          .awaitAll()
+          .filterNotNull()
+          .map { user -> userDataMapper.mapToBasic(user) }
+          .map { basic -> userDataMapper.map(basic) }
+          .associateBy { it.uid }
+      }
+      val numOfItemsDeferred = async {
+        entities
+          .map { entity ->
+            async {
+              entity.id to wishlistsRemoteDataSource.fetchWishlistItemsCount(
+                entity.wishlist,
+                excludePurchased = true
+              )
+            }
+          }
+          .awaitAll()
+          .toMap()
+      }
+
+      val groupsById = groupsByIdDeferred.await() + groups.associateBy { it.id }
+      val wishlistsById = wishlistsByIdDeferred.await()
+      val usersById = usersByIdDeferred.await()
+      val numOfItemsById = numOfItemsDeferred.await()
+
+      entities.map { entity ->
+        mapper.mapWishlist(
+          uid = uid,
+          entity = entity,
+          groups = groupsById,
+          wishlists = wishlistsById,
+          users = usersById,
+          numOfItemsMap = numOfItemsById,
+          pendingNotificationsMap = emptyMap() // TODO
+        )
+      }
+    }
+  }
 }

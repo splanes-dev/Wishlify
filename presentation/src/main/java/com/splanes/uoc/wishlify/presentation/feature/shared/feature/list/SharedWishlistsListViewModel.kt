@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.splanes.uoc.wishlify.domain.feature.notifications.usecase.IsPermissionModalVisibleUseCase
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.usecase.AddSharedWishlistParticipantByTokenUseCase
-import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.SubscribeSharedWishlistsUseCase
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -22,16 +24,18 @@ import kotlin.time.Duration.Companion.milliseconds
  * Coordinates the shared wishlists list, including invitation-link joins and list refreshes.
  */
 class SharedWishlistsListViewModel(
-  private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase,
+  private val subscribeSharedWishlistsUseCase: SubscribeSharedWishlistsUseCase,
   private val isPermissionModalVisibleUseCase: IsPermissionModalVisibleUseCase,
   private val addSharedWishlistParticipantByTokenUseCase: AddSharedWishlistParticipantByTokenUseCase,
   private val errorUiMapper: ErrorUiMapper,
 ) : ViewModel() {
 
+  private var observerJob: Job? = null
+
   private val viewModelState = MutableStateFlow(ViewModelState())
 
   val uiState = viewModelState.asStateFlow()
-    .onStart { fetchSharedWishlists() }
+    .onStart { subscribeToSharedWishlists() }
     .map { state -> state.toUiState(errorUiMapper) }
     .stateIn(
       initialValue = viewModelState.value.toUiState(errorUiMapper),
@@ -54,7 +58,9 @@ class SharedWishlistsListViewModel(
    * Reloads the shared wishlists list.
    */
   fun onReloadWishlists() {
-    fetchSharedWishlists()
+    viewModelScope.launch {
+      subscribeToSharedWishlists()
+    }
   }
 
   /**
@@ -79,34 +85,46 @@ class SharedWishlistsListViewModel(
   }
 
   /**
-   * Loads the current shared wishlists and resolves whether the notification permission modal
-   * should be displayed.
+   * Starts observing the current shared wishlists and resolves whether the notification permission
+   * modal should be displayed.
    */
-  private fun fetchSharedWishlists() {
+  private suspend fun subscribeToSharedWishlists() {
     viewModelState.update { state ->
       state.copy(isLoadingFullscreen = true)
     }
-    viewModelScope.launch {
 
-      fetchSharedWishlistsUseCase()
-        .onSuccess { wishlists ->
-          viewModelState.update { state ->
-            state.copy(
-              isLoadingFullscreen = false,
-              isPermissionModalVisible = isPermissionModalVisibleUseCase(),
-              wishlists = wishlists,
-            )
-          }
+    subscribeSharedWishlistsUseCase()
+      .onSuccess { flow ->
+        observerJob?.cancel()
+        observerJob = viewModelScope.launch {
+          flow
+            .catch { error ->
+              viewModelState.update { state ->
+                state.copy(
+                  isLoadingFullscreen = false,
+                  error = error,
+                )
+              }
+            }
+            .collect { wishlists ->
+              viewModelState.update { state ->
+                state.copy(
+                  isLoadingFullscreen = false,
+                  isPermissionModalVisible = isPermissionModalVisibleUseCase(),
+                  wishlists = wishlists,
+                )
+              }
+            }
         }
-        .onFailure { error ->
-          viewModelState.update { state ->
-            state.copy(
-              isLoadingFullscreen = false,
-              error = error,
-            )
-          }
+      }
+      .onFailure { error ->
+        viewModelState.update { state ->
+          state.copy(
+            isLoadingFullscreen = false,
+            error = error,
+          )
         }
-    }
+      }
   }
 
   private data class ViewModelState(

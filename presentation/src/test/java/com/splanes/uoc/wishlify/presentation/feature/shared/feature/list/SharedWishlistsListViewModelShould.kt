@@ -7,10 +7,12 @@ import com.splanes.uoc.wishlify.domain.common.model.InviteLink
 import com.splanes.uoc.wishlify.domain.feature.groups.model.Group
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist
 import com.splanes.uoc.wishlify.domain.feature.shared.model.SharedWishlist.LinkedWishlist
-import com.splanes.uoc.wishlify.domain.feature.shared.usecase.FetchSharedWishlistsUseCase
+import com.splanes.uoc.wishlify.domain.feature.shared.usecase.SubscribeSharedWishlistsUseCase
 import com.splanes.uoc.wishlify.domain.feature.user.model.User
 import com.splanes.uoc.wishlify.presentation.common.UnitTest
 import com.splanes.uoc.wishlify.presentation.common.error.ErrorUiMapper
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +25,7 @@ import java.util.Date
 
 class SharedWishlistsListViewModelShould : UnitTest() {
 
-  private val fetchSharedWishlistsUseCase: FetchSharedWishlistsUseCase = mock()
+  private val subscribeSharedWishlistsUseCase: SubscribeSharedWishlistsUseCase = mock()
   private val errorUiMapper: ErrorUiMapper = mock()
 
   private lateinit var viewModel: SharedWishlistsListViewModel
@@ -31,7 +33,7 @@ class SharedWishlistsListViewModelShould : UnitTest() {
   @Before
   fun setup() {
     viewModel = SharedWishlistsListViewModel(
-      fetchSharedWishlistsUseCase = fetchSharedWishlistsUseCase,
+      subscribeSharedWishlistsUseCase = subscribeSharedWishlistsUseCase,
       addSharedWishlistParticipantByTokenUseCase = mock(),
       isPermissionModalVisibleUseCase = mock {
         on { invoke() } doReturn false
@@ -43,8 +45,8 @@ class SharedWishlistsListViewModelShould : UnitTest() {
   @Test
   fun `fetch own shared wishlists on init and show loading then empty when there are no wishlists`() =
     runTest {
-      whenever(fetchSharedWishlistsUseCase())
-        .thenReturn(Result.success(emptyList()))
+      whenever(subscribeSharedWishlistsUseCase())
+        .thenReturn(Result.success(flowOf(emptyList())))
 
       viewModel.uiState.test {
         val loadingState = awaitItem()
@@ -61,8 +63,8 @@ class SharedWishlistsListViewModelShould : UnitTest() {
   fun `fetch own shared wishlists on init and show listing when there are results`() = runTest {
     val wishlist = ownSharedWishlist()
 
-    whenever(fetchSharedWishlistsUseCase())
-      .thenReturn(Result.success(listOf(wishlist)))
+    whenever(subscribeSharedWishlistsUseCase())
+      .thenReturn(Result.success(flowOf(listOf(wishlist))))
 
     viewModel.uiState.test {
       val loadingState = awaitItem()
@@ -79,7 +81,7 @@ class SharedWishlistsListViewModelShould : UnitTest() {
   fun `show error when fetch shared wishlists fails`() = runTest {
     val error = RuntimeException()
 
-    whenever(fetchSharedWishlistsUseCase())
+    whenever(subscribeSharedWishlistsUseCase())
       .thenReturn(Result.failure(error))
     whenever(errorUiMapper.map(error)).thenReturn(errorUiModel())
 
@@ -93,10 +95,10 @@ class SharedWishlistsListViewModelShould : UnitTest() {
 
   @Test
   fun `reload current tab shared wishlists`() = runTest {
-    whenever(fetchSharedWishlistsUseCase())
+    whenever(subscribeSharedWishlistsUseCase())
       .thenReturn(
-        Result.success(emptyList()),
-        Result.success(emptyList()),
+        Result.success(flowOf(emptyList())),
+        Result.success(flowOf(emptyList())),
       )
 
     viewModel.uiState.test {
@@ -113,7 +115,27 @@ class SharedWishlistsListViewModelShould : UnitTest() {
       val emptyState = awaitItem()
       assertThat(emptyState).isEqualTo(SharedWishlistsListUiState.Empty)
 
-      verify(fetchSharedWishlistsUseCase, times(2)).invoke()
+      verify(subscribeSharedWishlistsUseCase, times(2)).invoke()
+    }
+  }
+
+  @Test
+  fun `update listing when shared wishlists stream emits new data`() = runTest {
+    val wishlist = ownSharedWishlist()
+    val wishlistsFlow = MutableSharedFlow<List<SharedWishlist>>(replay = 1)
+
+    whenever(subscribeSharedWishlistsUseCase())
+      .thenReturn(Result.success(wishlistsFlow))
+
+    viewModel.uiState.test {
+      assertThat(awaitItem()).isEqualTo(SharedWishlistsListUiState.Loading)
+
+      wishlistsFlow.emit(emptyList())
+      assertThat(awaitItem()).isEqualTo(SharedWishlistsListUiState.Empty)
+
+      wishlistsFlow.emit(listOf(wishlist))
+      val listingState = awaitItem()
+      assertThat(listingState).isInstanceOf(SharedWishlistsListUiState.Listing::class.java)
     }
   }
 
@@ -121,7 +143,7 @@ class SharedWishlistsListViewModelShould : UnitTest() {
   fun `dismiss current error`() = runTest {
     val error = RuntimeException()
 
-    whenever(fetchSharedWishlistsUseCase())
+    whenever(subscribeSharedWishlistsUseCase())
       .thenReturn(Result.failure(error))
     whenever(errorUiMapper.map(error)).thenReturn(errorUiModel())
 

@@ -31,7 +31,7 @@ class SecretSantaDataMapper {
         SecretSantaEvent.DrawPending(
           id = entity.id,
           name = entity.name,
-          photoUrl = entity.photoUrl?.takeIf { it.isBlank() },
+          photoUrl = entity.photoUrl?.takeIf { !it.isBlank() },
           group = entity.group,
           deadline = Date(entity.deadline)
         )
@@ -40,7 +40,7 @@ class SecretSantaDataMapper {
         SecretSantaEvent.DrawDone(
           id = entity.id,
           name = entity.name,
-          photoUrl = entity.photoUrl?.takeIf { it.isBlank() },
+          photoUrl = entity.photoUrl?.takeIf { !it.isBlank() },
           group = entity.group,
           deadline = Date(entity.deadline),
           target = assignments[entity.id]?.username

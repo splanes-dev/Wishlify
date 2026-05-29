@@ -149,7 +149,7 @@ private fun ExclusionRow(
     DropdownInput(
       modifier = Modifier.weight(1f),
       items = options1.toOptions(),
-      initial = options1.filter { it.uid == member1?.uid }.toOptions().singleOrNull(),
+      initial = listOfNotNull(member1).toOptions().singleOrNull(),
       label = stringResource(R.string.secret_santa_select_exclusions_input_label1),
       onSelectionChanged = { index ->
         val m1 = index?.let { options1.getOrNull(index) }
@@ -165,7 +165,7 @@ private fun ExclusionRow(
     DropdownInput(
       modifier = Modifier.weight(1f),
       items = options2.toOptions(),
-      initial = options2.filter { it.uid == member2?.uid }.toOptions().singleOrNull(),
+      initial = listOfNotNull(member2).toOptions().singleOrNull(),
       label = stringResource(R.string.secret_santa_select_exclusions_input_label2),
       onSelectionChanged = { index ->
         val m2 = index?.let { options2.getOrNull(index) }

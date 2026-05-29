@@ -63,6 +63,40 @@ class SharedWishlistsRemoteDataSource(
       throw GenericError.Unknown(cause = e)
     }
 
+  /**
+   * Subscribes to the shared wishlists visible to the user as editor, participant
+   * or member of a linked group.
+   */
+  fun subscribeToSharedWishlists(uid: String, groups: List<String>): Flow<List<SharedWishlistEntity>> =
+    callbackFlow {
+      val filters = buildList {
+        add(Filter.arrayContains("editors", uid))
+        add(Filter.arrayContains("participants", uid))
+        if (groups.isNotEmpty()) {
+          add(Filter.inArray("group", groups))
+        }
+      }
+
+      val registration = sharedWishlists
+        .where(Filter.or(*filters.toTypedArray()))
+        .addSnapshotListener { snapshots, exception ->
+          if (exception != null) {
+            close(exception)
+            return@addSnapshotListener
+          }
+
+          val wishlists = snapshots
+            ?.readAll<SharedWishlistEntity>()
+            .orEmpty()
+
+          trySend(wishlists)
+        }
+
+      awaitClose {
+        registration.remove()
+      }
+    }.distinctUntilChanged()
+
   /** Retrieves a shared wishlist by id, or `null` when it does not exist. */
   suspend fun fetchSharedWishlistById(id: String): SharedWishlistEntity? =
     try {
