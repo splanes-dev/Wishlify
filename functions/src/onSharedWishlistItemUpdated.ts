@@ -43,7 +43,7 @@ type SharedWishlistItemEntity = {
     expiresAt?: number | null;
   } | null;
   shareRequest?: {
-    createdBy?: string | null;
+    requestedBy?: string | null;
     participantsRequested?: number | null;
     participantsJoined?: string[];
     requestedAt?: number | null;
@@ -258,8 +258,8 @@ async function resolveUpdateEvent(params: {
     };
   }
 
-  const beforeShareRequestCreatedBy = ensureOptionalString(before.shareRequest?.createdBy);
-  const afterShareRequestCreatedBy = ensureOptionalString(after.shareRequest?.createdBy);
+  const beforeShareRequestCreatedBy = ensureOptionalString(before.shareRequest?.requestedBy);
+  const afterShareRequestCreatedBy = ensureOptionalString(after.shareRequest?.requestedBy);
 
   if (!beforeShareRequestCreatedBy && afterShareRequestCreatedBy) {
     const actorName = await resolveDisplayNameOrFallback(afterShareRequestCreatedBy);

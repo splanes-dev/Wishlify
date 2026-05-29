@@ -27,8 +27,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * Data-layer implementation of [SharedWishlistsRepository].
@@ -82,6 +84,7 @@ class SharedWishlistsRepositoryImpl(
 
     return sharedWishlistsRemoteDataSource
       .subscribeToSharedWishlists(uid = uid, groups = groupsId)
+      .catch { e -> Timber.e(e) }
       .map { entities ->
         val visibleEntities = entities.filter { wishlist ->
           uid !in wishlist.editors || wishlist.editorsCanSeeUpdates

@@ -346,7 +346,7 @@ private fun ItemState(
     numOfParticipantsState.error(shareRequestError)
   }
 
-  LaunchedEffect(actionSelected) {
+  LaunchedEffect(actionSelected, numOfParticipantsState.text) {
     val numOfParticipants = numOfParticipantsState.text.toIntOrNull() ?: 0
     onActionSelected(actionSelected?.toItemAction(numOfParticipants))
   }
