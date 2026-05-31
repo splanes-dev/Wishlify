@@ -392,8 +392,10 @@ class WishlistsRepositoryImpl(
         entity = wishlistEntity
       )
 
-      sharedWishlistsRemoteDataSource.upsertSharedWishlist(sharedWishlistEntity)
-      wishlistsRemoteDataSource.upsertWishlist(entity = updatedWishlist)
+      wishlistsRemoteDataSource.shareWishlistAtomically(
+        sharedWishlist = sharedWishlistEntity,
+        wishlist = updatedWishlist
+      )
     }
 
   /** Deletes a wishlist header. */

@@ -4,6 +4,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.functions.FirebaseFunctions
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.readAll
+import com.splanes.uoc.wishlify.data.common.firebase.utils.db.sharedWishlists
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.users
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlistCategories
 import com.splanes.uoc.wishlify.data.common.firebase.utils.db.wishlistItems
@@ -12,6 +13,7 @@ import com.splanes.uoc.wishlify.data.common.firebase.utils.db.withBatch
 import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.JoinByInvitationLinkType
 import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.extractLinkMetadata
 import com.splanes.uoc.wishlify.data.common.firebase.utils.functions.joinByInvitationLink
+import com.splanes.uoc.wishlify.data.feature.shared.model.SharedWishlistEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.CategoryEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistEntity
 import com.splanes.uoc.wishlify.data.feature.wishlists.model.WishlistItemEntity
@@ -121,6 +123,24 @@ class WishlistsRemoteDataSource(
         .document(entity.id)
         .set(entity)
         .await()
+    } catch (_: UnknownHostException) {
+      throw GenericError.NoInternet()
+    } catch (e: Throwable) {
+      Timber.e(e)
+      throw GenericError.Unknown(cause = e)
+    }
+  }
+
+  /** Creates a shared-wishlist header and updates the linked wishlist atomically. */
+  suspend fun shareWishlistAtomically(
+    sharedWishlist: SharedWishlistEntity,
+    wishlist: WishlistEntity
+  ) {
+    try {
+      db.withBatch { batch ->
+        batch.set(db.sharedWishlists.document(sharedWishlist.id), sharedWishlist)
+        batch.set(wishlists.document(wishlist.id), wishlist)
+      }
     } catch (_: UnknownHostException) {
       throw GenericError.NoInternet()
     } catch (e: Throwable) {
