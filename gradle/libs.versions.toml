@@ -1,35 +1,35 @@
 [versions]
 # Plugins
 ## Android Gradle Plugin
-agp = "9.2.0-rc01"
+agp = "9.2.1"
 # Kotlin Plugin
-kotlin = "2.3.20"
+kotlin = "2.4.0"
 # Google Services Plugin
-google-services = "4.4.4"
+google-services = "4.5.0"
 
 # Kotlin
 kotlin-serialization = "1.11.0"
 
 # Koin
-koin = "4.2.1"
+koin = "4.2.2"
 
 # Android
 ## Core
-androidx-core-ktx = "1.18.0"
+androidx-core-ktx = "1.19.0"
 androidx-core-splashscreen = "1.2.0"
-androidx-lifecycle = "2.10.0"
-androidx-navigation = "2.9.7"
+androidx-lifecycle = "2.11.0"
+androidx-navigation = "2.9.8"
 androidx-credentials = "1.6.0"
 ## Jetpack Compose
-androidx-compose-bom = "2026.03.01"
+androidx-compose-bom = "2026.06.01"
 androidx-compose-activity = "1.13.0"
-androdix-material3 = "1.5.0-alpha17"
+androdix-material3 = "1.5.0-alpha23"
 
 # Google Identity
 google-identity = "1.2.0"
 
 # Firebase
-google-firebase-bom = "34.12.0"
+google-firebase-bom = "34.15.0"
 
 # Coil
 coil = "2.7.0"
@@ -47,7 +47,7 @@ espresso-core = "3.7.0"
 mockito = "6.3.0"
 truth = "1.4.5"
 turbine = "1.2.1"
-coroutines-test = "1.10.2"
+coroutines-test = "1.11.0"
 
 [libraries]
 # Kotlin

@@ -10,17 +10,24 @@ plugins {
 android {
   namespace = "com.splanes.uoc.wishlify"
   compileSdk {
-    version = release(36)
+    version = release(37)
   }
 
   defaultConfig {
     applicationId = "com.splanes.uoc.wishlify"
     minSdk = 30
-    targetSdk = 36
-    versionCode = 120
-    versionName = "1.3.0"
+    targetSdk = 37
+    versionCode = 140
+    versionName = "1.4.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+    ndk {
+      abiFilters += listOf(
+        "arm64-v8a",
+        "armeabi-v7a"
+      )
+    }
   }
 
   signingConfigs {
