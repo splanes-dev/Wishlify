@@ -46,6 +46,14 @@
           }
         },
         {
+          "client_id": "820607858547-qqte7r7977oqirpfot1l2ei77aosa5e7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.splanes.uoc.wishlify",
+            "certificate_hash": "1bedce02600321d3d3bc4d7499044c64dfc356b7"
+          }
+        },
+        {
           "client_id": "820607858547-qb784e4tdl4tvi5i8kq4ecf62q0b8oo5.apps.googleusercontent.com",
           "client_type": 3
         }
