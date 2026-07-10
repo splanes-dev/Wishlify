@@ -17,8 +17,8 @@ android {
     applicationId = "com.splanes.uoc.wishlify"
     minSdk = 30
     targetSdk = 37
-    versionCode = 140
-    versionName = "1.4.0"
+    versionCode = 131
+    versionName = "1.3.1"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
