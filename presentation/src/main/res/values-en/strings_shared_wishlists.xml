@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shared_wishlists">Shared wishlists</string>
+    <string name="shared_wishlists_list_tab_own">Mine</string>
+    <string name="shared_wishlists_list_tab_third_party">Others</string>
+    <string name="shared_wishlists_list_own_empty_state_description">You haven\'t shared any lists yet.\nShare one to start organizing with others.</string>
+    <string name="shared_wishlists_list_others_all_finished_empty_state_description">All events have ended. Ask your friends or family to share their lists!</string>
+    <string name="shared_wishlists_list_others_empty_state_description">No one has shared a list with you yet.\nAsk your friends or family to share one so you can coordinate more easily.</string>
+    <plurals name="shared_wishlists_list_participants_card"><item quantity="zero">No participants</item><item quantity="one">%d participant</item><item quantity="other">%d participants</item></plurals>
+    <plurals name="shared_wishlists_available_items_count"><item quantity="zero">No available items</item><item quantity="one">%d available item</item><item quantity="other">%d available items</item></plurals>
+    <string name="shared_wishlists_detail_participants_header">%d participants</string>
+    <string name="shared_wishlists_item_state_available">Available</string>
+    <string name="shared_wishlists_item_state_lock">Reserved</string>
+    <string name="shared_wishlists_item_state_purchased">Purchased</string>
+    <string name="shared_wishlists_item_state_share_request">Sharing request</string>
+    <string name="shared_wishlists_items_collaborate_info_banner">Products you participate in will be highlighted</string>
+    <string name="shared_wishlists_item_state_title">Product status</string>
+    <string name="shared_wishlists_item_state_available_description_text">Have you already bought it, do you want to reserve it before someone else does, or would you like to buy it with someone?\n\nChange its status so everyone stays informed</string>
+    <string name="shared_wishlists_item_state_lock_description_text"><![CDATA[This item was reserved by <b>%s</b> on %s.<br/><br/>The reservation will remain active until %s at 23:59.]]></string>
+    <string name="shared_wishlists_item_state_purchased_description_text"><![CDATA[This item was purchased by <b>%s</b> on %s.]]></string>
+    <string name="shared_wishlists_item_state_share_request_description_text"><![CDATA[<b>%s</b> would like to buy this product with %d more person/people (%d people in total). Would you like to join?<br/><br/>The request will remain active until %s at 23:59.]]></string>
+    <string name="shared_wishlists_item_state_selector_purchased">Purchased</string>
+    <string name="shared_wishlists_item_state_selector_lock">Reserved</string>
+    <string name="shared_wishlists_item_state_selector_request_share">Request to share</string>
+    <string name="shared_wishlists_item_state_selector_unlock">Cancel reservation</string>
+    <string name="shared_wishlists_item_state_selector_join_share_request">Join request</string>
+    <string name="shared_wishlists_item_state_selector_delete_share_request">Cancel request</string>
+    <string name="shared_wishlists_item_state_selector_lock_supporting_text"><![CDATA[The reservation will remain active for <b>2 days</b>, then the item will become available again.]]></string>
+    <string name="shared_wishlists_item_state_selector_request_share_supporting_text"><![CDATA[The request will remain active for <b>2 days</b>, then the item will become available again. The group chat will be notified.]]></string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_text"><![CDATA[Enter how many people you want to share it with <b>(not including yourself)</b>.]]></string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_label">Number of participants</string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_error">Invalid number. Minimum 1 and maximum %d.</string>
+    <string name="shared_wishlists_own_wishlist_items_locked_info_banner"><![CDATA[<b>The list is locked until the deadline.</b><br/>Products cannot be added, edited, or deleted because this could affect other users.]]></string>
+    <string name="shared_wishlists_wishlist_settings_back_to_privates">Return to private lists</string>
+    <string name="shared_wishlists_finished">Finished</string>
+    <string name="shared_wishlists_finished_header_own_description"><![CDATA[You can return them to your private lists.<br/>Otherwise, <b>they will be automatically deleted after 30 days</b>.]]></string>
+    <string name="shared_wishlists_finished_header_third_party_description"><![CDATA[<b>They will be automatically deleted 30 days after they expire</b>.]]></string>
+    <string name="shared_wishlists_finished_show">Show</string>
+    <string name="shared_wishlists_finished_hide">Hide</string>
+    <string name="shared_wishlists_third_party_wishlist_items_expired_info_banner"><![CDATA[<b>The list-sharing period has ended.</b><br/>You can view the list, but product statuses can no longer be updated.<br/><br/><b>The list will be automatically deleted 30 days after the deadline.</b>]]></string>
+    <string name="shared_wishlists_own_wishlist_items_expired_info_banner"><![CDATA[<b>The list-sharing period has ended.</b><br/>You can view the list, but it can no longer be updated. If you wish, you can return the wishlist to <b>your private wishlists</b> from the options menu.<br/><br/><b>The list will be automatically deleted 30 days after the deadline.</b>]]></string>
+    <string name="shared_wishlists_back_to_private_dialog_title">Return to private lists</string>
+    <string name="shared_wishlists_back_to_private_dialog_description">Returning this wishlist to your private lists will remove any items that have already been purchased. Are you sure you want to continue?</string>
+    <string name="shared_wishlists_update_state_bottom_sheet_title">Update status</string>
+    <string name="shared_wishlists_join_to_share_bottom_sheet_title">Sharing request</string>
+    <string name="shared_wishlists_join_to_share_bottom_sheet_button">Share gift</string>
+    <string name="shared_wishlists_chat_empty_state_title">Oooh…</string>
+    <string name="shared_wishlists_chat_empty_state_description">There are no messages yet.\nBreak the ice and send the first one!</string>
+</resources>

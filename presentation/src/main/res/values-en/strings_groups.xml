@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="groups">Groups</string>
+    <string name="groups_list_empty_state_description">You haven\'t created any groups yet.\nCreate a group to easily share your lists, Secret Santa events, and much more.</string>
+    <string name="groups_list_member_count">%d members</string>
+    <string name="groups_state_active">Active</string>
+    <string name="groups_state_inactive">Inactive</string>
+    <string name="groups_new_group">Create group</string>
+    <string name="groups_new_group_name_input_label">Group name</string>
+    <string name="groups_new_group_members_input_label">Participants</string>
+    <string name="groups_new_group_members_input_error">The group must have between 1 and 15 participants</string>
+    <string name="groups_search_users">Search users</string>
+    <string name="groups_search_users_description">Search for users by email address or user ID.</string>
+    <string name="groups_search_users_remove">Remove user</string>
+    <string name="groups_search_users_results_title">Search results</string>
+    <string name="groups_search_users_results_added_title">Selected users</string>
+    <string name="groups_search_users_results_empty">No results match your search</string>
+    <string name="groups_new_group_members_input_empty_description">You haven\'t added any participants.\nSearch for users by email or user ID.</string>
+    <string name="groups_search_users_info_banner_title">Can\'t find the user ID?</string>
+    <string name="groups_search_users_info_banner_description">Each user\'s ID is shown in their profile. Ask the people you want to add to send you theirs.</string>
+    <string name="groups_member_code">User ID</string>
+    <string name="groups_member_code_clipboard_copied">User ID copied to clipboard</string>
+    <string name="groups_see_group_shared_wishlists">Group wishlists</string>
+    <string name="groups_see_group_secret_santa_events">Group Secret Santa events</string>
+    <string name="groups_member_you">You (%s)</string>
+    <string name="groups_edit_group">Edit group</string>
+    <string name="groups_leave_group">Leave group</string>
+    <string name="groups_delete_group">Delete group</string>
+    <string name="groups_wishlists_by_group_title">Group shared lists</string>
+    <string name="groups_wishlists_by_group_description">Below you can see the shared lists for group %s:</string>
+    <string name="groups_secret_santa_by_group_title">Group Secret Santa events</string>
+    <string name="groups_secret_santa_by_group_description">Below you can see the Secret Santa events for group %s:</string>
+    <string name="groups_events_by_group_filtered_results_banner">Some results may be filtered, such as shared-list events that you shared yourself. We\'re working to resolve this issue.</string>
+</resources>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- BottomSheet -->
+    <string name="gift_suggestion_bottom_sheet_title">AI suggestions</string>
+    <string name="gift_suggestion_bottom_sheet_info_banner">AI-generated suggestions are only guidance and may not fully match the person\'s actual tastes. Use them as inspiration to find the ideal gift.</string>
+    <string name="gift_suggestion_bottom_sheet_empty">Oops… It was not possible to generate suggestions from the data obtained.\nIt is possible that information is missing to infer a quality answer; we are sorry for the inconvenience.</string>
+    <string name="gift_suggestion_confidence_high">(Highly recommended)</string>
+    <string name="gift_suggestion_confidence_med">(Recommended)</string>
+    <string name="gift_suggestion_confidence_low">(Possible interest)</string>
+
+    <!-- Technology -->
+    <string name="gift_suggestion_tech_audio_accessories">Audio and sound accessories, such as speakers, microphones or DACs</string>
+    <string name="gift_suggestion_tech_headphones">Headphones and audio devices for music, gaming or work</string>
+    <string name="gift_suggestion_tech_gadgets">Useful and curious tech gadgets for everyday life</string>
+    <string name="gift_suggestion_tech_useful_devices">Practical tech devices for home or personal use</string>
+    <string name="gift_suggestion_tech_mobile_accessories">Mobile accessories, such as cases or stands</string>
+    <string name="gift_suggestion_tech_chargers_and_cables">Chargers, cables or charging accessories</string>
+    <string name="gift_suggestion_tech_productivity_setup">Setup accessories, such as keyboards or laptop stands</string>
+    <string name="gift_suggestion_tech_office_accessories">Office and desk accessories to work more comfortably</string>
+    <string name="gift_suggestion_tech_smart_home_devices">Smart home devices</string>
+    <string name="gift_suggestion_tech_home_automation">Home automation and smart home products</string>
+
+    <!-- Gaming -->
+    <string name="gift_suggestion_gaming_games">Video games, expansions or gaming releases</string>
+    <string name="gift_suggestion_gaming_gift_cards">Gift cards for Steam, PlayStation, Nintendo or Xbox</string>
+    <string name="gift_suggestion_gaming_accessories">Gaming accessories to improve the gaming experience</string>
+    <string name="gift_suggestion_gaming_peripherals">Gaming peripherals, such as keyboards, mice or controllers</string>
+    <string name="gift_suggestion_gaming_collectibles">Figures and collectibles related to video games</string>
+    <string name="gift_suggestion_gaming_special_editions">Special and collector\'s editions of video games</string>
+    <string name="gift_suggestion_gaming_merchandising">Gaming merchandise, such as t-shirts or mugs</string>
+    <string name="gift_suggestion_gaming_decor">Decor inspired by video games and gaming setups</string>
+
+    <!-- Books -->
+    <string name="gift_suggestion_books_novels">Novels and fiction books to enjoy reading</string>
+    <string name="gift_suggestion_books_reading_accessories">Reading accessories, such as bookmarks or lamps</string>
+    <string name="gift_suggestion_books_technical">Technical and specialized books for learning</string>
+    <string name="gift_suggestion_books_learning">Books and resources related to learning</string>
+    <string name="gift_suggestion_books_comics_manga">Comics, manga and illustrated reads</string>
+    <string name="gift_suggestion_books_graphic_novels">Graphic novels and special editions</string>
+    <string name="gift_suggestion_books_essays">Essays, popular science and reflective books</string>
+    <string name="gift_suggestion_books_non_fiction">Non-fiction books and real-world topics</string>
+
+    <!-- Outdoor -->
+    <string name="gift_suggestion_outdoor_hiking_accessories">Hiking accessories, such as backpacks or poles</string>
+    <string name="gift_suggestion_outdoor_mountain_gear">Mountain gear for excursions and trekking</string>
+    <string name="gift_suggestion_outdoor_camping_gear">Camping gear, such as a headlamp, bottle or sleeping bag</string>
+    <string name="gift_suggestion_outdoor_basic_kit">Basic outdoor kit for getaways and nature</string>
+    <string name="gift_suggestion_outdoor_travel_accessories">Useful accessories for travel and weekend trips</string>
+    <string name="gift_suggestion_outdoor_weekend_trip">Ideas for a special getaway or weekend trip</string>
+
+    <!-- Sports -->
+    <string name="gift_suggestion_sports_gym_accessories">Gym and personal training accessories</string>
+    <string name="gift_suggestion_sports_training_material">Sports equipment for training and staying active</string>
+    <string name="gift_suggestion_sports_running_gear">Running gear, such as socks or vests</string>
+    <string name="gift_suggestion_sports_technical_clothing">Technical and comfortable sportswear</string>
+    <string name="gift_suggestion_sports_swimming_accessories">Swimming accessories, such as goggles or caps</string>
+    <string name="gift_suggestion_sports_pool_gear">Useful pool and aquatic training gear</string>
+    <string name="gift_suggestion_sports_team_merch">Sports team merchandise and products</string>
+    <string name="gift_suggestion_sports_match_experience">Tickets and experiences related to matches</string>
+    <string name="gift_suggestion_sports_cycling_accessories">Cycling accessories for going out on a bike</string>
+    <string name="gift_suggestion_sports_bike_gear">Bike gear and accessories</string>
+
+    <!-- Fashion -->
+    <string name="gift_suggestion_fashion_clothing">Clothes and garments to refresh the style</string>
+    <string name="gift_suggestion_fashion_style_items">Items related to fashion and personal style</string>
+    <string name="gift_suggestion_fashion_accessories">Fashion accessories, such as bags or scarves</string>
+    <string name="gift_suggestion_fashion_personal_complements">Personal accessories for everyday life</string>
+    <string name="gift_suggestion_fashion_sneakers">Sneakers and casual or sports footwear</string>
+    <string name="gift_suggestion_fashion_shoe_care">Products to care for and maintain footwear</string>
+    <string name="gift_suggestion_fashion_jewelry">Jewellery and small elegant accessories</string>
+    <string name="gift_suggestion_fashion_small_details">Small details related to fashion</string>
+
+    <!-- Cooking -->
+    <string name="gift_suggestion_cooking_kitchen_tools">Useful kitchen utensils and tools</string>
+    <string name="gift_suggestion_cooking_useful_accessories">Practical accessories for better cooking</string>
+    <string name="gift_suggestion_cooking_gourmet_products">Gourmet and delicatessen products</string>
+    <string name="gift_suggestion_cooking_food_experience">Food experiences and tastings</string>
+
+    <!-- Music -->
+    <string name="gift_suggestion_music_instrument_accessories">Accessories for musical instruments</string>
+    <string name="gift_suggestion_music_learning_material">Material for learning or practicing music</string>
+    <string name="gift_suggestion_music_live_events">Concerts and live music experiences</string>
+    <string name="gift_suggestion_music_experiences">Music-related experiences</string>
+
+    <!-- Wellbeing -->
+    <string name="gift_suggestion_wellbeing_relaxation">Relaxation products, such as candles or diffusers</string>
+    <string name="gift_suggestion_wellbeing_rest">Ideas to rest and disconnect better</string>
+    <string name="gift_suggestion_wellbeing_selfcare">Self-care and personal wellbeing products</string>
+    <string name="gift_suggestion_wellbeing_routine">Healthy routines and habits for everyday life</string>
+    <string name="gift_suggestion_wellbeing_fitness">Fitness and active health accessories</string>
+    <string name="gift_suggestion_wellbeing_active_care">Products to take care of yourself physically and mentally</string>
+
+    <!-- Experiences -->
+    <string name="gift_suggestion_experiences_cultural">Cultural experiences and original activities</string>
+    <string name="gift_suggestion_experiences_museum_theatre_cinema">Tickets for museums, theatre or cinema</string>
+    <string name="gift_suggestion_experiences_adventure">Adventure and adrenaline experiences</string>
+    <string name="gift_suggestion_experiences_outdoor_activity">Outdoor activities and active getaways</string>
+    <string name="gift_suggestion_experiences_food">Experiences related to gastronomy</string>
+    <string name="gift_suggestion_experiences_tasting_or_dinner">Tastings, brunches or special dinners</string>
+    <string name="gift_suggestion_experiences_romantic">Romantic experiences to share</string>
+    <string name="gift_suggestion_experiences_couple_plan">Special plans to do as a couple</string>
+
+    <!-- Entertainment -->
+    <string name="gift_suggestion_entertainment_merch">Anime, series or film merchandise</string>
+    <string name="gift_suggestion_entertainment_collectibles">Figures and collectible items</string>
+    <string name="gift_suggestion_entertainment_events">Entertainment-related events</string>
+    <string name="gift_suggestion_entertainment_conventions">Conventions, comic cons and themed fairs</string>
+
+    <!-- Art -->
+    <string name="gift_suggestion_art_creative_material">Creative materials for drawing or crafts</string>
+    <string name="gift_suggestion_art_craft_kit">Creative kits and DIY activities</string>
+
+    <!-- Generic -->
+    <string name="gift_suggestion_generic_practical">Practical and useful gift for everyday life</string>
+    <string name="gift_suggestion_generic_experience">Experiences to share and remember</string>
+    <string name="gift_suggestion_generic_flexible_detail">Versatile and easy-to-adapt gifts</string>
+
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_chat_name">Chats</string>
+    <string name="notification_channel_chat_description">Chat messages: shared wishlists and Secret Santa</string>
+    <string name="notification_channel_general_name">General</string>
+    <string name="notification_channel_general_description">Update and reminder messages</string>
+</resources>

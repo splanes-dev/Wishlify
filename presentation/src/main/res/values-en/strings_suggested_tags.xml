@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="suggested_tag_technology">technology</string>
+    <string name="suggested_tag_audio">audio</string>
+    <string name="suggested_tag_mobile">mobile</string>
+    <string name="suggested_tag_productivity">productivity</string>
+    <string name="suggested_tag_smart_home">smart home</string>
+
+    <string name="suggested_tag_gaming">gaming</string>
+    <string name="suggested_tag_video_games">video games</string>
+    <string name="suggested_tag_gaming_setup">gaming setup</string>
+    <string name="suggested_tag_collectibles">collectibles</string>
+
+    <string name="suggested_tag_books">books</string>
+    <string name="suggested_tag_technical_books">technical books</string>
+    <string name="suggested_tag_comics_manga">comics and manga</string>
+    <string name="suggested_tag_essays">essays</string>
+
+    <string name="suggested_tag_outdoor">outdoor</string>
+    <string name="suggested_tag_hiking">hiking</string>
+    <string name="suggested_tag_camping">camping</string>
+    <string name="suggested_tag_travel">travel</string>
+
+    <string name="suggested_tag_sports">sports</string>
+    <string name="suggested_tag_gym">gym</string>
+    <string name="suggested_tag_running">running</string>
+    <string name="suggested_tag_swimming">swimming</string>
+    <string name="suggested_tag_cycling">cycling</string>
+
+    <string name="suggested_tag_fashion">fashion</string>
+    <string name="suggested_tag_sneakers">sneakers</string>
+    <string name="suggested_tag_jewelry">jewelry</string>
+
+    <string name="suggested_tag_cooking">cooking</string>
+    <string name="suggested_tag_gourmet">gourmet</string>
+
+    <string name="suggested_tag_music">music</string>
+    <string name="suggested_tag_concerts">concerts</string>
+
+    <string name="suggested_tag_wellbeing">wellbeing</string>
+    <string name="suggested_tag_selfcare">self-care</string>
+    <string name="suggested_tag_fitness">fitness</string>
+
+    <string name="suggested_tag_experiences">experiences</string>
+    <string name="suggested_tag_culture">culture</string>
+    <string name="suggested_tag_adventure">adventure</string>
+    <string name="suggested_tag_food">food</string>
+    <string name="suggested_tag_romantic">romantic</string>
+
+    <string name="suggested_tag_entertainment">entertainment</string>
+    <string name="suggested_tag_anime">anime</string>
+    <string name="suggested_tag_art">art</string>
+
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile">User profile</string>
+    <string name="profile_user_points">%d points</string>
+    <string name="profile_close_session">Sign out</string>
+    <string name="profile_update_profile">Update profile</string>
+    <string name="profile_change_password">Update password</string>
+    <string name="profile_admin_notifications">Manage notifications</string>
+    <string name="profile_admin_store">Manage points and store</string>
+    <string name="profile_admin_hobbies">Manage interests</string>
+    <string name="profile_avatar_input_supporting_text">Tap the image to edit it</string>
+    <string name="profile_update_email_banner_social_description">This account was created using Google, so its email address cannot be changed</string>
+    <string name="profile_update_email_banner_description">If you update your email address, a verification email will be sent to the new address. Once verified, you will be able to sign in with the new email.\n\nFor security reasons, your current session will also be closed.</string>
+    <string name="profile_hobbies_title">Interests and hobbies</string>
+    <string name="profile_hobbies_description">Allow your interests and hobbies to be shared with other users to provide suggestions</string>
+    <string name="profile_hobbies_section_title">Interests and hobbies</string>
+    <string name="profile_hobbies_add_hobby">Add an interest or hobby</string>
+    <string name="profile_hobbies_add_hobby_label">Interest or hobby name</string>
+    <string name="profile_update_password_confirm_do_not_match">Passwords do not match</string>
+    <string name="profile_update_password_title">Update password</string>
+    <string name="profile_update_password_input_label">Current password</string>
+    <string name="profile_update_password_new_input_label">New password</string>
+    <string name="profile_update_password_new_confirm_input_label">Confirm password</string>
+    <string name="profile_update_password_description"><![CDATA[Update your sign-in password.<br/><b>Keep in mind that your current session will be closed and you will need to sign in again.</b>]]></string>
+    <string name="profile_notifications_title">Manage notifications</string>
+    <string name="profile_notifications_secret_santa_chat">Chat notifications</string>
+    <string name="profile_notifications_secret_santa_deadline">Deadline reminders</string>
+    <string name="profile_notifications_shared_wishlists_chat">Chat notifications</string>
+    <string name="profile_notifications_shared_wishlists_updates">Status update notifications</string>
+    <string name="profile_notifications_shared_wishlists_deadline">Deadline reminders</string>
+</resources>

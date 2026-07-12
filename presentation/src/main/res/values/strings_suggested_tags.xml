@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="suggested_tag_technology">tecnologia</string>
-    <string name="suggested_tag_audio">àudio</string>
-    <string name="suggested_tag_mobile">mòbil</string>
-    <string name="suggested_tag_productivity">productivitat</string>
-    <string name="suggested_tag_smart_home">llar intel·ligent</string>
+    <string name="suggested_tag_technology">tecnología</string>
+    <string name="suggested_tag_audio">audio</string>
+    <string name="suggested_tag_mobile">móvil</string>
+    <string name="suggested_tag_productivity">productividad</string>
+    <string name="suggested_tag_smart_home">hogar inteligente</string>
 
     <string name="suggested_tag_gaming">gaming</string>
-    <string name="suggested_tag_video_games">videojocs</string>
+    <string name="suggested_tag_video_games">videojuegos</string>
     <string name="suggested_tag_gaming_setup">setup gaming</string>
-    <string name="suggested_tag_collectibles">col·leccionisme</string>
+    <string name="suggested_tag_collectibles">coleccionismo</string>
 
-    <string name="suggested_tag_books">llibres</string>
-    <string name="suggested_tag_technical_books">llibres tècnics</string>
-    <string name="suggested_tag_comics_manga">còmics i manga</string>
-    <string name="suggested_tag_essays">assaig</string>
+    <string name="suggested_tag_books">libros</string>
+    <string name="suggested_tag_technical_books">libros técnicos</string>
+    <string name="suggested_tag_comics_manga">cómics y manga</string>
+    <string name="suggested_tag_essays">ensayo</string>
 
     <string name="suggested_tag_outdoor">outdoor</string>
-    <string name="suggested_tag_hiking">senderisme</string>
-    <string name="suggested_tag_camping">càmping</string>
-    <string name="suggested_tag_travel">viatges</string>
+    <string name="suggested_tag_hiking">senderismo</string>
+    <string name="suggested_tag_camping">camping</string>
+    <string name="suggested_tag_travel">viajes</string>
 
-    <string name="suggested_tag_sports">esport</string>
-    <string name="suggested_tag_gym">gimnàs</string>
+    <string name="suggested_tag_sports">deporte</string>
+    <string name="suggested_tag_gym">gimnasio</string>
     <string name="suggested_tag_running">running</string>
-    <string name="suggested_tag_swimming">natació</string>
-    <string name="suggested_tag_cycling">ciclisme</string>
+    <string name="suggested_tag_swimming">natación</string>
+    <string name="suggested_tag_cycling">ciclismo</string>
 
     <string name="suggested_tag_fashion">moda</string>
     <string name="suggested_tag_sneakers">sneakers</string>
-    <string name="suggested_tag_jewelry">joieria</string>
+    <string name="suggested_tag_jewelry">joyería</string>
 
-    <string name="suggested_tag_cooking">cuina</string>
+    <string name="suggested_tag_cooking">cocina</string>
     <string name="suggested_tag_gourmet">gourmet</string>
 
     <string name="suggested_tag_music">música</string>
-    <string name="suggested_tag_concerts">concerts</string>
+    <string name="suggested_tag_concerts">conciertos</string>
 
-    <string name="suggested_tag_wellbeing">benestar</string>
-    <string name="suggested_tag_selfcare">autocura</string>
+    <string name="suggested_tag_wellbeing">bienestar</string>
+    <string name="suggested_tag_selfcare">autocuidado</string>
     <string name="suggested_tag_fitness">fitness</string>
 
-    <string name="suggested_tag_experiences">experiències</string>
+    <string name="suggested_tag_experiences">experiencias</string>
     <string name="suggested_tag_culture">cultura</string>
     <string name="suggested_tag_adventure">aventura</string>
-    <string name="suggested_tag_food">gastronomia</string>
-    <string name="suggested_tag_romantic">romàntic</string>
+    <string name="suggested_tag_food">gastronomía</string>
+    <string name="suggested_tag_romantic">romántico</string>
 
-    <string name="suggested_tag_entertainment">entreteniment</string>
+    <string name="suggested_tag_entertainment">entretenimiento</string>
     <string name="suggested_tag_anime">anime</string>
-    <string name="suggested_tag_art">art</string>
+    <string name="suggested_tag_art">arte</string>
 
 </resources>

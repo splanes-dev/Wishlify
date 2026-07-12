@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shared_wishlists">Wishlists compartides</string>
+    <string name="shared_wishlists_list_tab_own">Meves</string>
+    <string name="shared_wishlists_list_tab_third_party">Dels altres</string>
+    <string name="shared_wishlists_list_own_empty_state_description">Encara no has compartit cap llista.\nComparteix-ne una per començar a organitzar-te amb els altres.</string>
+    <string name="shared_wishlists_list_others_all_finished_empty_state_description">Tots els esdeveniments han finalitzat. Demana als teus amics o familiars que comparteixin els seus llistats!</string>
+    <string name="shared_wishlists_list_others_empty_state_description">Encara no t’han compartit cap llista.\nDemana als teus amics o familiars que en comparteixin una per poder coordinar-vos millor.</string>
+    <plurals name="shared_wishlists_list_participants_card">
+        <item quantity="zero">Sense participants</item>
+        <item quantity="one">%d participant</item>
+        <item quantity="other">%d participants</item>
+    </plurals>
+    <plurals name="shared_wishlists_available_items_count">
+        <item quantity="zero">No hi ha ítems disponibles</item>
+        <item quantity="one">%d ítem disponible</item>
+        <item quantity="other">%d ítems disponibles</item>
+    </plurals>
+    <string name="shared_wishlists_detail_participants_header">%d participants</string>
+    <string name="shared_wishlists_item_state_available">Disponible</string>
+    <string name="shared_wishlists_item_state_lock">Reservat</string>
+    <string name="shared_wishlists_item_state_purchased">Comprat</string>
+    <string name="shared_wishlists_item_state_share_request">Sol·licitud compartir</string>
+    <string name="shared_wishlists_items_collaborate_info_banner">Els productes en els quals participis apareixeran emmarcats</string>
+    <string name="shared_wishlists_item_state_title">Estat del producte</string>
+    <string name="shared_wishlists_item_state_available_description_text">Ja l’has comprat, el vols reservar perquè no se t’avancin o t’agradaria comprar-lo amb algú més?\n\nCanvia l’estat perquè tothom estigui assabentat</string>
+    <string name="shared_wishlists_item_state_lock_description_text">
+        <![CDATA[Aquest ítem ja ha estat reservat per <b>%s</b> el %s.<br/><br/>La reserva es mantindrà fins al %s a les 23:59.]]>
+    </string>
+    <string name="shared_wishlists_item_state_purchased_description_text">
+        <![CDATA[Aquest ítem ja ha estat comprat per <b>%s</b> el %s.]]>
+    </string>
+    <string name="shared_wishlists_item_state_share_request_description_text">
+        <![CDATA[L\'usuari/ària <b>%s</b> desitja comprar aquest product amb %d persona/es més (entre %d persones en total). Vols unir-te?<br/><br/>La sol·licitud estarà activa fins al %s a les 23:59.]]>
+    </string>
+    <string name="shared_wishlists_item_state_selector_purchased">Comprat</string>
+    <string name="shared_wishlists_item_state_selector_lock">Reservat</string>
+    <string name="shared_wishlists_item_state_selector_request_share">Sol·licitar compartir</string>
+    <string name="shared_wishlists_item_state_selector_unlock">Anul·lar reserva</string>
+    <string name="shared_wishlists_item_state_selector_join_share_request">Unir-me a la sol·licitud</string>
+    <string name="shared_wishlists_item_state_selector_delete_share_request">Anul·lar sol·licitud</string>
+    <string name="shared_wishlists_item_state_selector_lock_supporting_text">
+        <![CDATA[La reserva es mantindrà <b>2 dies</b>, després tornarà a estar disponible de nou.]]>
+    </string>
+    <string name="shared_wishlists_item_state_selector_request_share_supporting_text">
+        <![CDATA[La sol·licitud es mantindrà <b>2 dies</b>, després tornarà a estar disponible de nou. Es notificarà de la sol·licitud al xat del grup.]]>
+    </string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_text">
+        <![CDATA[Indica amb quantes persones vols compartir-ho <b>(sense comptar-te a tu)</b>.]]>
+    </string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_label">Nombre de participants</string>
+    <string name="shared_wishlists_item_state_request_share_num_of_participants_error">Nombre invàlid. Mínim 1 i màxim %d.</string>
+    <string name="shared_wishlists_own_wishlist_items_locked_info_banner">
+        <![CDATA[<b>La llista està bloquejada fins a la data límit.</b><br/>No serà possible afegir, editar o eliminar productes ja que podria afectar als altres usuaris.]]>
+    </string>
+    <string name="shared_wishlists_wishlist_settings_back_to_privates">Retornar a llistes privades</string>
+    <string name="shared_wishlists_finished">Finalitzades</string>
+    <string name="shared_wishlists_finished_header_own_description">
+        <![CDATA[Pots retornar-les a les teves llistes privades.<br/>En cas contrari, <b>s’eliminaran automàticament al cap de 30 dies</b>.]]>
+    </string>
+    <string name="shared_wishlists_finished_header_third_party_description">
+        <![CDATA[<b>S’eliminaran automàticament al cap de 30 dies des de la seva expiració</b>.]]>
+    </string>
+    <string name="shared_wishlists_finished_show">Veure</string>
+    <string name="shared_wishlists_finished_hide">Ocultar</string>
+    <string name="shared_wishlists_third_party_wishlist_items_expired_info_banner">
+        <![CDATA[<b>El periode de compartir llista ha finalitzat.</b><br/>Pots consultar el llistat, però no es podran actualitzar els estats dels productes.<br/><br/><b>El llistat s\'eliminarà automàticament 30 dies després de la data límit.</b>]]>
+    </string>
+    <string name="shared_wishlists_own_wishlist_items_expired_info_banner">
+        <![CDATA[<b>El periode de compartir llista ha finalitzat.</b><br/>Pots consultar el llistat, però no es pot actualitzar. Si així ho desitges, pots retornar la wishlist a les <b>teves wishlists privades</b> des del menú d\'opcions.<br/><br/><b>El llistat s\'eliminarà automàticament 30 dies després de la data límit.</b>]]>
+    </string>
+    <string name="shared_wishlists_back_to_private_dialog_title">
+        Retornar a llistes privades
+    </string>
+    <string name="shared_wishlists_back_to_private_dialog_description">
+        En retornar aquesta wishlist a les teves llistes privades, els ítems que ja han estat comprats s’eliminaran. Estàs segur que vols continuar?
+    </string>
+    <string name="shared_wishlists_update_state_bottom_sheet_title">Actualitzar l\'estat</string>
+    <string name="shared_wishlists_join_to_share_bottom_sheet_title">Sol·licitud de compartir</string>
+    <string name="shared_wishlists_join_to_share_bottom_sheet_button">Compartir regal</string>
+    <string name="shared_wishlists_chat_empty_state_title">Oooh…</string>
+    <string name="shared_wishlists_chat_empty_state_description">No hi ha missatges encara.\nTrenca el gel i envia el primer missatge!</string>
+</resources>
